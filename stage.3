@@ -1,0 +1,629 @@
+void glAccum(GLenum op, GLfloat value); /*1.0*/
+void glActiveTexture(GLenum texture); /*1.3*/
+void glActiveTextureARB(GLenum texture); /*1.2*/
+void glAlphaFunc(GLenum func, GLclampf ref); /*1.0*/
+GLboolean glAreTexturesResident(GLsizei n, const GLuint * textures, GLboolean * residences); /*1.1*/
+void glArrayElement(GLint i); /*1.1*/
+void glAttachShader(GLuint program, GLuint shader); /*2.0*/
+void glBegin(GLenum mode); /*1.0*/
+void glBeginQuery(GLenum target, GLuint id); /*1.5*/
+void glBindAttribLocation(GLuint program, GLuint index, const GLchar * name); /*2.0*/
+void glBindBuffer(GLenum target, GLuint buffer); /*1.5*/
+void glBindTexture(GLenum target, GLuint texture); /*1.1*/
+void glBitmap(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte * bitmap); /*1.0*/
+void glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha); /*1.2*/
+void glBlendEquation(GLenum mode); /*1.2*/
+void glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha); /*2.0*/
+void glBlendFunc(GLenum sfactor, GLenum dfactor); /*1.0*/
+void glBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha); /*1.4*/
+void glBufferData(GLenum target, GLsizeiptrARB size, const const GLvoid * data, GLenum usage); /*1.5*/
+void glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const const GLvoid * data); /*1.5*/
+void glCallList(GLuint list); /*1.0*/
+void glCallLists(GLsizei n, GLenum type, const void * lists); /*1.0*/
+void glClear(GLbitfield mask); /*1.0*/
+void glClearAccum(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha); /*1.0*/
+void glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha); /*1.0*/
+void glClearDepth(GLclampd depth); /*1.0*/
+void glClearIndex(GLfloat c); /*1.0*/
+void glClearStencil(GLint s); /*1.0*/
+void glClientActiveTexture(GLenum texture); /*1.3*/
+void glClientActiveTextureARB(GLenum texture); /*1.2*/
+void glClipPlane(GLenum plane, const GLdouble * equation); /*1.0*/
+void glColor3b(GLbyte red, GLbyte green, GLbyte blue); /*1.0*/
+void glColor3bv(const GLbyte * v); /*1.0*/
+void glColor3d(GLdouble red, GLdouble green, GLdouble blue); /*1.0*/
+void glColor3dv(const GLdouble * v); /*1.0*/
+void glColor3f(GLfloat red, GLfloat green, GLfloat blue); /*1.0*/
+void glColor3fv(const GLfloat * v); /*1.0*/
+void glColor3i(GLint red, GLint green, GLint blue); /*1.0*/
+void glColor3iv(const GLint * v); /*1.0*/
+void glColor3s(GLshort red, GLshort green, GLshort blue); /*1.0*/
+void glColor3sv(const GLshort * v); /*1.0*/
+void glColor3ub(GLubyte red, GLubyte green, GLubyte blue); /*1.0*/
+void glColor3ubv(const GLubyte * v); /*1.0*/
+void glColor3ui(GLuint red, GLuint green, GLuint blue); /*1.0*/
+void glColor3uiv(const GLuint * v); /*1.0*/
+void glColor3us(GLushort red, GLushort green, GLushort blue); /*1.0*/
+void glColor3usv(const GLushort * v); /*1.0*/
+void glColor4b(GLbyte red, GLbyte green, GLbyte blue, GLbyte alpha); /*1.0*/
+void glColor4bv(const GLbyte * v); /*1.0*/
+void glColor4d(GLdouble red, GLdouble green, GLdouble blue, GLdouble alpha); /*1.0*/
+void glColor4dv(const GLdouble * v); /*1.0*/
+void glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha); /*1.0*/
+void glColor4fv(const GLfloat * v); /*1.0*/
+void glColor4i(GLint red, GLint green, GLint blue, GLint alpha); /*1.0*/
+void glColor4iv(const GLint * v); /*1.0*/
+void glColor4s(GLshort red, GLshort green, GLshort blue, GLshort alpha); /*1.0*/
+void glColor4sv(const GLshort * v); /*1.0*/
+void glColor4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha); /*1.0*/
+void glColor4ubv(const GLubyte * v); /*1.0*/
+void glColor4ui(GLuint red, GLuint green, GLuint blue, GLuint alpha); /*1.0*/
+void glColor4uiv(const GLuint * v); /*1.0*/
+void glColor4us(GLushort red, GLushort green, GLushort blue, GLushort alpha); /*1.0*/
+void glColor4usv(const GLushort * v); /*1.0*/
+void glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha); /*1.0*/
+void glColorMaterial(GLenum face, GLenum mode); /*1.0*/
+void glColorPointer(GLint size, GLenum type, GLsizei stride, const void * pointer); /*1.1*/
+void glColorSubTable(GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, const void * data); /*1.2*/
+void glColorTable(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const void * table); /*1.2*/
+void glColorTableParameterfv(GLenum target, GLenum pname, const GLfloat * params); /*1.2*/
+void glColorTableParameteriv(GLenum target, GLenum pname, const GLint * params); /*1.2*/
+void glCompileShader(GLuint shader); /*2.0*/
+void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const void * data); /*1.3*/
+void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void * data); /*1.3*/
+void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void * data); /*1.3*/
+void glCompressedTexSubImage1D(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void * data); /*1.3*/
+void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void * data); /*1.3*/
+void glCompressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void * data); /*1.3*/
+void glConvolutionFilter1D(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const void * image); /*1.2*/
+void glConvolutionFilter2D(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * image); /*1.2*/
+void glConvolutionParameterf(GLenum target, GLenum pname, GLfloat params); /*1.2*/
+void glConvolutionParameterfv(GLenum target, GLenum pname, const GLfloat * params); /*1.2*/
+void glConvolutionParameteri(GLenum target, GLenum pname, GLint params); /*1.2*/
+void glConvolutionParameteriv(GLenum target, GLenum pname, const GLint * params); /*1.2*/
+void glCopyColorSubTable(GLenum target, GLsizei start, GLint x, GLint y, GLsizei width); /*1.2*/
+void glCopyColorTable(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width); /*1.2*/
+void glCopyConvolutionFilter1D(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width); /*1.2*/
+void glCopyConvolutionFilter2D(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height); /*1.2*/
+void glCopyPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type); /*1.0*/
+void glCopyTexImage1D(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border); /*1.1*/
+void glCopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border); /*1.1*/
+void glCopyTexSubImage1D(GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width); /*1.1*/
+void glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height); /*1.1*/
+void glCopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height); /*1.2*/
+GLuint glCreateProgram(); /*2.0*/
+GLuint glCreateShader(GLenum type); /*2.0*/
+void glCullFace(GLenum mode); /*1.0*/
+void glDeleteBuffers(GLsizei n, const const GLuint * buffers); /*1.5*/
+void glDeleteLists(GLuint list, GLsizei range); /*1.0*/
+void glDeleteProgram(GLuint program); /*2.0*/
+void glDeleteQueries(GLsizei n, const GLuint * ids); /*1.5*/
+void glDeleteShader(GLuint shader); /*2.0*/
+void glDeleteTextures(GLsizei n, const GLuint * textures); /*1.1*/
+void glDepthFunc(GLenum func); /*1.0*/
+void glDepthMask(GLboolean flag); /*1.0*/
+void glDepthRange(GLclampd near, GLclampd far); /*1.0*/
+void glDetachShader(GLuint program, GLuint shader); /*2.0*/
+void glDisable(GLenum cap); /*1.0*/
+void glDisableClientState(GLenum array); /*1.1*/
+void glDisableVertexAttribArray(GLuint index); /*2.0*/
+void glDrawArrays(GLenum mode, GLint first, GLsizei count); /*1.1*/
+void glDrawBuffer(GLenum mode); /*1.0*/
+void glDrawBuffers(GLsizei n, const GLenum * bufs); /*2.0*/
+void glDrawElements(GLenum mode, GLsizei count, GLenum type, const void * indices); /*1.1*/
+void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, const void * pixels); /*1.0*/
+void glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void * indices); /*1.2*/
+void glEdgeFlag(GLboolean flag); /*1.0*/
+void glEdgeFlagPointer(GLsizei stride, const void * pointer); /*1.1*/
+void glEdgeFlagv(const GLboolean * flag); /*1.0*/
+void glEnable(GLenum cap); /*1.0*/
+void glEnableClientState(GLenum array); /*1.1*/
+void glEnableVertexAttribArray(GLuint index); /*2.0*/
+void glEnd(); /*1.0*/
+void glEndList(); /*1.0*/
+void glEndQuery(GLenum target); /*1.5*/
+void glEvalCoord1d(GLdouble u); /*1.0*/
+void glEvalCoord1dv(const GLdouble * u); /*1.0*/
+void glEvalCoord1f(GLfloat u); /*1.0*/
+void glEvalCoord1fv(const GLfloat * u); /*1.0*/
+void glEvalCoord2d(GLdouble u, GLdouble v); /*1.0*/
+void glEvalCoord2dv(const GLdouble * u); /*1.0*/
+void glEvalCoord2f(GLfloat u, GLfloat v); /*1.0*/
+void glEvalCoord2fv(const GLfloat * u); /*1.0*/
+void glEvalMesh1(GLenum mode, GLint i1, GLint i2); /*1.0*/
+void glEvalMesh2(GLenum mode, GLint i1, GLint i2, GLint j1, GLint j2); /*1.0*/
+void glEvalPoint1(GLint i); /*1.0*/
+void glEvalPoint2(GLint i, GLint j); /*1.0*/
+void glFeedbackBuffer(GLsizei size, GLenum type, GLfloat * buffer); /*1.0*/
+void glFinish(); /*1.0*/
+void glFlush(); /*1.0*/
+void glFogCoordd(GLdouble coord); /*1.4*/
+void glFogCoorddv(const GLdouble * coord); /*1.4*/
+void glFogCoordf(GLfloat coord); /*1.4*/
+void glFogCoordfv(const GLfloat * coord); /*1.4*/
+void glFogCoordPointer(GLenum type, GLsizei stride, const void * pointer); /*1.4*/
+void glFogf(GLenum pname, GLfloat param); /*1.0*/
+void glFogfv(GLenum pname, const GLfloat * params); /*1.0*/
+void glFogi(GLenum pname, GLint param); /*1.0*/
+void glFogiv(GLenum pname, const GLint * params); /*1.0*/
+void glFrontFace(GLenum mode); /*1.0*/
+void glFrustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar); /*1.0*/
+void glGenBuffers(GLsizei n, GLuint * buffers); /*1.5*/
+GLuint glGenLists(GLsizei range); /*1.0*/
+void glGenQueries(GLsizei n, GLuint * ids); /*1.5*/
+void glGenTextures(GLsizei n, GLuint * textures); /*1.1*/
+void glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name); /*2.0*/
+void glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name); /*2.0*/
+void glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei * count, GLuint * obj); /*2.0*/
+GLint glGetAttribLocation(GLuint program, const GLchar * name); /*2.0*/
+void glGetBooleanv(GLenum pname, GLboolean * params); /*1.0*/
+void glGetBufferParameteriv(GLenum target, GLenum pname, GLint * params); /*1.5*/
+void glGetBufferPointerv(GLenum target, GLenum pname, void * * params); /*1.5*/
+void glGetBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, void * data); /*1.5*/
+void glGetClipPlane(GLenum plane, GLdouble * equation); /*1.0*/
+void glGetColorTable(GLenum target, GLenum format, GLenum type, void * table); /*1.2*/
+void glGetColorTableParameterfv(GLenum target, GLenum pname, GLfloat * params); /*1.2*/
+void glGetColorTableParameteriv(GLenum target, GLenum pname, GLint * params); /*1.2*/
+void glGetCompressedTexImage(GLenum target, GLint level, void * img); /*1.3*/
+void glGetConvolutionFilter(GLenum target, GLenum format, GLenum type, void * image); /*1.2*/
+void glGetConvolutionParameterfv(GLenum target, GLenum pname, GLfloat * params); /*1.2*/
+void glGetConvolutionParameteriv(GLenum target, GLenum pname, GLint * params); /*1.2*/
+void glGetDoublev(GLenum pname, GLdouble * params); /*1.0*/
+GLenum glGetError(); /*1.0*/
+void glGetFloatv(GLenum pname, GLfloat * params); /*1.0*/
+void glGetHistogram(GLenum target, GLboolean reset, GLenum format, GLenum type, void * values); /*1.2*/
+void glGetHistogramParameterfv(GLenum target, GLenum pname, GLfloat * params); /*1.2*/
+void glGetHistogramParameteriv(GLenum target, GLenum pname, GLint * params); /*1.2*/
+void glGetIntegerv(GLenum pname, GLint * params); /*1.0*/
+void glGetLightfv(GLenum light, GLenum pname, GLfloat * params); /*1.0*/
+void glGetLightiv(GLenum light, GLenum pname, GLint * params); /*1.0*/
+void glGetMapdv(GLenum target, GLenum query, GLdouble * v); /*1.0*/
+void glGetMapfv(GLenum target, GLenum query, GLfloat * v); /*1.0*/
+void glGetMapiv(GLenum target, GLenum query, GLint * v); /*1.0*/
+void glGetMaterialfv(GLenum face, GLenum pname, GLfloat * params); /*1.0*/
+void glGetMaterialiv(GLenum face, GLenum pname, GLint * params); /*1.0*/
+void glGetMinmax(GLenum target, GLboolean reset, GLenum format, GLenum type, void * values); /*1.2*/
+void glGetMinmaxParameterfv(GLenum target, GLenum pname, GLfloat * params); /*1.2*/
+void glGetMinmaxParameteriv(GLenum target, GLenum pname, GLint * params); /*1.2*/
+void glGetPixelMapfv(GLenum map, GLfloat * values); /*1.0*/
+void glGetPixelMapuiv(GLenum map, GLuint * values); /*1.0*/
+void glGetPixelMapusv(GLenum map, GLushort * values); /*1.0*/
+void glGetPointerv(GLenum pname, void * * params); /*1.1*/
+void glGetPolygonStipple(GLubyte * mask); /*1.0*/
+void glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei * length, GLchar * infoLog); /*2.0*/
+void glGetProgramiv(GLuint program, GLenum pname, GLint * params); /*2.0*/
+void glGetQueryiv(GLenum target, GLenum pname, GLint * params); /*1.5*/
+void glGetQueryObjectiv(GLuint id, GLenum pname, GLint * params); /*1.5*/
+void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint * params); /*1.5*/
+void glGetSeparableFilter(GLenum target, GLenum format, GLenum type, void * row, void * column, void * span); /*1.2*/
+void glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei * length, GLchar * infoLog); /*2.0*/
+void glGetShaderiv(GLuint shader, GLenum pname, GLint * params); /*2.0*/
+void glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei * length, GLchar * source); /*2.0*/
+const GLubyte * glGetString(GLenum name); /*1.0*/
+void glGetTexEnvfv(GLenum target, GLenum pname, GLfloat * params); /*1.0*/
+void glGetTexEnviv(GLenum target, GLenum pname, GLint * params); /*1.0*/
+void glGetTexGendv(GLenum coord, GLenum pname, GLdouble * params); /*1.0*/
+void glGetTexGenfv(GLenum coord, GLenum pname, GLfloat * params); /*1.0*/
+void glGetTexGeniv(GLenum coord, GLenum pname, GLint * params); /*1.0*/
+void glGetTexImage(GLenum target, GLint level, GLenum format, GLenum type, void * pixels); /*1.0*/
+void glGetTexLevelParameterfv(GLenum target, GLint level, GLenum pname, GLfloat * params); /*1.0*/
+void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint * params); /*1.0*/
+void glGetTexParameterfv(GLenum target, GLenum pname, GLfloat * params); /*1.0*/
+void glGetTexParameteriv(GLenum target, GLenum pname, GLint * params); /*1.0*/
+void glGetUniformfv(GLuint program, GLint location, GLfloat * params); /*2.0*/
+void glGetUniformiv(GLuint program, GLint location, GLint * params); /*2.0*/
+GLint glGetUniformLocation(GLuint program, const GLchar * name); /*2.0*/
+void glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble * params); /*2.0*/
+void glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat * params); /*2.0*/
+void glGetVertexAttribiv(GLuint index, GLenum pname, GLint * params); /*2.0*/
+void glGetVertexAttribPointerv(GLuint index, GLenum pname, void * * pointer); /*2.0*/
+void glHint(GLenum target, GLenum mode); /*1.0*/
+void glHistogram(GLenum target, GLsizei width, GLenum internalformat, GLboolean sink); /*1.2*/
+void glIndexd(GLdouble c); /*1.0*/
+void glIndexdv(const GLdouble * c); /*1.0*/
+void glIndexf(GLfloat c); /*1.0*/
+void glIndexfv(const GLfloat * c); /*1.0*/
+void glIndexi(GLint c); /*1.0*/
+void glIndexiv(const GLint * c); /*1.0*/
+void glIndexMask(GLuint mask); /*1.0*/
+void glIndexPointer(GLenum type, GLsizei stride, const void * pointer); /*1.1*/
+void glIndexs(GLshort c); /*1.0*/
+void glIndexsv(const GLshort * c); /*1.0*/
+void glIndexub(GLubyte c); /*1.1*/
+void glIndexubv(const GLubyte * c); /*1.1*/
+void glInitNames(); /*1.0*/
+void glInterleavedArrays(GLenum format, GLsizei stride, const void * pointer); /*1.1*/
+GLboolean glIsBuffer(GLuint buffer); /*1.5*/
+GLboolean glIsEnabled(GLenum cap); /*1.0*/
+GLboolean glIsList(GLuint list); /*1.0*/
+GLboolean glIsProgram(GLuint program); /*2.0*/
+GLboolean glIsQuery(GLuint id); /*1.5*/
+GLboolean glIsShader(GLuint shader); /*2.0*/
+GLboolean glIsTexture(GLuint texture); /*1.1*/
+void glLightf(GLenum light, GLenum pname, GLfloat param); /*1.0*/
+void glLightfv(GLenum light, GLenum pname, const GLfloat * params); /*1.0*/
+void glLighti(GLenum light, GLenum pname, GLint param); /*1.0*/
+void glLightiv(GLenum light, GLenum pname, const GLint * params); /*1.0*/
+void glLightModelf(GLenum pname, GLfloat param); /*1.0*/
+void glLightModelfv(GLenum pname, const GLfloat * params); /*1.0*/
+void glLightModeli(GLenum pname, GLint param); /*1.0*/
+void glLightModeliv(GLenum pname, const GLint * params); /*1.0*/
+void glLineStipple(GLint factor, GLushort pattern); /*1.0*/
+void glLineWidth(GLfloat width); /*1.0*/
+void glLinkProgram(GLuint program); /*2.0*/
+void glListBase(GLuint base); /*1.0*/
+void glLoadIdentity(); /*1.0*/
+void glLoadMatrixd(const GLdouble * m); /*1.0*/
+void glLoadMatrixf(const GLfloat * m); /*1.0*/
+void glLoadName(GLuint name); /*1.0*/
+void glLoadTransposeMatrixd(const GLdouble * m); /*1.3*/
+void glLoadTransposeMatrixf(const GLfloat * m); /*1.3*/
+void glLogicOp(GLenum opcode); /*1.0*/
+void glMap1d(GLenum target, GLdouble u1, GLdouble u2, GLint stride, GLint order, const GLdouble * points); /*1.0*/
+void glMap1f(GLenum target, GLfloat u1, GLfloat u2, GLint stride, GLint order, const GLfloat * points); /*1.0*/
+void glMap2d(GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, const GLdouble * points); /*1.0*/
+void glMap2f(GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, const GLfloat * points); /*1.0*/
+void * glMapBuffer(GLenum target, GLenum access); /*1.5*/
+void glMapGrid1d(GLint un, GLdouble u1, GLdouble u2); /*1.0*/
+void glMapGrid1f(GLint un, GLfloat u1, GLfloat u2); /*1.0*/
+void glMapGrid2d(GLint un, GLdouble u1, GLdouble u2, GLint vn, GLdouble v1, GLdouble v2); /*1.0*/
+void glMapGrid2f(GLint un, GLfloat u1, GLfloat u2, GLint vn, GLfloat v1, GLfloat v2); /*1.0*/
+void glMaterialf(GLenum face, GLenum pname, GLfloat param); /*1.0*/
+void glMaterialfv(GLenum face, GLenum pname, const GLfloat * params); /*1.0*/
+void glMateriali(GLenum face, GLenum pname, GLint param); /*1.0*/
+void glMaterialiv(GLenum face, GLenum pname, const GLint * params); /*1.0*/
+void glMatrixMode(GLenum mode); /*1.0*/
+void glMinmax(GLenum target, GLenum internalformat, GLboolean sink); /*1.2*/
+void glMultiDrawArrays(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount); /*1.4*/
+void glMultiDrawElements(GLenum mode, const GLsizei * count, GLenum type, const void * * indices, GLsizei primcount); /*1.4*/
+void glMultiTexCoord1d(GLenum target, GLdouble s); /*1.3*/
+void glMultiTexCoord1dARB(GLenum target, GLdouble s); /*1.2*/
+void glMultiTexCoord1dv(GLenum target, const GLdouble * v); /*1.3*/
+void glMultiTexCoord1dvARB(GLenum target, const GLdouble * v); /*1.2*/
+void glMultiTexCoord1f(GLenum target, GLfloat s); /*1.3*/
+void glMultiTexCoord1fARB(GLenum target, GLfloat s); /*1.2*/
+void glMultiTexCoord1fv(GLenum target, const GLfloat * v); /*1.3*/
+void glMultiTexCoord1fvARB(GLenum target, const GLfloat * v); /*1.2*/
+void glMultiTexCoord1i(GLenum target, GLint s); /*1.3*/
+void glMultiTexCoord1iARB(GLenum target, GLint s); /*1.2*/
+void glMultiTexCoord1iv(GLenum target, const GLint * v); /*1.3*/
+void glMultiTexCoord1ivARB(GLenum target, const GLint * v); /*1.2*/
+void glMultiTexCoord1s(GLenum target, GLshort s); /*1.3*/
+void glMultiTexCoord1sARB(GLenum target, GLshort s); /*1.2*/
+void glMultiTexCoord1sv(GLenum target, const GLshort * v); /*1.3*/
+void glMultiTexCoord1svARB(GLenum target, const GLshort * v); /*1.2*/
+void glMultiTexCoord2d(GLenum target, GLdouble s, GLdouble t); /*1.3*/
+void glMultiTexCoord2dARB(GLenum target, GLdouble s, GLdouble t); /*1.2*/
+void glMultiTexCoord2dv(GLenum target, const GLdouble * v); /*1.3*/
+void glMultiTexCoord2dvARB(GLenum target, const GLdouble * v); /*1.2*/
+void glMultiTexCoord2f(GLenum target, GLfloat s, GLfloat t); /*1.3*/
+void glMultiTexCoord2fARB(GLenum target, GLfloat s, GLfloat t); /*1.2*/
+void glMultiTexCoord2fv(GLenum target, const GLfloat * v); /*1.3*/
+void glMultiTexCoord2fvARB(GLenum target, const GLfloat * v); /*1.2*/
+void glMultiTexCoord2i(GLenum target, GLint s, GLint t); /*1.3*/
+void glMultiTexCoord2iARB(GLenum target, GLint s, GLint t); /*1.2*/
+void glMultiTexCoord2iv(GLenum target, const GLint * v); /*1.3*/
+void glMultiTexCoord2ivARB(GLenum target, const GLint * v); /*1.2*/
+void glMultiTexCoord2s(GLenum target, GLshort s, GLshort t); /*1.3*/
+void glMultiTexCoord2sARB(GLenum target, GLshort s, GLshort t); /*1.2*/
+void glMultiTexCoord2sv(GLenum target, const GLshort * v); /*1.3*/
+void glMultiTexCoord2svARB(GLenum target, const GLshort * v); /*1.2*/
+void glMultiTexCoord3d(GLenum target, GLdouble s, GLdouble t, GLdouble r); /*1.3*/
+void glMultiTexCoord3dARB(GLenum target, GLdouble s, GLdouble t, GLdouble r); /*1.2*/
+void glMultiTexCoord3dv(GLenum target, const GLdouble * v); /*1.3*/
+void glMultiTexCoord3dvARB(GLenum target, const GLdouble * v); /*1.2*/
+void glMultiTexCoord3f(GLenum target, GLfloat s, GLfloat t, GLfloat r); /*1.3*/
+void glMultiTexCoord3fARB(GLenum target, GLfloat s, GLfloat t, GLfloat r); /*1.2*/
+void glMultiTexCoord3fv(GLenum target, const GLfloat * v); /*1.3*/
+void glMultiTexCoord3fvARB(GLenum target, const GLfloat * v); /*1.2*/
+void glMultiTexCoord3i(GLenum target, GLint s, GLint t, GLint r); /*1.3*/
+void glMultiTexCoord3iARB(GLenum target, GLint s, GLint t, GLint r); /*1.2*/
+void glMultiTexCoord3iv(GLenum target, const GLint * v); /*1.3*/
+void glMultiTexCoord3ivARB(GLenum target, const GLint * v); /*1.2*/
+void glMultiTexCoord3s(GLenum target, GLshort s, GLshort t, GLshort r); /*1.3*/
+void glMultiTexCoord3sARB(GLenum target, GLshort s, GLshort t, GLshort r); /*1.2*/
+void glMultiTexCoord3sv(GLenum target, const GLshort * v); /*1.3*/
+void glMultiTexCoord3svARB(GLenum target, const GLshort * v); /*1.2*/
+void glMultiTexCoord4d(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q); /*1.3*/
+void glMultiTexCoord4dARB(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q); /*1.2*/
+void glMultiTexCoord4dv(GLenum target, const GLdouble * v); /*1.3*/
+void glMultiTexCoord4dvARB(GLenum target, const GLdouble * v); /*1.2*/
+void glMultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q); /*1.3*/
+void glMultiTexCoord4fARB(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q); /*1.2*/
+void glMultiTexCoord4fv(GLenum target, const GLfloat * v); /*1.3*/
+void glMultiTexCoord4fvARB(GLenum target, const GLfloat * v); /*1.2*/
+void glMultiTexCoord4i(GLenum target, GLint s, GLint t, GLint r, GLint q); /*1.3*/
+void glMultiTexCoord4iARB(GLenum target, GLint s, GLint t, GLint r, GLint q); /*1.2*/
+void glMultiTexCoord4iv(GLenum target, const GLint * v); /*1.3*/
+void glMultiTexCoord4ivARB(GLenum target, const GLint * v); /*1.2*/
+void glMultiTexCoord4s(GLenum target, GLshort s, GLshort t, GLshort r, GLshort q); /*1.3*/
+void glMultiTexCoord4sARB(GLenum target, GLshort s, GLshort t, GLshort r, GLshort q); /*1.2*/
+void glMultiTexCoord4sv(GLenum target, const GLshort * v); /*1.3*/
+void glMultiTexCoord4svARB(GLenum target, const GLshort * v); /*1.2*/
+void glMultMatrixd(const GLdouble * m); /*1.0*/
+void glMultMatrixf(const GLfloat * m); /*1.0*/
+void glMultTransposeMatrixd(const GLdouble * m); /*1.3*/
+void glMultTransposeMatrixf(const GLfloat * m); /*1.3*/
+void glNewList(GLuint list, GLuint mode); /*1.0*/
+void glNormal3b(GLbyte nx, GLbyte ny, GLbyte nz); /*1.0*/
+void glNormal3bv(const GLbyte * v); /*1.0*/
+void glNormal3d(GLdouble nx, GLdouble ny, GLdouble nz); /*1.0*/
+void glNormal3dv(const GLdouble * v); /*1.0*/
+void glNormal3f(GLfloat nx, GLfloat ny, GLfloat nz); /*1.0*/
+void glNormal3fv(const GLfloat * v); /*1.0*/
+void glNormal3i(GLint nx, GLint ny, GLint nz); /*1.0*/
+void glNormal3iv(const GLint * v); /*1.0*/
+void glNormal3s(GLshort nx, GLshort ny, GLshort nz); /*1.0*/
+void glNormal3sv(const GLshort * v); /*1.0*/
+void glNormalPointer(GLenum type, GLsizei stride, const void * pointer); /*1.1*/
+void glOrtho(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar); /*1.0*/
+void glPassThrough(GLfloat token); /*1.0*/
+void glPixelMapfv(GLenum map, GLint mapsize, const GLfloat * values); /*1.0*/
+void glPixelMapuiv(GLenum map, GLint mapsize, const GLuint * values); /*1.0*/
+void glPixelMapusv(GLenum map, GLint mapsize, const GLushort * values); /*1.0*/
+void glPixelStoref(GLenum pname, GLfloat param); /*1.0*/
+void glPixelStorei(GLenum pname, GLint param); /*1.0*/
+void glPixelTransferf(GLenum pname, GLfloat param); /*1.0*/
+void glPixelTransferi(GLenum pname, GLint param); /*1.0*/
+void glPixelZoom(GLfloat xfactor, GLfloat yfactor); /*1.0*/
+void glPointParameterf(GLenum pname, GLfloat param); /*1.4*/
+void glPointParameterfARB(GLenum pname, GLfloat param); /*1.0*/
+void glPointParameterfv(GLenum pname, const GLfloat * params); /*1.4*/
+void glPointParameterfvARB(GLenum pname, const GLfloat * params); /*1.0*/
+void glPointParameteri(GLenum pname, GLint param); /*1.4*/
+void glPointParameteriv(GLenum pname, const GLint * params); /*1.4*/
+void glPointSize(GLfloat size); /*1.0*/
+void glPolygonMode(GLenum face, GLenum mode); /*1.0*/
+void glPolygonOffset(GLfloat factor, GLfloat units); /*1.1*/
+void glPolygonStipple(const GLubyte * mask); /*1.0*/
+void glPopAttrib(); /*1.0*/
+void glPopClientAttrib(); /*1.1*/
+void glPopMatrix(); /*1.0*/
+void glPopName(); /*1.0*/
+void glPrioritizeTextures(GLsizei n, const GLuint * textures, const GLclampf * priorities); /*1.1*/
+void glPushAttrib(GLbitfield mask); /*1.0*/
+void glPushClientAttrib(GLbitfield mask); /*1.1*/
+void glPushMatrix(); /*1.0*/
+void glPushName(GLuint name); /*1.0*/
+void glRasterPos2d(GLdouble x, GLdouble y); /*1.0*/
+void glRasterPos2dv(const GLdouble * v); /*1.0*/
+void glRasterPos2f(GLfloat x, GLfloat y); /*1.0*/
+void glRasterPos2fv(const GLfloat * v); /*1.0*/
+void glRasterPos2i(GLint x, GLint y); /*1.0*/
+void glRasterPos2iv(const GLint * v); /*1.0*/
+void glRasterPos2s(GLshort x, GLshort y); /*1.0*/
+void glRasterPos2sv(const GLshort * v); /*1.0*/
+void glRasterPos3d(GLdouble x, GLdouble y, GLdouble z); /*1.0*/
+void glRasterPos3dv(const GLdouble * v); /*1.0*/
+void glRasterPos3f(GLfloat x, GLfloat y, GLfloat z); /*1.0*/
+void glRasterPos3fv(const GLfloat * v); /*1.0*/
+void glRasterPos3i(GLint x, GLint y, GLint z); /*1.0*/
+void glRasterPos3iv(const GLint * v); /*1.0*/
+void glRasterPos3s(GLshort x, GLshort y, GLshort z); /*1.0*/
+void glRasterPos3sv(const GLshort * v); /*1.0*/
+void glRasterPos4d(GLdouble x, GLdouble y, GLdouble z, GLdouble w); /*1.0*/
+void glRasterPos4dv(const GLdouble * v); /*1.0*/
+void glRasterPos4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w); /*1.0*/
+void glRasterPos4fv(const GLfloat * v); /*1.0*/
+void glRasterPos4i(GLint x, GLint y, GLint z, GLint w); /*1.0*/
+void glRasterPos4iv(const GLint * v); /*1.0*/
+void glRasterPos4s(GLshort x, GLshort y, GLshort z, GLshort w); /*1.0*/
+void glRasterPos4sv(const GLshort * v); /*1.0*/
+void glReadBuffer(GLenum mode); /*1.0*/
+void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void * pixels); /*1.0*/
+void glRectd(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2); /*1.0*/
+void glRectdv(const GLdouble * v1, const GLdouble * v2); /*1.0*/
+void glRectf(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2); /*1.0*/
+void glRectfv(const GLfloat * v1, const GLfloat * v2); /*1.0*/
+void glRecti(GLint x1, GLint y1, GLint x2, GLint y2); /*1.0*/
+void glRectiv(const GLint * v1, const GLint * v2); /*1.0*/
+void glRects(GLshort x1, GLshort y1, GLshort x2, GLshort y2); /*1.0*/
+void glRectsv(const GLshort * v1, const GLshort * v2); /*1.0*/
+GLint glRenderMode(GLenum mode); /*1.0*/
+void glResetHistogram(GLenum target); /*1.2*/
+void glResetMinmax(GLenum target); /*1.2*/
+void glRotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z); /*1.0*/
+void glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z); /*1.0*/
+void glSampleCoverage(GLclampf value, GLboolean invert); /*1.3*/
+void glScaled(GLdouble x, GLdouble y, GLdouble z); /*1.0*/
+void glScalef(GLfloat x, GLfloat y, GLfloat z); /*1.0*/
+void glScissor(GLint x, GLint y, GLsizei width, GLsizei height); /*1.0*/
+void glSecondaryColor3b(GLbyte red, GLbyte green, GLbyte blue); /*1.4*/
+void glSecondaryColor3bv(const GLbyte * v); /*1.4*/
+void glSecondaryColor3d(GLdouble red, GLdouble green, GLdouble blue); /*1.4*/
+void glSecondaryColor3dv(const GLdouble * v); /*1.4*/
+void glSecondaryColor3f(GLfloat red, GLfloat green, GLfloat blue); /*1.4*/
+void glSecondaryColor3fv(const GLfloat * v); /*1.4*/
+void glSecondaryColor3i(GLint red, GLint green, GLint blue); /*1.4*/
+void glSecondaryColor3iv(const GLint * v); /*1.4*/
+void glSecondaryColor3s(GLshort red, GLshort green, GLshort blue); /*1.4*/
+void glSecondaryColor3sv(const GLshort * v); /*1.4*/
+void glSecondaryColor3ub(GLubyte red, GLubyte green, GLubyte blue); /*1.4*/
+void glSecondaryColor3ubv(const GLubyte * v); /*1.4*/
+void glSecondaryColor3ui(GLuint red, GLuint green, GLuint blue); /*1.4*/
+void glSecondaryColor3uiv(const GLuint * v); /*1.4*/
+void glSecondaryColor3us(GLushort red, GLushort green, GLushort blue); /*1.4*/
+void glSecondaryColor3usv(const GLushort * v); /*1.4*/
+void glSecondaryColorPointer(GLint size, GLenum type, GLsizei stride, const void * pointer); /*1.4*/
+void glSelectBuffer(GLsizei size, GLuint * buffer); /*1.0*/
+void glSeparableFilter2D(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * row, const void * column); /*1.2*/
+void glShadeModel(GLenum mode); /*1.0*/
+void glShaderSource(GLuint shader, GLsizei count, const GLchar * * string, const GLint * length); /*2.0*/
+void glStencilFunc(GLenum func, GLint ref, GLuint mask); /*1.0*/
+void glStencilFuncSeparate(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask); /*2.0*/
+void glStencilMask(GLuint mask); /*1.0*/
+void glStencilMaskSeparate(GLenum face, GLuint mask); /*2.0*/
+void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass); /*1.0*/
+void glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass); /*2.0*/
+void glTexCoord1d(GLdouble s); /*1.0*/
+void glTexCoord1dv(const GLdouble * v); /*1.0*/
+void glTexCoord1f(GLfloat s); /*1.0*/
+void glTexCoord1fv(const GLfloat * v); /*1.0*/
+void glTexCoord1i(GLint s); /*1.0*/
+void glTexCoord1iv(const GLint * v); /*1.0*/
+void glTexCoord1s(GLshort s); /*1.0*/
+void glTexCoord1sv(const GLshort * v); /*1.0*/
+void glTexCoord2d(GLdouble s, GLdouble t); /*1.0*/
+void glTexCoord2dv(const GLdouble * v); /*1.0*/
+void glTexCoord2f(GLfloat s, GLfloat t); /*1.0*/
+void glTexCoord2fv(const GLfloat * v); /*1.0*/
+void glTexCoord2i(GLint s, GLint t); /*1.0*/
+void glTexCoord2iv(const GLint * v); /*1.0*/
+void glTexCoord2s(GLshort s, GLshort t); /*1.0*/
+void glTexCoord2sv(const GLshort * v); /*1.0*/
+void glTexCoord3d(GLdouble s, GLdouble t, GLdouble r); /*1.0*/
+void glTexCoord3dv(const GLdouble * v); /*1.0*/
+void glTexCoord3f(GLfloat s, GLfloat t, GLfloat r); /*1.0*/
+void glTexCoord3fv(const GLfloat * v); /*1.0*/
+void glTexCoord3i(GLint s, GLint t, GLint r); /*1.0*/
+void glTexCoord3iv(const GLint * v); /*1.0*/
+void glTexCoord3s(GLshort s, GLshort t, GLshort r); /*1.0*/
+void glTexCoord3sv(const GLshort * v); /*1.0*/
+void glTexCoord4d(GLdouble s, GLdouble t, GLdouble r, GLdouble q); /*1.0*/
+void glTexCoord4dv(const GLdouble * v); /*1.0*/
+void glTexCoord4f(GLfloat s, GLfloat t, GLfloat r, GLfloat q); /*1.0*/
+void glTexCoord4fv(const GLfloat * v); /*1.0*/
+void glTexCoord4i(GLint s, GLint t, GLint r, GLint q); /*1.0*/
+void glTexCoord4iv(const GLint * v); /*1.0*/
+void glTexCoord4s(GLshort s, GLshort t, GLshort r, GLshort q); /*1.0*/
+void glTexCoord4sv(const GLshort * v); /*1.0*/
+void glTexCoordPointer(GLint size, GLenum type, GLsizei stride, const void * pointer); /*1.1*/
+void glTexEnvf(GLenum target, GLenum pname, GLfloat param); /*1.0*/
+void glTexEnvfv(GLenum target, GLenum pname, const GLfloat * params); /*1.0*/
+void glTexEnvi(GLenum target, GLenum pname, GLint param); /*1.0*/
+void glTexEnviv(GLenum target, GLenum pname, const GLint * params); /*1.0*/
+void glTexGend(GLenum coord, GLenum pname, GLdouble param); /*1.0*/
+void glTexGendv(GLenum coord, GLenum pname, const GLdouble * params); /*1.0*/
+void glTexGenf(GLenum coord, GLenum pname, GLfloat param); /*1.0*/
+void glTexGenfv(GLenum coord, GLenum pname, const GLfloat * params); /*1.0*/
+void glTexGeni(GLenum coord, GLenum pname, GLint param); /*1.0*/
+void glTexGeniv(GLenum coord, GLenum pname, const GLint * params); /*1.0*/
+void glTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const void * pixels); /*1.0*/
+void glTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void * pixels); /*1.0*/
+void glTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void * pixels); /*1.2*/
+void glTexParameterf(GLenum target, GLenum pname, GLfloat param); /*1.0*/
+void glTexParameterfv(GLenum target, GLenum pname, const GLfloat * params); /*1.0*/
+void glTexParameteri(GLenum target, GLenum pname, GLint param); /*1.0*/
+void glTexParameteriv(GLenum target, GLenum pname, const GLint * params); /*1.0*/
+void glTexSubImage1D(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const void * pixels); /*1.1*/
+void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * pixels); /*1.1*/
+void glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * pixels); /*1.2*/
+void glTranslated(GLdouble x, GLdouble y, GLdouble z); /*1.0*/
+void glTranslatef(GLfloat x, GLfloat y, GLfloat z); /*1.0*/
+void glUniform1f(GLint location, GLfloat v0); /*2.0*/
+void glUniform1fv(GLint location, GLsizei count, const GLfloat * value); /*2.0*/
+void glUniform1i(GLint location, GLint v0); /*2.0*/
+void glUniform1iv(GLint location, GLsizei count, const GLint * value); /*2.0*/
+void glUniform2f(GLint location, GLfloat v0, GLfloat v1); /*2.0*/
+void glUniform2fv(GLint location, GLsizei count, const GLfloat * value); /*2.0*/
+void glUniform2i(GLint location, GLint v0, GLint v1); /*2.0*/
+void glUniform2iv(GLint location, GLsizei count, const GLint * value); /*2.0*/
+void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2); /*2.0*/
+void glUniform3fv(GLint location, GLsizei count, const GLfloat * value); /*2.0*/
+void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2); /*2.0*/
+void glUniform3iv(GLint location, GLsizei count, const GLint * value); /*2.0*/
+void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3); /*2.0*/
+void glUniform4fv(GLint location, GLsizei count, const GLfloat * value); /*2.0*/
+void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3); /*2.0*/
+void glUniform4iv(GLint location, GLsizei count, const GLint * value); /*2.0*/
+void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value); /*2.0*/
+void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value); /*2.0*/
+void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value); /*2.0*/
+GLboolean glUnmapBuffer(GLenum target); /*1.5*/
+void glUseProgram(GLuint program); /*2.0*/
+void glValidateProgram(GLuint program); /*2.0*/
+void glVertex2d(GLdouble x, GLdouble y); /*1.0*/
+void glVertex2dv(const GLdouble * v); /*1.0*/
+void glVertex2f(GLfloat x, GLfloat y); /*1.0*/
+void glVertex2fv(const GLfloat * v); /*1.0*/
+void glVertex2i(GLint x, GLint y); /*1.0*/
+void glVertex2iv(const GLint * v); /*1.0*/
+void glVertex2s(GLshort x, GLshort y); /*1.0*/
+void glVertex2sv(const GLshort * v); /*1.0*/
+void glVertex3d(GLdouble x, GLdouble y, GLdouble z); /*1.0*/
+void glVertex3dv(const GLdouble * v); /*1.0*/
+void glVertex3f(GLfloat x, GLfloat y, GLfloat z); /*1.0*/
+void glVertex3fv(const GLfloat * v); /*1.0*/
+void glVertex3i(GLint x, GLint y, GLint z); /*1.0*/
+void glVertex3iv(const GLint * v); /*1.0*/
+void glVertex3s(GLshort x, GLshort y, GLshort z); /*1.0*/
+void glVertex3sv(const GLshort * v); /*1.0*/
+void glVertex4d(GLdouble x, GLdouble y, GLdouble z, GLdouble w); /*1.0*/
+void glVertex4dv(const GLdouble * v); /*1.0*/
+void glVertex4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w); /*1.0*/
+void glVertex4fv(const GLfloat * v); /*1.0*/
+void glVertex4i(GLint x, GLint y, GLint z, GLint w); /*1.0*/
+void glVertex4iv(const GLint * v); /*1.0*/
+void glVertex4s(GLshort x, GLshort y, GLshort z, GLshort w); /*1.0*/
+void glVertex4sv(const GLshort * v); /*1.0*/
+void glVertexAttrib1d(GLuint index, GLdouble x); /*2.0*/
+void glVertexAttrib1dv(GLuint index, const GLdouble * v); /*2.0*/
+void glVertexAttrib1f(GLuint index, GLfloat x); /*2.0*/
+void glVertexAttrib1fv(GLuint index, const GLfloat * v); /*2.0*/
+void glVertexAttrib1s(GLuint index, GLshort x); /*2.0*/
+void glVertexAttrib1sv(GLuint index, const GLshort * v); /*2.0*/
+void glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y); /*2.0*/
+void glVertexAttrib2dv(GLuint index, const GLdouble * v); /*2.0*/
+void glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y); /*2.0*/
+void glVertexAttrib2fv(GLuint index, const GLfloat * v); /*2.0*/
+void glVertexAttrib2s(GLuint index, GLshort x, GLshort y); /*2.0*/
+void glVertexAttrib2sv(GLuint index, const GLshort * v); /*2.0*/
+void glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdouble z); /*2.0*/
+void glVertexAttrib3dv(GLuint index, const GLdouble * v); /*2.0*/
+void glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z); /*2.0*/
+void glVertexAttrib3fv(GLuint index, const GLfloat * v); /*2.0*/
+void glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort z); /*2.0*/
+void glVertexAttrib3sv(GLuint index, const GLshort * v); /*2.0*/
+void glVertexAttrib4bv(GLuint index, const GLbyte * v); /*2.0*/
+void glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w); /*2.0*/
+void glVertexAttrib4dv(GLuint index, const GLdouble * v); /*2.0*/
+void glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w); /*2.0*/
+void glVertexAttrib4fv(GLuint index, const GLfloat * v); /*2.0*/
+void glVertexAttrib4iv(GLuint index, const GLint * v); /*2.0*/
+void glVertexAttrib4Nbv(GLuint index, const GLbyte * v); /*2.0*/
+void glVertexAttrib4Niv(GLuint index, const GLint * v); /*2.0*/
+void glVertexAttrib4Nsv(GLuint index, const GLshort * v); /*2.0*/
+void glVertexAttrib4Nub(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w); /*2.0*/
+void glVertexAttrib4Nubv(GLuint index, const GLubyte * v); /*2.0*/
+void glVertexAttrib4Nuiv(GLuint index, const GLuint * v); /*2.0*/
+void glVertexAttrib4Nusv(GLuint index, const GLushort * v); /*2.0*/
+void glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w); /*2.0*/
+void glVertexAttrib4sv(GLuint index, const GLshort * v); /*2.0*/
+void glVertexAttrib4ubv(GLuint index, const GLubyte * v); /*2.0*/
+void glVertexAttrib4uiv(GLuint index, const GLuint * v); /*2.0*/
+void glVertexAttrib4usv(GLuint index, const GLushort * v); /*2.0*/
+void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void * pointer); /*2.0*/
+void glVertexPointer(GLint size, GLenum type, GLsizei stride, const void * pointer); /*1.1*/
+void glViewport(GLint x, GLint y, GLsizei width, GLsizei height); /*1.0*/
+void glWindowPos2d(GLdouble x, GLdouble y); /*1.4*/
+void glWindowPos2dARB(GLdouble x, GLdouble y); /*1.0*/
+void glWindowPos2dv(const GLdouble * v); /*1.4*/
+void glWindowPos2dvARB(const GLdouble * v); /*1.0*/
+void glWindowPos2f(GLfloat x, GLfloat y); /*1.4*/
+void glWindowPos2fARB(GLfloat x, GLfloat y); /*1.0*/
+void glWindowPos2fv(const GLfloat * v); /*1.4*/
+void glWindowPos2fvARB(const GLfloat * v); /*1.0*/
+void glWindowPos2i(GLint x, GLint y); /*1.4*/
+void glWindowPos2iARB(GLint x, GLint y); /*1.0*/
+void glWindowPos2iv(const GLint * v); /*1.4*/
+void glWindowPos2ivARB(const GLint * v); /*1.0*/
+void glWindowPos2s(GLshort x, GLshort y); /*1.4*/
+void glWindowPos2sARB(GLshort x, GLshort y); /*1.0*/
+void glWindowPos2sv(const GLshort * v); /*1.4*/
+void glWindowPos2svARB(const GLshort * v); /*1.0*/
+void glWindowPos3d(GLdouble x, GLdouble y, GLdouble z); /*1.4*/
+void glWindowPos3dARB(GLdouble x, GLdouble y, GLdouble z); /*1.0*/
+void glWindowPos3dv(const GLdouble * v); /*1.4*/
+void glWindowPos3dvARB(const GLdouble * v); /*1.0*/
+void glWindowPos3f(GLfloat x, GLfloat y, GLfloat z); /*1.4*/
+void glWindowPos3fARB(GLfloat x, GLfloat y, GLfloat z); /*1.0*/
+void glWindowPos3fv(const GLfloat * v); /*1.4*/
+void glWindowPos3fvARB(const GLfloat * v); /*1.0*/
+void glWindowPos3i(GLint x, GLint y, GLint z); /*1.4*/
+void glWindowPos3iARB(GLint x, GLint y, GLint z); /*1.0*/
+void glWindowPos3iv(const GLint * v); /*1.4*/
+void glWindowPos3ivARB(const GLint * v); /*1.0*/
+void glWindowPos3s(GLshort x, GLshort y, GLshort z); /*1.4*/
+void glWindowPos3sARB(GLshort x, GLshort y, GLshort z); /*1.0*/
+void glWindowPos3sv(const GLshort * v); /*1.4*/
+void glWindowPos3svARB(const GLshort * v); /*1.0*/

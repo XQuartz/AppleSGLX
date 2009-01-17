@@ -1,0 +1,20 @@
+
+A lot of the code is automatically generated.
+
+The following are generated based on specs/gl.spec and specs/enum.spec (from OpenGL.org):
+
+apple_xgl_api.h
+apple_xgl_api.c
+exports.list
+include/GL/gl.h (this probably might as well just be an include of the OpenGL framework GL)
+include/GL/glext.h (includes the OpenGL framework glext.h)
+
+The gen_code.tcl script is what executes the various gen_*.tcl scripts to produce those.
+
+You will need Tcl 8.5 for the gen_code.tcl script.
+
+The tests/ directory contains some tests that are built in builds/.
+(TODO move the libGL.dylib and libGL.1.2.dylib, libGL.1.3.dylib creation into builds)
+
+The tests built in builds don't require installation of the library.
+
