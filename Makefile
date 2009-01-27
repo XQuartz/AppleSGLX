@@ -1,14 +1,21 @@
-#Re-enable this once the libX11 and pixman are built appropriately.
-#CC=gcc -Wall -ggdb -arch i386 -arch ppc -arch x86_64
-CC=gcc -Wall -ggdb -arch i386
-CFLAGS=-Wall -DPTHREADS -D_REENTRANT -DPUBLIC=""
+INSTALL_DIR = /usr/X11
+X11_DIR = $(INSTALL_DIR)
+
+CC=gcc
+CFLAGS=-Wall -ggdb3 -Os -DPTHREADS -D_REENTRANT -DPUBLIC="" $(RC_CFLAGS)
+LDFLAGS=-L$(X11_DIR)/lib
+
+MKDIR=mkdir
+INSTALL=install
+LN=ln
+RM=rm
 
 INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -Igl
 COMPILE=$(CC) $(CFLAGS) $(INCLUDE) -c
 
 TEST_BUILD_DIR=builds
 
-all: $(TEST_BUILD_DIR) Makefile libGL.1.2.dylib libGL.1.3.dylib libGL.dylib tests
+all: $(TEST_BUILD_DIR) Makefile libGL.1.2.dylib libGL.dylib tests
 
 include tests/tests.mk
 
@@ -18,14 +25,15 @@ OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.
     apple_xgl_api.o apple_glx_drawable.o
 
 #This target is used for the tests.
+
+$(TEST_BUILD_DIR):
+	$(MKDIR) $(TEST_BUILD_DIR)
+
 libGL.dylib: $(OBJECTS)
-	$(CC) -o libGL.dylib -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L/usr/X11/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
+	$(CC) -o libGL.dylib -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
-libGL.1.2.dylib: $(OBJECTS) Makefile
-	$(CC) $(CFLAGS) -o libGL.1.2.dylib -dynamiclib -install_name /usr/X11/lib/libGL.1.2.dylib -current_version 1.2 -compatibility_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation -L/usr/X11/lib -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
-
-libGL.1.3.dylib: $(OBJECTS)
-	$(CC) $(CFLAGS) -o libGL.1.3.dylib -dynamiclib -install_name /usr/X11/lib/libGL.1.3.dylib -current_version 1.3 -lXplugin -framework ApplicationServices -framework CoreFoundation -L/usr/X11/lib -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
+libGL.1.2.dylib: $(OBJECTS)
+	$(CC) $(CFLAGS) -o libGL.1.2.dylib -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c
 	$(COMPILE) apple_glx_drawable.c
@@ -91,11 +99,15 @@ pixel.o: pixel.c
 	$(COMPILE) $?
 
 install: libGL.1.2.dylib
-	cp libGL.1.2.dylib /usr/X11/lib/
+	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/lib
+	$(INSTALL) -m 755 libGL.1.2.dylib $(DESTDIR)$(INSTALL_DIR)/lib
+	$(RM) -f $(DESTDIR)$(INSTALL_DIR)/lib/libGL.dylib
+	$(LN) -s libGL.1.2.dylib $(DESTDIR)$(INSTALL_DIR)/lib/libGL.dylib
+	$(RM) -f $(DESTDIR)$(INSTALL_DIR)/lib/libGL.1.dylib
+	$(LN) -s libGL.1.2.dylib $(DESTDIR)$(INSTALL_DIR)/lib/libGL.1.dylib
 
 clean:
-	rm -rf builds/*
+	rm -rf $(TEST_BUILD_DIR)
 	rm -f *.o *.a
 	rm -f *.c~ *.h~
-	rm -f libGL.dylib libGL.1.2.dylib libGL.1.3.dylib
-
+	rm -f *.dylib
