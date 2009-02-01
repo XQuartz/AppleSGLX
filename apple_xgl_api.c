@@ -39,6 +39,9 @@ struct apple_xgl_api __gl_api;
 void glAccum(GLenum op, GLfloat value) {
 	__gl_api.Accum(op, value);
 }
+void glActiveStencilFaceEXT(GLenum face) {
+	__gl_api.ActiveStencilFaceEXT(face);
+}
 void glActiveTexture(GLenum texture) {
 	__gl_api.ActiveTexture(texture);
 }
@@ -54,6 +57,9 @@ GLboolean glAreTexturesResident(GLsizei n, const GLuint * textures, GLboolean * 
 void glArrayElement(GLint i) {
 	__gl_api.ArrayElement(i);
 }
+void glAttachObjectARB(GLhandleARB containerObj, GLhandleARB obj) {
+	__gl_api.AttachObjectARB(containerObj, obj);
+}
 void glAttachShader(GLuint program, GLuint shader) {
 	__gl_api.AttachShader(program, shader);
 }
@@ -63,11 +69,29 @@ void glBegin(GLenum mode) {
 void glBeginQuery(GLenum target, GLuint id) {
 	__gl_api.BeginQuery(target, id);
 }
+void glBeginQueryARB(GLenum target, GLuint id) {
+	__gl_api.BeginQueryARB(target, id);
+}
 void glBindAttribLocation(GLuint program, GLuint index, const GLchar * name) {
 	__gl_api.BindAttribLocation(program, index, name);
 }
+void glBindAttribLocationARB(GLhandleARB programObj, GLuint index, const GLcharARB * name) {
+	__gl_api.BindAttribLocationARB(programObj, index, name);
+}
 void glBindBuffer(GLenum target, GLuint buffer) {
 	__gl_api.BindBuffer(target, buffer);
+}
+void glBindBufferARB(GLenum target, GLuint buffer) {
+	__gl_api.BindBufferARB(target, buffer);
+}
+void glBindFramebufferEXT(GLenum target, GLuint framebuffer) {
+	__gl_api.BindFramebufferEXT(target, framebuffer);
+}
+void glBindProgramARB(GLenum target, GLuint program) {
+	__gl_api.BindProgramARB(target, program);
+}
+void glBindRenderbufferEXT(GLenum target, GLuint renderbuffer) {
+	__gl_api.BindRenderbufferEXT(target, renderbuffer);
 }
 void glBindTexture(GLenum target, GLuint texture) {
 	__gl_api.BindTexture(target, texture);
@@ -78,11 +102,20 @@ void glBitmap(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLflo
 void glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) {
 	__gl_api.BlendColor(red, green, blue, alpha);
 }
+void glBlendColorEXT(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) {
+	__gl_api.BlendColorEXT(red, green, blue, alpha);
+}
 void glBlendEquation(GLenum mode) {
 	__gl_api.BlendEquation(mode);
 }
+void glBlendEquationEXT(GLenum mode) {
+	__gl_api.BlendEquationEXT(mode);
+}
 void glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) {
 	__gl_api.BlendEquationSeparate(modeRGB, modeAlpha);
+}
+void glBlendEquationSeparateEXT(GLenum modeRGB, GLenum modeAlpha) {
+	__gl_api.BlendEquationSeparateEXT(modeRGB, modeAlpha);
 }
 void glBlendFunc(GLenum sfactor, GLenum dfactor) {
 	__gl_api.BlendFunc(sfactor, dfactor);
@@ -90,17 +123,32 @@ void glBlendFunc(GLenum sfactor, GLenum dfactor) {
 void glBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) {
 	__gl_api.BlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
 }
+void glBlendFuncSeparateEXT(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) {
+	__gl_api.BlendFuncSeparateEXT(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
+}
+void glBlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {
+	__gl_api.BlitFramebufferEXT(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+}
 void glBufferData(GLenum target, GLsizeiptrARB size, const const GLvoid * data, GLenum usage) {
 	__gl_api.BufferData(target, size, data, usage);
 }
+void glBufferDataARB(GLenum target, GLsizeiptr size, const const GLvoid * data, GLenum usage) {
+	__gl_api.BufferDataARB(target, size, data, usage);
+}
 void glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const const GLvoid * data) {
 	__gl_api.BufferSubData(target, offset, size, data);
+}
+void glBufferSubDataARB(GLenum target, GLintptr offset, GLsizeiptr size, const const GLvoid * data) {
+	__gl_api.BufferSubDataARB(target, offset, size, data);
 }
 void glCallList(GLuint list) {
 	__gl_api.CallList(list);
 }
 void glCallLists(GLsizei n, GLenum type, const void * lists) {
 	__gl_api.CallLists(n, type, lists);
+}
+GLenum glCheckFramebufferStatusEXT(GLenum target) {
+	return __gl_api.CheckFramebufferStatusEXT(target);
 }
 void glClear(GLbitfield mask) {
 	__gl_api.Clear(mask);
@@ -249,23 +297,44 @@ void glColorTableParameteriv(GLenum target, GLenum pname, const GLint * params) 
 void glCompileShader(GLuint shader) {
 	__gl_api.CompileShader(shader);
 }
+void glCompileShaderARB(GLhandleARB shaderObj) {
+	__gl_api.CompileShaderARB(shaderObj);
+}
 void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const void * data) {
 	__gl_api.CompressedTexImage1D(target, level, internalformat, width, border, imageSize, data);
+}
+void glCompressedTexImage1DARB(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const void * data) {
+	__gl_api.CompressedTexImage1DARB(target, level, internalformat, width, border, imageSize, data);
 }
 void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void * data) {
 	__gl_api.CompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
 }
+void glCompressedTexImage2DARB(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void * data) {
+	__gl_api.CompressedTexImage2DARB(target, level, internalformat, width, height, border, imageSize, data);
+}
 void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void * data) {
 	__gl_api.CompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);
+}
+void glCompressedTexImage3DARB(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void * data) {
+	__gl_api.CompressedTexImage3DARB(target, level, internalformat, width, height, depth, border, imageSize, data);
 }
 void glCompressedTexSubImage1D(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void * data) {
 	__gl_api.CompressedTexSubImage1D(target, level, xoffset, width, format, imageSize, data);
 }
+void glCompressedTexSubImage1DARB(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void * data) {
+	__gl_api.CompressedTexSubImage1DARB(target, level, xoffset, width, format, imageSize, data);
+}
 void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void * data) {
 	__gl_api.CompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
 }
+void glCompressedTexSubImage2DARB(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void * data) {
+	__gl_api.CompressedTexSubImage2DARB(target, level, xoffset, yoffset, width, height, format, imageSize, data);
+}
 void glCompressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void * data) {
 	__gl_api.CompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
+}
+void glCompressedTexSubImage3DARB(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void * data) {
+	__gl_api.CompressedTexSubImage3DARB(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
 }
 void glConvolutionFilter1D(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const void * image) {
 	__gl_api.ConvolutionFilter1D(target, internalformat, width, format, type, image);
@@ -318,8 +387,14 @@ void glCopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffse
 GLuint glCreateProgram(void) {
 	return __gl_api.CreateProgram();
 }
+GLhandleARB glCreateProgramObjectARB(void) {
+	return __gl_api.CreateProgramObjectARB();
+}
 GLuint glCreateShader(GLenum type) {
 	return __gl_api.CreateShader(type);
+}
+GLhandleARB glCreateShaderObjectARB(GLenum shaderType) {
+	return __gl_api.CreateShaderObjectARB(shaderType);
 }
 void glCullFace(GLenum mode) {
 	__gl_api.CullFace(mode);
@@ -327,14 +402,32 @@ void glCullFace(GLenum mode) {
 void glDeleteBuffers(GLsizei n, const const GLuint * buffers) {
 	__gl_api.DeleteBuffers(n, buffers);
 }
+void glDeleteBuffersARB(GLsizei n, const const GLuint * buffers) {
+	__gl_api.DeleteBuffersARB(n, buffers);
+}
+void glDeleteFramebuffersEXT(GLsizei n, const GLuint * framebuffers) {
+	__gl_api.DeleteFramebuffersEXT(n, framebuffers);
+}
 void glDeleteLists(GLuint list, GLsizei range) {
 	__gl_api.DeleteLists(list, range);
+}
+void glDeleteObjectARB(GLhandleARB obj) {
+	__gl_api.DeleteObjectARB(obj);
 }
 void glDeleteProgram(GLuint program) {
 	__gl_api.DeleteProgram(program);
 }
+void glDeleteProgramsARB(GLsizei n, const GLuint * programs) {
+	__gl_api.DeleteProgramsARB(n, programs);
+}
 void glDeleteQueries(GLsizei n, const GLuint * ids) {
 	__gl_api.DeleteQueries(n, ids);
+}
+void glDeleteQueriesARB(GLsizei n, const GLuint * ids) {
+	__gl_api.DeleteQueriesARB(n, ids);
+}
+void glDeleteRenderbuffersEXT(GLsizei n, const GLuint * renderbuffers) {
+	__gl_api.DeleteRenderbuffersEXT(n, renderbuffers);
 }
 void glDeleteShader(GLuint shader) {
 	__gl_api.DeleteShader(shader);
@@ -351,6 +444,9 @@ void glDepthMask(GLboolean flag) {
 void glDepthRange(GLclampd near, GLclampd far) {
 	__gl_api.DepthRange(near, far);
 }
+void glDetachObjectARB(GLhandleARB containerObj, GLhandleARB attachedObj) {
+	__gl_api.DetachObjectARB(containerObj, attachedObj);
+}
 void glDetachShader(GLuint program, GLuint shader) {
 	__gl_api.DetachShader(program, shader);
 }
@@ -363,8 +459,14 @@ void glDisableClientState(GLenum array) {
 void glDisableVertexAttribArray(GLuint index) {
 	__gl_api.DisableVertexAttribArray(index);
 }
+void glDisableVertexAttribArrayARB(GLuint index) {
+	__gl_api.DisableVertexAttribArrayARB(index);
+}
 void glDrawArrays(GLenum mode, GLint first, GLsizei count) {
 	__gl_api.DrawArrays(mode, first, count);
+}
+void glDrawBuffersARB(GLsizei n, const GLenum * bufs) {
+	__gl_api.DrawBuffersARB(n, bufs);
 }
 void glDrawElements(GLenum mode, GLsizei count, GLenum type, const void * indices) {
 	__gl_api.DrawElements(mode, count, type, indices);
@@ -374,6 +476,9 @@ void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, con
 }
 void glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void * indices) {
 	__gl_api.DrawRangeElements(mode, start, end, count, type, indices);
+}
+void glDrawRangeElementsEXT(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void * indices) {
+	__gl_api.DrawRangeElementsEXT(mode, start, end, count, type, indices);
 }
 void glEdgeFlag(GLboolean flag) {
 	__gl_api.EdgeFlag(flag);
@@ -393,6 +498,9 @@ void glEnableClientState(GLenum array) {
 void glEnableVertexAttribArray(GLuint index) {
 	__gl_api.EnableVertexAttribArray(index);
 }
+void glEnableVertexAttribArrayARB(GLuint index) {
+	__gl_api.EnableVertexAttribArrayARB(index);
+}
 void glEnd(void) {
 	__gl_api.End();
 }
@@ -401,6 +509,9 @@ void glEndList(void) {
 }
 void glEndQuery(GLenum target) {
 	__gl_api.EndQuery(target);
+}
+void glEndQueryARB(GLenum target) {
+	__gl_api.EndQueryARB(target);
 }
 void glEvalCoord1d(GLdouble u) {
 	__gl_api.EvalCoord1d(u);
@@ -450,17 +561,32 @@ void glFlush(void) {
 void glFogCoordd(GLdouble coord) {
 	__gl_api.FogCoordd(coord);
 }
+void glFogCoorddEXT(GLdouble coord) {
+	__gl_api.FogCoorddEXT(coord);
+}
 void glFogCoorddv(const GLdouble * coord) {
 	__gl_api.FogCoorddv(coord);
+}
+void glFogCoorddvEXT(const GLdouble * coord) {
+	__gl_api.FogCoorddvEXT(coord);
 }
 void glFogCoordf(GLfloat coord) {
 	__gl_api.FogCoordf(coord);
 }
+void glFogCoordfEXT(GLfloat coord) {
+	__gl_api.FogCoordfEXT(coord);
+}
 void glFogCoordfv(const GLfloat * coord) {
 	__gl_api.FogCoordfv(coord);
 }
+void glFogCoordfvEXT(const GLfloat * coord) {
+	__gl_api.FogCoordfvEXT(coord);
+}
 void glFogCoordPointer(GLenum type, GLsizei stride, const void * pointer) {
 	__gl_api.FogCoordPointer(type, stride, pointer);
+}
+void glFogCoordPointerEXT(GLenum type, GLsizei stride, const void * pointer) {
+	__gl_api.FogCoordPointerEXT(type, stride, pointer);
 }
 void glFogf(GLenum pname, GLfloat param) {
 	__gl_api.Fogf(pname, param);
@@ -474,6 +600,18 @@ void glFogi(GLenum pname, GLint param) {
 void glFogiv(GLenum pname, const GLint * params) {
 	__gl_api.Fogiv(pname, params);
 }
+void glFramebufferRenderbufferEXT(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) {
+	__gl_api.FramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);
+}
+void glFramebufferTexture1DEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {
+	__gl_api.FramebufferTexture1DEXT(target, attachment, textarget, texture, level);
+}
+void glFramebufferTexture2DEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {
+	__gl_api.FramebufferTexture2DEXT(target, attachment, textarget, texture, level);
+}
+void glFramebufferTexture3DEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset) {
+	__gl_api.FramebufferTexture3DEXT(target, attachment, textarget, texture, level, zoffset);
+}
 void glFrontFace(GLenum mode) {
 	__gl_api.FrontFace(mode);
 }
@@ -483,11 +621,29 @@ void glFrustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLd
 void glGenBuffers(GLsizei n, GLuint * buffers) {
 	__gl_api.GenBuffers(n, buffers);
 }
+void glGenBuffersARB(GLsizei n, GLuint * buffers) {
+	__gl_api.GenBuffersARB(n, buffers);
+}
+void glGenerateMipmapEXT(GLenum target) {
+	__gl_api.GenerateMipmapEXT(target);
+}
+void glGenFramebuffersEXT(GLsizei n, GLuint * framebuffers) {
+	__gl_api.GenFramebuffersEXT(n, framebuffers);
+}
 GLuint glGenLists(GLsizei range) {
 	return __gl_api.GenLists(range);
 }
+void glGenProgramsARB(GLsizei n, GLuint * programs) {
+	__gl_api.GenProgramsARB(n, programs);
+}
 void glGenQueries(GLsizei n, GLuint * ids) {
 	__gl_api.GenQueries(n, ids);
+}
+void glGenQueriesARB(GLsizei n, GLuint * ids) {
+	__gl_api.GenQueriesARB(n, ids);
+}
+void glGenRenderbuffersEXT(GLsizei n, GLuint * renderbuffers) {
+	__gl_api.GenRenderbuffersEXT(n, renderbuffers);
 }
 void glGenTextures(GLsizei n, GLuint * textures) {
 	__gl_api.GenTextures(n, textures);
@@ -495,8 +651,17 @@ void glGenTextures(GLsizei n, GLuint * textures) {
 void glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name) {
 	__gl_api.GetActiveAttrib(program, index, bufSize, length, size, type, name);
 }
+void glGetActiveAttribARB(GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei * length, GLint * size, GLenum * type, GLcharARB * name) {
+	__gl_api.GetActiveAttribARB(programObj, index, maxLength, length, size, type, name);
+}
 void glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name) {
 	__gl_api.GetActiveUniform(program, index, bufSize, length, size, type, name);
+}
+void glGetActiveUniformARB(GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei * length, GLint * size, GLenum * type, GLcharARB * name) {
+	__gl_api.GetActiveUniformARB(programObj, index, maxLength, length, size, type, name);
+}
+void glGetAttachedObjectsARB(GLhandleARB containerObj, GLsizei maxCount, GLsizei * count, GLhandleARB * obj) {
+	__gl_api.GetAttachedObjectsARB(containerObj, maxCount, count, obj);
 }
 void glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei * count, GLuint * obj) {
 	__gl_api.GetAttachedShaders(program, maxCount, count, obj);
@@ -504,17 +669,29 @@ void glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei * count, GLu
 GLint glGetAttribLocation(GLuint program, const GLchar * name) {
 	return __gl_api.GetAttribLocation(program, name);
 }
+GLint glGetAttribLocationARB(GLhandleARB programObj, const GLcharARB * name) {
+	return __gl_api.GetAttribLocationARB(programObj, name);
+}
 void glGetBooleanv(GLenum pname, GLboolean * params) {
 	__gl_api.GetBooleanv(pname, params);
 }
 void glGetBufferParameteriv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetBufferParameteriv(target, pname, params);
 }
+void glGetBufferParameterivARB(GLenum target, GLenum pname, GLint * params) {
+	__gl_api.GetBufferParameterivARB(target, pname, params);
+}
 void glGetBufferPointerv(GLenum target, GLenum pname, void * * params) {
 	__gl_api.GetBufferPointerv(target, pname, params);
 }
+void glGetBufferPointervARB(GLenum target, GLenum pname, void * * params) {
+	__gl_api.GetBufferPointervARB(target, pname, params);
+}
 void glGetBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, void * data) {
 	__gl_api.GetBufferSubData(target, offset, size, data);
+}
+void glGetBufferSubDataARB(GLenum target, GLintptr offset, GLsizeiptr size, void * data) {
+	__gl_api.GetBufferSubDataARB(target, offset, size, data);
 }
 void glGetClipPlane(GLenum plane, GLdouble * equation) {
 	__gl_api.GetClipPlane(plane, equation);
@@ -530,6 +707,9 @@ void glGetColorTableParameteriv(GLenum target, GLenum pname, GLint * params) {
 }
 void glGetCompressedTexImage(GLenum target, GLint level, void * img) {
 	__gl_api.GetCompressedTexImage(target, level, img);
+}
+void glGetCompressedTexImageARB(GLenum target, GLint level, void * img) {
+	__gl_api.GetCompressedTexImageARB(target, level, img);
 }
 void glGetConvolutionFilter(GLenum target, GLenum format, GLenum type, void * image) {
 	__gl_api.GetConvolutionFilter(target, format, type, image);
@@ -549,6 +729,12 @@ GLenum glGetError(void) {
 void glGetFloatv(GLenum pname, GLfloat * params) {
 	__gl_api.GetFloatv(pname, params);
 }
+void glGetFramebufferAttachmentParameterivEXT(GLenum target, GLenum attachment, GLenum pname, GLint * params) {
+	__gl_api.GetFramebufferAttachmentParameterivEXT(target, attachment, pname, params);
+}
+GLhandleARB glGetHandleARB(GLenum pname) {
+	return __gl_api.GetHandleARB(pname);
+}
 void glGetHistogram(GLenum target, GLboolean reset, GLenum format, GLenum type, void * values) {
 	__gl_api.GetHistogram(target, reset, format, type, values);
 }
@@ -557,6 +743,9 @@ void glGetHistogramParameterfv(GLenum target, GLenum pname, GLfloat * params) {
 }
 void glGetHistogramParameteriv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetHistogramParameteriv(target, pname, params);
+}
+void glGetInfoLogARB(GLhandleARB obj, GLsizei maxLength, GLsizei * length, GLcharARB * infoLog) {
+	__gl_api.GetInfoLogARB(obj, maxLength, length, infoLog);
 }
 void glGetIntegerv(GLenum pname, GLint * params) {
 	__gl_api.GetIntegerv(pname, params);
@@ -591,6 +780,12 @@ void glGetMinmaxParameterfv(GLenum target, GLenum pname, GLfloat * params) {
 void glGetMinmaxParameteriv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetMinmaxParameteriv(target, pname, params);
 }
+void glGetObjectParameterfvARB(GLhandleARB obj, GLenum pname, GLfloat * params) {
+	__gl_api.GetObjectParameterfvARB(obj, pname, params);
+}
+void glGetObjectParameterivARB(GLhandleARB obj, GLenum pname, GLint * params) {
+	__gl_api.GetObjectParameterivARB(obj, pname, params);
+}
 void glGetPixelMapfv(GLenum map, GLfloat * values) {
 	__gl_api.GetPixelMapfv(map, values);
 }
@@ -606,20 +801,50 @@ void glGetPointerv(GLenum pname, void * * params) {
 void glGetPolygonStipple(GLubyte * mask) {
 	__gl_api.GetPolygonStipple(mask);
 }
+void glGetProgramEnvParameterdvARB(GLenum target, GLuint index, GLdouble * params) {
+	__gl_api.GetProgramEnvParameterdvARB(target, index, params);
+}
+void glGetProgramEnvParameterfvARB(GLenum target, GLuint index, GLfloat * params) {
+	__gl_api.GetProgramEnvParameterfvARB(target, index, params);
+}
 void glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei * length, GLchar * infoLog) {
 	__gl_api.GetProgramInfoLog(program, bufSize, length, infoLog);
 }
 void glGetProgramiv(GLuint program, GLenum pname, GLint * params) {
 	__gl_api.GetProgramiv(program, pname, params);
 }
+void glGetProgramivARB(GLenum target, GLenum pname, GLint * params) {
+	__gl_api.GetProgramivARB(target, pname, params);
+}
+void glGetProgramLocalParameterdvARB(GLenum target, GLuint index, GLdouble * params) {
+	__gl_api.GetProgramLocalParameterdvARB(target, index, params);
+}
+void glGetProgramLocalParameterfvARB(GLenum target, GLuint index, GLfloat * params) {
+	__gl_api.GetProgramLocalParameterfvARB(target, index, params);
+}
+void glGetProgramStringARB(GLenum target, GLenum pname, void * string) {
+	__gl_api.GetProgramStringARB(target, pname, string);
+}
 void glGetQueryiv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetQueryiv(target, pname, params);
+}
+void glGetQueryivARB(GLenum target, GLenum pname, GLint * params) {
+	__gl_api.GetQueryivARB(target, pname, params);
 }
 void glGetQueryObjectiv(GLuint id, GLenum pname, GLint * params) {
 	__gl_api.GetQueryObjectiv(id, pname, params);
 }
+void glGetQueryObjectivARB(GLuint id, GLenum pname, GLint * params) {
+	__gl_api.GetQueryObjectivARB(id, pname, params);
+}
 void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint * params) {
 	__gl_api.GetQueryObjectuiv(id, pname, params);
+}
+void glGetQueryObjectuivARB(GLuint id, GLenum pname, GLuint * params) {
+	__gl_api.GetQueryObjectuivARB(id, pname, params);
+}
+void glGetRenderbufferParameterivEXT(GLenum target, GLenum pname, GLint * params) {
+	__gl_api.GetRenderbufferParameterivEXT(target, pname, params);
 }
 void glGetSeparableFilter(GLenum target, GLenum format, GLenum type, void * row, void * column, void * span) {
 	__gl_api.GetSeparableFilter(target, format, type, row, column, span);
@@ -632,6 +857,9 @@ void glGetShaderiv(GLuint shader, GLenum pname, GLint * params) {
 }
 void glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei * length, GLchar * source) {
 	__gl_api.GetShaderSource(shader, bufSize, length, source);
+}
+void glGetShaderSourceARB(GLhandleARB obj, GLsizei maxLength, GLsizei * length, GLcharARB * source) {
+	__gl_api.GetShaderSourceARB(obj, maxLength, length, source);
 }
 const GLubyte * glGetString(GLenum name) {
 	return __gl_api.GetString(name);
@@ -669,23 +897,44 @@ void glGetTexParameteriv(GLenum target, GLenum pname, GLint * params) {
 void glGetUniformfv(GLuint program, GLint location, GLfloat * params) {
 	__gl_api.GetUniformfv(program, location, params);
 }
+void glGetUniformfvARB(GLhandleARB programObj, GLint location, GLfloat * params) {
+	__gl_api.GetUniformfvARB(programObj, location, params);
+}
 void glGetUniformiv(GLuint program, GLint location, GLint * params) {
 	__gl_api.GetUniformiv(program, location, params);
+}
+void glGetUniformivARB(GLhandleARB programObj, GLint location, GLint * params) {
+	__gl_api.GetUniformivARB(programObj, location, params);
 }
 GLint glGetUniformLocation(GLuint program, const GLchar * name) {
 	return __gl_api.GetUniformLocation(program, name);
 }
+GLint glGetUniformLocationARB(GLhandleARB programObj, const GLcharARB * name) {
+	return __gl_api.GetUniformLocationARB(programObj, name);
+}
 void glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble * params) {
 	__gl_api.GetVertexAttribdv(index, pname, params);
+}
+void glGetVertexAttribdvARB(GLuint index, GLenum pname, GLdouble * params) {
+	__gl_api.GetVertexAttribdvARB(index, pname, params);
 }
 void glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat * params) {
 	__gl_api.GetVertexAttribfv(index, pname, params);
 }
+void glGetVertexAttribfvARB(GLuint index, GLenum pname, GLfloat * params) {
+	__gl_api.GetVertexAttribfvARB(index, pname, params);
+}
 void glGetVertexAttribiv(GLuint index, GLenum pname, GLint * params) {
 	__gl_api.GetVertexAttribiv(index, pname, params);
 }
+void glGetVertexAttribivARB(GLuint index, GLenum pname, GLint * params) {
+	__gl_api.GetVertexAttribivARB(index, pname, params);
+}
 void glGetVertexAttribPointerv(GLuint index, GLenum pname, void * * pointer) {
 	__gl_api.GetVertexAttribPointerv(index, pname, pointer);
+}
+void glGetVertexAttribPointervARB(GLuint index, GLenum pname, void * * pointer) {
+	__gl_api.GetVertexAttribPointervARB(index, pname, pointer);
 }
 void glHint(GLenum target, GLenum mode) {
 	__gl_api.Hint(target, mode);
@@ -738,8 +987,14 @@ void glInterleavedArrays(GLenum format, GLsizei stride, const void * pointer) {
 GLboolean glIsBuffer(GLuint buffer) {
 	return __gl_api.IsBuffer(buffer);
 }
+GLboolean glIsBufferARB(GLuint buffer) {
+	return __gl_api.IsBufferARB(buffer);
+}
 GLboolean glIsEnabled(GLenum cap) {
 	return __gl_api.IsEnabled(cap);
+}
+GLboolean glIsFramebufferEXT(GLuint framebuffer) {
+	return __gl_api.IsFramebufferEXT(framebuffer);
 }
 GLboolean glIsList(GLuint list) {
 	return __gl_api.IsList(list);
@@ -747,8 +1002,17 @@ GLboolean glIsList(GLuint list) {
 GLboolean glIsProgram(GLuint program) {
 	return __gl_api.IsProgram(program);
 }
+GLboolean glIsProgramARB(GLuint program) {
+	return __gl_api.IsProgramARB(program);
+}
 GLboolean glIsQuery(GLuint id) {
 	return __gl_api.IsQuery(id);
+}
+GLboolean glIsQueryARB(GLuint id) {
+	return __gl_api.IsQueryARB(id);
+}
+GLboolean glIsRenderbufferEXT(GLuint renderbuffer) {
+	return __gl_api.IsRenderbufferEXT(renderbuffer);
 }
 GLboolean glIsShader(GLuint shader) {
 	return __gl_api.IsShader(shader);
@@ -789,6 +1053,9 @@ void glLineWidth(GLfloat width) {
 void glLinkProgram(GLuint program) {
 	__gl_api.LinkProgram(program);
 }
+void glLinkProgramARB(GLhandleARB programObj) {
+	__gl_api.LinkProgramARB(programObj);
+}
 void glListBase(GLuint base) {
 	__gl_api.ListBase(base);
 }
@@ -807,8 +1074,17 @@ void glLoadName(GLuint name) {
 void glLoadTransposeMatrixd(const GLdouble * m) {
 	__gl_api.LoadTransposeMatrixd(m);
 }
+void glLoadTransposeMatrixdARB(const GLdouble * m) {
+	__gl_api.LoadTransposeMatrixdARB(m);
+}
 void glLoadTransposeMatrixf(const GLfloat * m) {
 	__gl_api.LoadTransposeMatrixf(m);
+}
+void glLoadTransposeMatrixfARB(const GLfloat * m) {
+	__gl_api.LoadTransposeMatrixfARB(m);
+}
+void glLockArraysEXT(GLint first, GLsizei count) {
+	__gl_api.LockArraysEXT(first, count);
 }
 void glLogicOp(GLenum opcode) {
 	__gl_api.LogicOp(opcode);
@@ -827,6 +1103,9 @@ void glMap2f(GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder,
 }
 void * glMapBuffer(GLenum target, GLenum access) {
 	return __gl_api.MapBuffer(target, access);
+}
+void * glMapBufferARB(GLenum target, GLenum access) {
+	return __gl_api.MapBufferARB(target, access);
 }
 void glMapGrid1d(GLint un, GLdouble u1, GLdouble u2) {
 	__gl_api.MapGrid1d(un, u1, u2);
@@ -861,8 +1140,14 @@ void glMinmax(GLenum target, GLenum internalformat, GLboolean sink) {
 void glMultiDrawArrays(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount) {
 	__gl_api.MultiDrawArrays(mode, first, count, primcount);
 }
+void glMultiDrawArraysEXT(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount) {
+	__gl_api.MultiDrawArraysEXT(mode, first, count, primcount);
+}
 void glMultiDrawElements(GLenum mode, const GLsizei * count, GLenum type, const void * * indices, GLsizei primcount) {
 	__gl_api.MultiDrawElements(mode, count, type, indices, primcount);
+}
+void glMultiDrawElementsEXT(GLenum mode, const GLsizei * count, GLenum type, const void * * indices, GLsizei primcount) {
+	__gl_api.MultiDrawElementsEXT(mode, count, type, indices, primcount);
 }
 void glMultiTexCoord1d(GLenum target, GLdouble s) {
 	__gl_api.MultiTexCoord1d(target, s);
@@ -1065,8 +1350,14 @@ void glMultMatrixf(const GLfloat * m) {
 void glMultTransposeMatrixd(const GLdouble * m) {
 	__gl_api.MultTransposeMatrixd(m);
 }
+void glMultTransposeMatrixdARB(const GLdouble * m) {
+	__gl_api.MultTransposeMatrixdARB(m);
+}
 void glMultTransposeMatrixf(const GLfloat * m) {
 	__gl_api.MultTransposeMatrixf(m);
+}
+void glMultTransposeMatrixfARB(const GLfloat * m) {
+	__gl_api.MultTransposeMatrixfARB(m);
 }
 void glNewList(GLuint list, GLuint mode) {
 	__gl_api.NewList(list, mode);
@@ -1178,6 +1469,42 @@ void glPopName(void) {
 }
 void glPrioritizeTextures(GLsizei n, const GLuint * textures, const GLclampf * priorities) {
 	__gl_api.PrioritizeTextures(n, textures, priorities);
+}
+void glProgramEnvParameter4dARB(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
+	__gl_api.ProgramEnvParameter4dARB(target, index, x, y, z, w);
+}
+void glProgramEnvParameter4dvARB(GLenum target, GLuint index, const GLdouble * params) {
+	__gl_api.ProgramEnvParameter4dvARB(target, index, params);
+}
+void glProgramEnvParameter4fARB(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+	__gl_api.ProgramEnvParameter4fARB(target, index, x, y, z, w);
+}
+void glProgramEnvParameter4fvARB(GLenum target, GLuint index, const GLfloat * params) {
+	__gl_api.ProgramEnvParameter4fvARB(target, index, params);
+}
+void glProgramEnvParameters4fvEXT(GLenum target, GLuint index, GLsizei count, const GLfloat * params) {
+	__gl_api.ProgramEnvParameters4fvEXT(target, index, count, params);
+}
+void glProgramLocalParameter4dARB(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
+	__gl_api.ProgramLocalParameter4dARB(target, index, x, y, z, w);
+}
+void glProgramLocalParameter4dvARB(GLenum target, GLuint index, const GLdouble * params) {
+	__gl_api.ProgramLocalParameter4dvARB(target, index, params);
+}
+void glProgramLocalParameter4fARB(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+	__gl_api.ProgramLocalParameter4fARB(target, index, x, y, z, w);
+}
+void glProgramLocalParameter4fvARB(GLenum target, GLuint index, const GLfloat * params) {
+	__gl_api.ProgramLocalParameter4fvARB(target, index, params);
+}
+void glProgramLocalParameters4fvEXT(GLenum target, GLuint index, GLsizei count, const GLfloat * params) {
+	__gl_api.ProgramLocalParameters4fvEXT(target, index, count, params);
+}
+void glProgramParameteriEXT(GLuint program, GLenum pname, GLint value) {
+	__gl_api.ProgramParameteriEXT(program, pname, value);
+}
+void glProgramStringARB(GLenum target, GLenum format, GLsizei len, const void * string) {
+	__gl_api.ProgramStringARB(target, format, len, string);
 }
 void glPushAttrib(GLbitfield mask) {
 	__gl_api.PushAttrib(mask);
@@ -1293,6 +1620,12 @@ void glRects(GLshort x1, GLshort y1, GLshort x2, GLshort y2) {
 void glRectsv(const GLshort * v1, const GLshort * v2) {
 	__gl_api.Rectsv(v1, v2);
 }
+void glRenderbufferStorageEXT(GLenum target, GLenum internalformat, GLsizei width, GLsizei height) {
+	__gl_api.RenderbufferStorageEXT(target, internalformat, width, height);
+}
+void glRenderbufferStorageMultisampleEXT(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {
+	__gl_api.RenderbufferStorageMultisampleEXT(target, samples, internalformat, width, height);
+}
 GLint glRenderMode(GLenum mode) {
 	return __gl_api.RenderMode(mode);
 }
@@ -1311,6 +1644,9 @@ void glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
 void glSampleCoverage(GLclampf value, GLboolean invert) {
 	__gl_api.SampleCoverage(value, invert);
 }
+void glSampleCoverageARB(GLclampf value, GLboolean invert) {
+	__gl_api.SampleCoverageARB(value, invert);
+}
 void glScaled(GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.Scaled(x, y, z);
 }
@@ -1323,53 +1659,104 @@ void glScissor(GLint x, GLint y, GLsizei width, GLsizei height) {
 void glSecondaryColor3b(GLbyte red, GLbyte green, GLbyte blue) {
 	__gl_api.SecondaryColor3b(red, green, blue);
 }
+void glSecondaryColor3bEXT(GLbyte red, GLbyte green, GLbyte blue) {
+	__gl_api.SecondaryColor3bEXT(red, green, blue);
+}
 void glSecondaryColor3bv(const GLbyte * v) {
 	__gl_api.SecondaryColor3bv(v);
+}
+void glSecondaryColor3bvEXT(const GLbyte * v) {
+	__gl_api.SecondaryColor3bvEXT(v);
 }
 void glSecondaryColor3d(GLdouble red, GLdouble green, GLdouble blue) {
 	__gl_api.SecondaryColor3d(red, green, blue);
 }
+void glSecondaryColor3dEXT(GLdouble red, GLdouble green, GLdouble blue) {
+	__gl_api.SecondaryColor3dEXT(red, green, blue);
+}
 void glSecondaryColor3dv(const GLdouble * v) {
 	__gl_api.SecondaryColor3dv(v);
+}
+void glSecondaryColor3dvEXT(const GLdouble * v) {
+	__gl_api.SecondaryColor3dvEXT(v);
 }
 void glSecondaryColor3f(GLfloat red, GLfloat green, GLfloat blue) {
 	__gl_api.SecondaryColor3f(red, green, blue);
 }
+void glSecondaryColor3fEXT(GLfloat red, GLfloat green, GLfloat blue) {
+	__gl_api.SecondaryColor3fEXT(red, green, blue);
+}
 void glSecondaryColor3fv(const GLfloat * v) {
 	__gl_api.SecondaryColor3fv(v);
+}
+void glSecondaryColor3fvEXT(const GLfloat * v) {
+	__gl_api.SecondaryColor3fvEXT(v);
 }
 void glSecondaryColor3i(GLint red, GLint green, GLint blue) {
 	__gl_api.SecondaryColor3i(red, green, blue);
 }
+void glSecondaryColor3iEXT(GLint red, GLint green, GLint blue) {
+	__gl_api.SecondaryColor3iEXT(red, green, blue);
+}
 void glSecondaryColor3iv(const GLint * v) {
 	__gl_api.SecondaryColor3iv(v);
+}
+void glSecondaryColor3ivEXT(const GLint * v) {
+	__gl_api.SecondaryColor3ivEXT(v);
 }
 void glSecondaryColor3s(GLshort red, GLshort green, GLshort blue) {
 	__gl_api.SecondaryColor3s(red, green, blue);
 }
+void glSecondaryColor3sEXT(GLshort red, GLshort green, GLshort blue) {
+	__gl_api.SecondaryColor3sEXT(red, green, blue);
+}
 void glSecondaryColor3sv(const GLshort * v) {
 	__gl_api.SecondaryColor3sv(v);
+}
+void glSecondaryColor3svEXT(const GLshort * v) {
+	__gl_api.SecondaryColor3svEXT(v);
 }
 void glSecondaryColor3ub(GLubyte red, GLubyte green, GLubyte blue) {
 	__gl_api.SecondaryColor3ub(red, green, blue);
 }
+void glSecondaryColor3ubEXT(GLubyte red, GLubyte green, GLubyte blue) {
+	__gl_api.SecondaryColor3ubEXT(red, green, blue);
+}
 void glSecondaryColor3ubv(const GLubyte * v) {
 	__gl_api.SecondaryColor3ubv(v);
+}
+void glSecondaryColor3ubvEXT(const GLubyte * v) {
+	__gl_api.SecondaryColor3ubvEXT(v);
 }
 void glSecondaryColor3ui(GLuint red, GLuint green, GLuint blue) {
 	__gl_api.SecondaryColor3ui(red, green, blue);
 }
+void glSecondaryColor3uiEXT(GLuint red, GLuint green, GLuint blue) {
+	__gl_api.SecondaryColor3uiEXT(red, green, blue);
+}
 void glSecondaryColor3uiv(const GLuint * v) {
 	__gl_api.SecondaryColor3uiv(v);
+}
+void glSecondaryColor3uivEXT(const GLuint * v) {
+	__gl_api.SecondaryColor3uivEXT(v);
 }
 void glSecondaryColor3us(GLushort red, GLushort green, GLushort blue) {
 	__gl_api.SecondaryColor3us(red, green, blue);
 }
+void glSecondaryColor3usEXT(GLushort red, GLushort green, GLushort blue) {
+	__gl_api.SecondaryColor3usEXT(red, green, blue);
+}
 void glSecondaryColor3usv(const GLushort * v) {
 	__gl_api.SecondaryColor3usv(v);
 }
+void glSecondaryColor3usvEXT(const GLushort * v) {
+	__gl_api.SecondaryColor3usvEXT(v);
+}
 void glSecondaryColorPointer(GLint size, GLenum type, GLsizei stride, const void * pointer) {
 	__gl_api.SecondaryColorPointer(size, type, stride, pointer);
+}
+void glSecondaryColorPointerEXT(GLint size, GLenum type, GLsizei stride, const void * pointer) {
+	__gl_api.SecondaryColorPointerEXT(size, type, stride, pointer);
 }
 void glSelectBuffer(GLsizei size, GLuint * buffer) {
 	__gl_api.SelectBuffer(size, buffer);
@@ -1382,6 +1769,9 @@ void glShadeModel(GLenum mode) {
 }
 void glShaderSource(GLuint shader, GLsizei count, const GLchar * * string, const GLint * length) {
 	__gl_api.ShaderSource(shader, count, string, length);
+}
+void glShaderSourceARB(GLhandleARB shaderObj, GLsizei count, const GLcharARB * * string, const GLint * length) {
+	__gl_api.ShaderSourceARB(shaderObj, count, string, length);
 }
 void glStencilFunc(GLenum func, GLint ref, GLuint mask) {
 	__gl_api.StencilFunc(func, ref, mask);
@@ -1569,68 +1959,155 @@ void glTranslatef(GLfloat x, GLfloat y, GLfloat z) {
 void glUniform1f(GLint location, GLfloat v0) {
 	__gl_api.Uniform1f(location, v0);
 }
+void glUniform1fARB(GLint location, GLfloat v0) {
+	__gl_api.Uniform1fARB(location, v0);
+}
 void glUniform1fv(GLint location, GLsizei count, const GLfloat * value) {
 	__gl_api.Uniform1fv(location, count, value);
+}
+void glUniform1fvARB(GLint location, GLsizei count, const GLfloat * value) {
+	__gl_api.Uniform1fvARB(location, count, value);
 }
 void glUniform1i(GLint location, GLint v0) {
 	__gl_api.Uniform1i(location, v0);
 }
+void glUniform1iARB(GLint location, GLint v0) {
+	__gl_api.Uniform1iARB(location, v0);
+}
 void glUniform1iv(GLint location, GLsizei count, const GLint * value) {
 	__gl_api.Uniform1iv(location, count, value);
+}
+void glUniform1ivARB(GLint location, GLsizei count, const GLint * value) {
+	__gl_api.Uniform1ivARB(location, count, value);
 }
 void glUniform2f(GLint location, GLfloat v0, GLfloat v1) {
 	__gl_api.Uniform2f(location, v0, v1);
 }
+void glUniform2fARB(GLint location, GLfloat v0, GLfloat v1) {
+	__gl_api.Uniform2fARB(location, v0, v1);
+}
 void glUniform2fv(GLint location, GLsizei count, const GLfloat * value) {
 	__gl_api.Uniform2fv(location, count, value);
+}
+void glUniform2fvARB(GLint location, GLsizei count, const GLfloat * value) {
+	__gl_api.Uniform2fvARB(location, count, value);
 }
 void glUniform2i(GLint location, GLint v0, GLint v1) {
 	__gl_api.Uniform2i(location, v0, v1);
 }
+void glUniform2iARB(GLint location, GLint v0, GLint v1) {
+	__gl_api.Uniform2iARB(location, v0, v1);
+}
 void glUniform2iv(GLint location, GLsizei count, const GLint * value) {
 	__gl_api.Uniform2iv(location, count, value);
+}
+void glUniform2ivARB(GLint location, GLsizei count, const GLint * value) {
+	__gl_api.Uniform2ivARB(location, count, value);
 }
 void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) {
 	__gl_api.Uniform3f(location, v0, v1, v2);
 }
+void glUniform3fARB(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) {
+	__gl_api.Uniform3fARB(location, v0, v1, v2);
+}
 void glUniform3fv(GLint location, GLsizei count, const GLfloat * value) {
 	__gl_api.Uniform3fv(location, count, value);
+}
+void glUniform3fvARB(GLint location, GLsizei count, const GLfloat * value) {
+	__gl_api.Uniform3fvARB(location, count, value);
 }
 void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) {
 	__gl_api.Uniform3i(location, v0, v1, v2);
 }
+void glUniform3iARB(GLint location, GLint v0, GLint v1, GLint v2) {
+	__gl_api.Uniform3iARB(location, v0, v1, v2);
+}
 void glUniform3iv(GLint location, GLsizei count, const GLint * value) {
 	__gl_api.Uniform3iv(location, count, value);
+}
+void glUniform3ivARB(GLint location, GLsizei count, const GLint * value) {
+	__gl_api.Uniform3ivARB(location, count, value);
 }
 void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) {
 	__gl_api.Uniform4f(location, v0, v1, v2, v3);
 }
+void glUniform4fARB(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) {
+	__gl_api.Uniform4fARB(location, v0, v1, v2, v3);
+}
 void glUniform4fv(GLint location, GLsizei count, const GLfloat * value) {
 	__gl_api.Uniform4fv(location, count, value);
+}
+void glUniform4fvARB(GLint location, GLsizei count, const GLfloat * value) {
+	__gl_api.Uniform4fvARB(location, count, value);
 }
 void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) {
 	__gl_api.Uniform4i(location, v0, v1, v2, v3);
 }
+void glUniform4iARB(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) {
+	__gl_api.Uniform4iARB(location, v0, v1, v2, v3);
+}
 void glUniform4iv(GLint location, GLsizei count, const GLint * value) {
 	__gl_api.Uniform4iv(location, count, value);
+}
+void glUniform4ivARB(GLint location, GLsizei count, const GLint * value) {
+	__gl_api.Uniform4ivARB(location, count, value);
 }
 void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
 	__gl_api.UniformMatrix2fv(location, count, transpose, value);
 }
+void glUniformMatrix2fvARB(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix2fvARB(location, count, transpose, value);
+}
+void glUniformMatrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix2x3fv(location, count, transpose, value);
+}
+void glUniformMatrix2x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix2x4fv(location, count, transpose, value);
+}
 void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
 	__gl_api.UniformMatrix3fv(location, count, transpose, value);
+}
+void glUniformMatrix3fvARB(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix3fvARB(location, count, transpose, value);
+}
+void glUniformMatrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix3x2fv(location, count, transpose, value);
+}
+void glUniformMatrix3x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix3x4fv(location, count, transpose, value);
 }
 void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
 	__gl_api.UniformMatrix4fv(location, count, transpose, value);
 }
+void glUniformMatrix4fvARB(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix4fvARB(location, count, transpose, value);
+}
+void glUniformMatrix4x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix4x2fv(location, count, transpose, value);
+}
+void glUniformMatrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat * value) {
+	__gl_api.UniformMatrix4x3fv(location, count, transpose, value);
+}
+void glUnlockArraysEXT(void) {
+	__gl_api.UnlockArraysEXT();
+}
 GLboolean glUnmapBuffer(GLenum target) {
 	return __gl_api.UnmapBuffer(target);
+}
+GLboolean glUnmapBufferARB(GLenum target) {
+	return __gl_api.UnmapBufferARB(target);
 }
 void glUseProgram(GLuint program) {
 	__gl_api.UseProgram(program);
 }
+void glUseProgramObjectARB(GLhandleARB programObj) {
+	__gl_api.UseProgramObjectARB(programObj);
+}
 void glValidateProgram(GLuint program) {
 	__gl_api.ValidateProgram(program);
+}
+void glValidateProgramARB(GLhandleARB programObj) {
+	__gl_api.ValidateProgramARB(programObj);
 }
 void glVertex2d(GLdouble x, GLdouble y) {
 	__gl_api.Vertex2d(x, y);
@@ -1707,119 +2184,260 @@ void glVertex4sv(const GLshort * v) {
 void glVertexAttrib1d(GLuint index, GLdouble x) {
 	__gl_api.VertexAttrib1d(index, x);
 }
+void glVertexAttrib1dARB(GLuint index, GLdouble x) {
+	__gl_api.VertexAttrib1dARB(index, x);
+}
 void glVertexAttrib1dv(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib1dv(index, v);
+}
+void glVertexAttrib1dvARB(GLuint index, const GLdouble * v) {
+	__gl_api.VertexAttrib1dvARB(index, v);
 }
 void glVertexAttrib1f(GLuint index, GLfloat x) {
 	__gl_api.VertexAttrib1f(index, x);
 }
+void glVertexAttrib1fARB(GLuint index, GLfloat x) {
+	__gl_api.VertexAttrib1fARB(index, x);
+}
 void glVertexAttrib1fv(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib1fv(index, v);
+}
+void glVertexAttrib1fvARB(GLuint index, const GLfloat * v) {
+	__gl_api.VertexAttrib1fvARB(index, v);
 }
 void glVertexAttrib1s(GLuint index, GLshort x) {
 	__gl_api.VertexAttrib1s(index, x);
 }
+void glVertexAttrib1sARB(GLuint index, GLshort x) {
+	__gl_api.VertexAttrib1sARB(index, x);
+}
 void glVertexAttrib1sv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib1sv(index, v);
+}
+void glVertexAttrib1svARB(GLuint index, const GLshort * v) {
+	__gl_api.VertexAttrib1svARB(index, v);
 }
 void glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y) {
 	__gl_api.VertexAttrib2d(index, x, y);
 }
+void glVertexAttrib2dARB(GLuint index, GLdouble x, GLdouble y) {
+	__gl_api.VertexAttrib2dARB(index, x, y);
+}
 void glVertexAttrib2dv(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib2dv(index, v);
+}
+void glVertexAttrib2dvARB(GLuint index, const GLdouble * v) {
+	__gl_api.VertexAttrib2dvARB(index, v);
 }
 void glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y) {
 	__gl_api.VertexAttrib2f(index, x, y);
 }
+void glVertexAttrib2fARB(GLuint index, GLfloat x, GLfloat y) {
+	__gl_api.VertexAttrib2fARB(index, x, y);
+}
 void glVertexAttrib2fv(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib2fv(index, v);
+}
+void glVertexAttrib2fvARB(GLuint index, const GLfloat * v) {
+	__gl_api.VertexAttrib2fvARB(index, v);
 }
 void glVertexAttrib2s(GLuint index, GLshort x, GLshort y) {
 	__gl_api.VertexAttrib2s(index, x, y);
 }
+void glVertexAttrib2sARB(GLuint index, GLshort x, GLshort y) {
+	__gl_api.VertexAttrib2sARB(index, x, y);
+}
 void glVertexAttrib2sv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib2sv(index, v);
+}
+void glVertexAttrib2svARB(GLuint index, const GLshort * v) {
+	__gl_api.VertexAttrib2svARB(index, v);
 }
 void glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.VertexAttrib3d(index, x, y, z);
 }
+void glVertexAttrib3dARB(GLuint index, GLdouble x, GLdouble y, GLdouble z) {
+	__gl_api.VertexAttrib3dARB(index, x, y, z);
+}
 void glVertexAttrib3dv(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib3dv(index, v);
+}
+void glVertexAttrib3dvARB(GLuint index, const GLdouble * v) {
+	__gl_api.VertexAttrib3dvARB(index, v);
 }
 void glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z) {
 	__gl_api.VertexAttrib3f(index, x, y, z);
 }
+void glVertexAttrib3fARB(GLuint index, GLfloat x, GLfloat y, GLfloat z) {
+	__gl_api.VertexAttrib3fARB(index, x, y, z);
+}
 void glVertexAttrib3fv(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib3fv(index, v);
+}
+void glVertexAttrib3fvARB(GLuint index, const GLfloat * v) {
+	__gl_api.VertexAttrib3fvARB(index, v);
 }
 void glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort z) {
 	__gl_api.VertexAttrib3s(index, x, y, z);
 }
+void glVertexAttrib3sARB(GLuint index, GLshort x, GLshort y, GLshort z) {
+	__gl_api.VertexAttrib3sARB(index, x, y, z);
+}
 void glVertexAttrib3sv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib3sv(index, v);
+}
+void glVertexAttrib3svARB(GLuint index, const GLshort * v) {
+	__gl_api.VertexAttrib3svARB(index, v);
 }
 void glVertexAttrib4bv(GLuint index, const GLbyte * v) {
 	__gl_api.VertexAttrib4bv(index, v);
 }
+void glVertexAttrib4bvARB(GLuint index, const GLbyte * v) {
+	__gl_api.VertexAttrib4bvARB(index, v);
+}
 void glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
 	__gl_api.VertexAttrib4d(index, x, y, z, w);
+}
+void glVertexAttrib4dARB(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
+	__gl_api.VertexAttrib4dARB(index, x, y, z, w);
 }
 void glVertexAttrib4dv(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib4dv(index, v);
 }
+void glVertexAttrib4dvARB(GLuint index, const GLdouble * v) {
+	__gl_api.VertexAttrib4dvARB(index, v);
+}
 void glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
 	__gl_api.VertexAttrib4f(index, x, y, z, w);
+}
+void glVertexAttrib4fARB(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+	__gl_api.VertexAttrib4fARB(index, x, y, z, w);
 }
 void glVertexAttrib4fv(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib4fv(index, v);
 }
+void glVertexAttrib4fvARB(GLuint index, const GLfloat * v) {
+	__gl_api.VertexAttrib4fvARB(index, v);
+}
 void glVertexAttrib4iv(GLuint index, const GLint * v) {
 	__gl_api.VertexAttrib4iv(index, v);
+}
+void glVertexAttrib4ivARB(GLuint index, const GLint * v) {
+	__gl_api.VertexAttrib4ivARB(index, v);
 }
 void glVertexAttrib4Nbv(GLuint index, const GLbyte * v) {
 	__gl_api.VertexAttrib4Nbv(index, v);
 }
+void glVertexAttrib4NbvARB(GLuint index, const GLbyte * v) {
+	__gl_api.VertexAttrib4NbvARB(index, v);
+}
 void glVertexAttrib4Niv(GLuint index, const GLint * v) {
 	__gl_api.VertexAttrib4Niv(index, v);
+}
+void glVertexAttrib4NivARB(GLuint index, const GLint * v) {
+	__gl_api.VertexAttrib4NivARB(index, v);
 }
 void glVertexAttrib4Nsv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib4Nsv(index, v);
 }
+void glVertexAttrib4NsvARB(GLuint index, const GLshort * v) {
+	__gl_api.VertexAttrib4NsvARB(index, v);
+}
 void glVertexAttrib4Nub(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w) {
 	__gl_api.VertexAttrib4Nub(index, x, y, z, w);
+}
+void glVertexAttrib4NubARB(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w) {
+	__gl_api.VertexAttrib4NubARB(index, x, y, z, w);
 }
 void glVertexAttrib4Nubv(GLuint index, const GLubyte * v) {
 	__gl_api.VertexAttrib4Nubv(index, v);
 }
+void glVertexAttrib4NubvARB(GLuint index, const GLubyte * v) {
+	__gl_api.VertexAttrib4NubvARB(index, v);
+}
 void glVertexAttrib4Nuiv(GLuint index, const GLuint * v) {
 	__gl_api.VertexAttrib4Nuiv(index, v);
+}
+void glVertexAttrib4NuivARB(GLuint index, const GLuint * v) {
+	__gl_api.VertexAttrib4NuivARB(index, v);
 }
 void glVertexAttrib4Nusv(GLuint index, const GLushort * v) {
 	__gl_api.VertexAttrib4Nusv(index, v);
 }
+void glVertexAttrib4NusvARB(GLuint index, const GLushort * v) {
+	__gl_api.VertexAttrib4NusvARB(index, v);
+}
 void glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) {
 	__gl_api.VertexAttrib4s(index, x, y, z, w);
+}
+void glVertexAttrib4sARB(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) {
+	__gl_api.VertexAttrib4sARB(index, x, y, z, w);
 }
 void glVertexAttrib4sv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib4sv(index, v);
 }
+void glVertexAttrib4svARB(GLuint index, const GLshort * v) {
+	__gl_api.VertexAttrib4svARB(index, v);
+}
 void glVertexAttrib4ubv(GLuint index, const GLubyte * v) {
 	__gl_api.VertexAttrib4ubv(index, v);
+}
+void glVertexAttrib4ubvARB(GLuint index, const GLubyte * v) {
+	__gl_api.VertexAttrib4ubvARB(index, v);
 }
 void glVertexAttrib4uiv(GLuint index, const GLuint * v) {
 	__gl_api.VertexAttrib4uiv(index, v);
 }
+void glVertexAttrib4uivARB(GLuint index, const GLuint * v) {
+	__gl_api.VertexAttrib4uivARB(index, v);
+}
 void glVertexAttrib4usv(GLuint index, const GLushort * v) {
 	__gl_api.VertexAttrib4usv(index, v);
 }
+void glVertexAttrib4usvARB(GLuint index, const GLushort * v) {
+	__gl_api.VertexAttrib4usvARB(index, v);
+}
 void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void * pointer) {
 	__gl_api.VertexAttribPointer(index, size, type, normalized, stride, pointer);
+}
+void glVertexAttribPointerARB(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void * pointer) {
+	__gl_api.VertexAttribPointerARB(index, size, type, normalized, stride, pointer);
+}
+void glVertexBlendARB(GLint count) {
+	__gl_api.VertexBlendARB(count);
 }
 void glVertexPointer(GLint size, GLenum type, GLsizei stride, const void * pointer) {
 	__gl_api.VertexPointer(size, type, stride, pointer);
 }
 void glViewport(GLint x, GLint y, GLsizei width, GLsizei height) {
 	__gl_api.Viewport(x, y, width, height);
+}
+void glWeightbvARB(GLint size, const GLbyte * weights) {
+	__gl_api.WeightbvARB(size, weights);
+}
+void glWeightdvARB(GLint size, const GLdouble * weights) {
+	__gl_api.WeightdvARB(size, weights);
+}
+void glWeightfvARB(GLint size, const GLfloat * weights) {
+	__gl_api.WeightfvARB(size, weights);
+}
+void glWeightivARB(GLint size, const GLint * weights) {
+	__gl_api.WeightivARB(size, weights);
+}
+void glWeightPointerARB(GLint size, GLenum type, GLsizei stride, const void * pointer) {
+	__gl_api.WeightPointerARB(size, type, stride, pointer);
+}
+void glWeightsvARB(GLint size, const GLshort * weights) {
+	__gl_api.WeightsvARB(size, weights);
+}
+void glWeightubvARB(GLint size, const GLubyte * weights) {
+	__gl_api.WeightubvARB(size, weights);
+}
+void glWeightuivARB(GLint size, const GLuint * weights) {
+	__gl_api.WeightuivARB(size, weights);
+}
+void glWeightusvARB(GLint size, const GLushort * weights) {
+	__gl_api.WeightusvARB(size, weights);
 }
 void glWindowPos2d(GLdouble x, GLdouble y) {
 	__gl_api.WindowPos2d(x, y);
@@ -1989,27 +2607,43 @@ void apple_xgl_init_direct(void) {
     }
 
 	__gl_api.Accum = glsym(handle, "glAccum");
+	__gl_api.ActiveStencilFaceEXT = glsym(handle, "glActiveStencilFaceEXT");
 	__gl_api.ActiveTexture = glsym(handle, "glActiveTexture");
 	__gl_api.ActiveTextureARB = glsym(handle, "glActiveTextureARB");
 	__gl_api.AlphaFunc = glsym(handle, "glAlphaFunc");
 	__gl_api.AreTexturesResident = glsym(handle, "glAreTexturesResident");
 	__gl_api.ArrayElement = glsym(handle, "glArrayElement");
+	__gl_api.AttachObjectARB = glsym(handle, "glAttachObjectARB");
 	__gl_api.AttachShader = glsym(handle, "glAttachShader");
 	__gl_api.Begin = glsym(handle, "glBegin");
 	__gl_api.BeginQuery = glsym(handle, "glBeginQuery");
+	__gl_api.BeginQueryARB = glsym(handle, "glBeginQueryARB");
 	__gl_api.BindAttribLocation = glsym(handle, "glBindAttribLocation");
+	__gl_api.BindAttribLocationARB = glsym(handle, "glBindAttribLocationARB");
 	__gl_api.BindBuffer = glsym(handle, "glBindBuffer");
+	__gl_api.BindBufferARB = glsym(handle, "glBindBufferARB");
+	__gl_api.BindFramebufferEXT = glsym(handle, "glBindFramebufferEXT");
+	__gl_api.BindProgramARB = glsym(handle, "glBindProgramARB");
+	__gl_api.BindRenderbufferEXT = glsym(handle, "glBindRenderbufferEXT");
 	__gl_api.BindTexture = glsym(handle, "glBindTexture");
 	__gl_api.Bitmap = glsym(handle, "glBitmap");
 	__gl_api.BlendColor = glsym(handle, "glBlendColor");
+	__gl_api.BlendColorEXT = glsym(handle, "glBlendColorEXT");
 	__gl_api.BlendEquation = glsym(handle, "glBlendEquation");
+	__gl_api.BlendEquationEXT = glsym(handle, "glBlendEquationEXT");
 	__gl_api.BlendEquationSeparate = glsym(handle, "glBlendEquationSeparate");
+	__gl_api.BlendEquationSeparateEXT = glsym(handle, "glBlendEquationSeparateEXT");
 	__gl_api.BlendFunc = glsym(handle, "glBlendFunc");
 	__gl_api.BlendFuncSeparate = glsym(handle, "glBlendFuncSeparate");
+	__gl_api.BlendFuncSeparateEXT = glsym(handle, "glBlendFuncSeparateEXT");
+	__gl_api.BlitFramebufferEXT = glsym(handle, "glBlitFramebufferEXT");
 	__gl_api.BufferData = glsym(handle, "glBufferData");
+	__gl_api.BufferDataARB = glsym(handle, "glBufferDataARB");
 	__gl_api.BufferSubData = glsym(handle, "glBufferSubData");
+	__gl_api.BufferSubDataARB = glsym(handle, "glBufferSubDataARB");
 	__gl_api.CallList = glsym(handle, "glCallList");
 	__gl_api.CallLists = glsym(handle, "glCallLists");
+	__gl_api.CheckFramebufferStatusEXT = glsym(handle, "glCheckFramebufferStatusEXT");
 	__gl_api.Clear = glsym(handle, "glClear");
 	__gl_api.ClearAccum = glsym(handle, "glClearAccum");
 	__gl_api.ClearColor = glsym(handle, "glClearColor");
@@ -2059,12 +2693,19 @@ void apple_xgl_init_direct(void) {
 	__gl_api.ColorTableParameterfv = glsym(handle, "glColorTableParameterfv");
 	__gl_api.ColorTableParameteriv = glsym(handle, "glColorTableParameteriv");
 	__gl_api.CompileShader = glsym(handle, "glCompileShader");
+	__gl_api.CompileShaderARB = glsym(handle, "glCompileShaderARB");
 	__gl_api.CompressedTexImage1D = glsym(handle, "glCompressedTexImage1D");
+	__gl_api.CompressedTexImage1DARB = glsym(handle, "glCompressedTexImage1DARB");
 	__gl_api.CompressedTexImage2D = glsym(handle, "glCompressedTexImage2D");
+	__gl_api.CompressedTexImage2DARB = glsym(handle, "glCompressedTexImage2DARB");
 	__gl_api.CompressedTexImage3D = glsym(handle, "glCompressedTexImage3D");
+	__gl_api.CompressedTexImage3DARB = glsym(handle, "glCompressedTexImage3DARB");
 	__gl_api.CompressedTexSubImage1D = glsym(handle, "glCompressedTexSubImage1D");
+	__gl_api.CompressedTexSubImage1DARB = glsym(handle, "glCompressedTexSubImage1DARB");
 	__gl_api.CompressedTexSubImage2D = glsym(handle, "glCompressedTexSubImage2D");
+	__gl_api.CompressedTexSubImage2DARB = glsym(handle, "glCompressedTexSubImage2DARB");
 	__gl_api.CompressedTexSubImage3D = glsym(handle, "glCompressedTexSubImage3D");
+	__gl_api.CompressedTexSubImage3DARB = glsym(handle, "glCompressedTexSubImage3DARB");
 	__gl_api.ConvolutionFilter1D = glsym(handle, "glConvolutionFilter1D");
 	__gl_api.ConvolutionFilter2D = glsym(handle, "glConvolutionFilter2D");
 	__gl_api.ConvolutionParameterf = glsym(handle, "glConvolutionParameterf");
@@ -2082,36 +2723,50 @@ void apple_xgl_init_direct(void) {
 	__gl_api.CopyTexSubImage2D = glsym(handle, "glCopyTexSubImage2D");
 	__gl_api.CopyTexSubImage3D = glsym(handle, "glCopyTexSubImage3D");
 	__gl_api.CreateProgram = glsym(handle, "glCreateProgram");
+	__gl_api.CreateProgramObjectARB = glsym(handle, "glCreateProgramObjectARB");
 	__gl_api.CreateShader = glsym(handle, "glCreateShader");
+	__gl_api.CreateShaderObjectARB = glsym(handle, "glCreateShaderObjectARB");
 	__gl_api.CullFace = glsym(handle, "glCullFace");
 	__gl_api.DeleteBuffers = glsym(handle, "glDeleteBuffers");
+	__gl_api.DeleteBuffersARB = glsym(handle, "glDeleteBuffersARB");
+	__gl_api.DeleteFramebuffersEXT = glsym(handle, "glDeleteFramebuffersEXT");
 	__gl_api.DeleteLists = glsym(handle, "glDeleteLists");
+	__gl_api.DeleteObjectARB = glsym(handle, "glDeleteObjectARB");
 	__gl_api.DeleteProgram = glsym(handle, "glDeleteProgram");
+	__gl_api.DeleteProgramsARB = glsym(handle, "glDeleteProgramsARB");
 	__gl_api.DeleteQueries = glsym(handle, "glDeleteQueries");
+	__gl_api.DeleteQueriesARB = glsym(handle, "glDeleteQueriesARB");
+	__gl_api.DeleteRenderbuffersEXT = glsym(handle, "glDeleteRenderbuffersEXT");
 	__gl_api.DeleteShader = glsym(handle, "glDeleteShader");
 	__gl_api.DeleteTextures = glsym(handle, "glDeleteTextures");
 	__gl_api.DepthFunc = glsym(handle, "glDepthFunc");
 	__gl_api.DepthMask = glsym(handle, "glDepthMask");
 	__gl_api.DepthRange = glsym(handle, "glDepthRange");
+	__gl_api.DetachObjectARB = glsym(handle, "glDetachObjectARB");
 	__gl_api.DetachShader = glsym(handle, "glDetachShader");
 	__gl_api.Disable = glsym(handle, "glDisable");
 	__gl_api.DisableClientState = glsym(handle, "glDisableClientState");
 	__gl_api.DisableVertexAttribArray = glsym(handle, "glDisableVertexAttribArray");
+	__gl_api.DisableVertexAttribArrayARB = glsym(handle, "glDisableVertexAttribArrayARB");
 	__gl_api.DrawArrays = glsym(handle, "glDrawArrays");
 	__gl_api.DrawBuffer = glsym(handle, "glDrawBuffer");
 	__gl_api.DrawBuffers = glsym(handle, "glDrawBuffers");
+	__gl_api.DrawBuffersARB = glsym(handle, "glDrawBuffersARB");
 	__gl_api.DrawElements = glsym(handle, "glDrawElements");
 	__gl_api.DrawPixels = glsym(handle, "glDrawPixels");
 	__gl_api.DrawRangeElements = glsym(handle, "glDrawRangeElements");
+	__gl_api.DrawRangeElementsEXT = glsym(handle, "glDrawRangeElementsEXT");
 	__gl_api.EdgeFlag = glsym(handle, "glEdgeFlag");
 	__gl_api.EdgeFlagPointer = glsym(handle, "glEdgeFlagPointer");
 	__gl_api.EdgeFlagv = glsym(handle, "glEdgeFlagv");
 	__gl_api.Enable = glsym(handle, "glEnable");
 	__gl_api.EnableClientState = glsym(handle, "glEnableClientState");
 	__gl_api.EnableVertexAttribArray = glsym(handle, "glEnableVertexAttribArray");
+	__gl_api.EnableVertexAttribArrayARB = glsym(handle, "glEnableVertexAttribArrayARB");
 	__gl_api.End = glsym(handle, "glEnd");
 	__gl_api.EndList = glsym(handle, "glEndList");
 	__gl_api.EndQuery = glsym(handle, "glEndQuery");
+	__gl_api.EndQueryARB = glsym(handle, "glEndQueryARB");
 	__gl_api.EvalCoord1d = glsym(handle, "glEvalCoord1d");
 	__gl_api.EvalCoord1dv = glsym(handle, "glEvalCoord1dv");
 	__gl_api.EvalCoord1f = glsym(handle, "glEvalCoord1f");
@@ -2128,42 +2783,68 @@ void apple_xgl_init_direct(void) {
 	__gl_api.Finish = glsym(handle, "glFinish");
 	__gl_api.Flush = glsym(handle, "glFlush");
 	__gl_api.FogCoordd = glsym(handle, "glFogCoordd");
+	__gl_api.FogCoorddEXT = glsym(handle, "glFogCoorddEXT");
 	__gl_api.FogCoorddv = glsym(handle, "glFogCoorddv");
+	__gl_api.FogCoorddvEXT = glsym(handle, "glFogCoorddvEXT");
 	__gl_api.FogCoordf = glsym(handle, "glFogCoordf");
+	__gl_api.FogCoordfEXT = glsym(handle, "glFogCoordfEXT");
 	__gl_api.FogCoordfv = glsym(handle, "glFogCoordfv");
+	__gl_api.FogCoordfvEXT = glsym(handle, "glFogCoordfvEXT");
 	__gl_api.FogCoordPointer = glsym(handle, "glFogCoordPointer");
+	__gl_api.FogCoordPointerEXT = glsym(handle, "glFogCoordPointerEXT");
 	__gl_api.Fogf = glsym(handle, "glFogf");
 	__gl_api.Fogfv = glsym(handle, "glFogfv");
 	__gl_api.Fogi = glsym(handle, "glFogi");
 	__gl_api.Fogiv = glsym(handle, "glFogiv");
+	__gl_api.FramebufferRenderbufferEXT = glsym(handle, "glFramebufferRenderbufferEXT");
+	__gl_api.FramebufferTexture1DEXT = glsym(handle, "glFramebufferTexture1DEXT");
+	__gl_api.FramebufferTexture2DEXT = glsym(handle, "glFramebufferTexture2DEXT");
+	__gl_api.FramebufferTexture3DEXT = glsym(handle, "glFramebufferTexture3DEXT");
 	__gl_api.FrontFace = glsym(handle, "glFrontFace");
 	__gl_api.Frustum = glsym(handle, "glFrustum");
 	__gl_api.GenBuffers = glsym(handle, "glGenBuffers");
+	__gl_api.GenBuffersARB = glsym(handle, "glGenBuffersARB");
+	__gl_api.GenerateMipmapEXT = glsym(handle, "glGenerateMipmapEXT");
+	__gl_api.GenFramebuffersEXT = glsym(handle, "glGenFramebuffersEXT");
 	__gl_api.GenLists = glsym(handle, "glGenLists");
+	__gl_api.GenProgramsARB = glsym(handle, "glGenProgramsARB");
 	__gl_api.GenQueries = glsym(handle, "glGenQueries");
+	__gl_api.GenQueriesARB = glsym(handle, "glGenQueriesARB");
+	__gl_api.GenRenderbuffersEXT = glsym(handle, "glGenRenderbuffersEXT");
 	__gl_api.GenTextures = glsym(handle, "glGenTextures");
 	__gl_api.GetActiveAttrib = glsym(handle, "glGetActiveAttrib");
+	__gl_api.GetActiveAttribARB = glsym(handle, "glGetActiveAttribARB");
 	__gl_api.GetActiveUniform = glsym(handle, "glGetActiveUniform");
+	__gl_api.GetActiveUniformARB = glsym(handle, "glGetActiveUniformARB");
+	__gl_api.GetAttachedObjectsARB = glsym(handle, "glGetAttachedObjectsARB");
 	__gl_api.GetAttachedShaders = glsym(handle, "glGetAttachedShaders");
 	__gl_api.GetAttribLocation = glsym(handle, "glGetAttribLocation");
+	__gl_api.GetAttribLocationARB = glsym(handle, "glGetAttribLocationARB");
 	__gl_api.GetBooleanv = glsym(handle, "glGetBooleanv");
 	__gl_api.GetBufferParameteriv = glsym(handle, "glGetBufferParameteriv");
+	__gl_api.GetBufferParameterivARB = glsym(handle, "glGetBufferParameterivARB");
 	__gl_api.GetBufferPointerv = glsym(handle, "glGetBufferPointerv");
+	__gl_api.GetBufferPointervARB = glsym(handle, "glGetBufferPointervARB");
 	__gl_api.GetBufferSubData = glsym(handle, "glGetBufferSubData");
+	__gl_api.GetBufferSubDataARB = glsym(handle, "glGetBufferSubDataARB");
 	__gl_api.GetClipPlane = glsym(handle, "glGetClipPlane");
 	__gl_api.GetColorTable = glsym(handle, "glGetColorTable");
 	__gl_api.GetColorTableParameterfv = glsym(handle, "glGetColorTableParameterfv");
 	__gl_api.GetColorTableParameteriv = glsym(handle, "glGetColorTableParameteriv");
 	__gl_api.GetCompressedTexImage = glsym(handle, "glGetCompressedTexImage");
+	__gl_api.GetCompressedTexImageARB = glsym(handle, "glGetCompressedTexImageARB");
 	__gl_api.GetConvolutionFilter = glsym(handle, "glGetConvolutionFilter");
 	__gl_api.GetConvolutionParameterfv = glsym(handle, "glGetConvolutionParameterfv");
 	__gl_api.GetConvolutionParameteriv = glsym(handle, "glGetConvolutionParameteriv");
 	__gl_api.GetDoublev = glsym(handle, "glGetDoublev");
 	__gl_api.GetError = glsym(handle, "glGetError");
 	__gl_api.GetFloatv = glsym(handle, "glGetFloatv");
+	__gl_api.GetFramebufferAttachmentParameterivEXT = glsym(handle, "glGetFramebufferAttachmentParameterivEXT");
+	__gl_api.GetHandleARB = glsym(handle, "glGetHandleARB");
 	__gl_api.GetHistogram = glsym(handle, "glGetHistogram");
 	__gl_api.GetHistogramParameterfv = glsym(handle, "glGetHistogramParameterfv");
 	__gl_api.GetHistogramParameteriv = glsym(handle, "glGetHistogramParameteriv");
+	__gl_api.GetInfoLogARB = glsym(handle, "glGetInfoLogARB");
 	__gl_api.GetIntegerv = glsym(handle, "glGetIntegerv");
 	__gl_api.GetLightfv = glsym(handle, "glGetLightfv");
 	__gl_api.GetLightiv = glsym(handle, "glGetLightiv");
@@ -2175,20 +2856,33 @@ void apple_xgl_init_direct(void) {
 	__gl_api.GetMinmax = glsym(handle, "glGetMinmax");
 	__gl_api.GetMinmaxParameterfv = glsym(handle, "glGetMinmaxParameterfv");
 	__gl_api.GetMinmaxParameteriv = glsym(handle, "glGetMinmaxParameteriv");
+	__gl_api.GetObjectParameterfvARB = glsym(handle, "glGetObjectParameterfvARB");
+	__gl_api.GetObjectParameterivARB = glsym(handle, "glGetObjectParameterivARB");
 	__gl_api.GetPixelMapfv = glsym(handle, "glGetPixelMapfv");
 	__gl_api.GetPixelMapuiv = glsym(handle, "glGetPixelMapuiv");
 	__gl_api.GetPixelMapusv = glsym(handle, "glGetPixelMapusv");
 	__gl_api.GetPointerv = glsym(handle, "glGetPointerv");
 	__gl_api.GetPolygonStipple = glsym(handle, "glGetPolygonStipple");
+	__gl_api.GetProgramEnvParameterdvARB = glsym(handle, "glGetProgramEnvParameterdvARB");
+	__gl_api.GetProgramEnvParameterfvARB = glsym(handle, "glGetProgramEnvParameterfvARB");
 	__gl_api.GetProgramInfoLog = glsym(handle, "glGetProgramInfoLog");
 	__gl_api.GetProgramiv = glsym(handle, "glGetProgramiv");
+	__gl_api.GetProgramivARB = glsym(handle, "glGetProgramivARB");
+	__gl_api.GetProgramLocalParameterdvARB = glsym(handle, "glGetProgramLocalParameterdvARB");
+	__gl_api.GetProgramLocalParameterfvARB = glsym(handle, "glGetProgramLocalParameterfvARB");
+	__gl_api.GetProgramStringARB = glsym(handle, "glGetProgramStringARB");
 	__gl_api.GetQueryiv = glsym(handle, "glGetQueryiv");
+	__gl_api.GetQueryivARB = glsym(handle, "glGetQueryivARB");
 	__gl_api.GetQueryObjectiv = glsym(handle, "glGetQueryObjectiv");
+	__gl_api.GetQueryObjectivARB = glsym(handle, "glGetQueryObjectivARB");
 	__gl_api.GetQueryObjectuiv = glsym(handle, "glGetQueryObjectuiv");
+	__gl_api.GetQueryObjectuivARB = glsym(handle, "glGetQueryObjectuivARB");
+	__gl_api.GetRenderbufferParameterivEXT = glsym(handle, "glGetRenderbufferParameterivEXT");
 	__gl_api.GetSeparableFilter = glsym(handle, "glGetSeparableFilter");
 	__gl_api.GetShaderInfoLog = glsym(handle, "glGetShaderInfoLog");
 	__gl_api.GetShaderiv = glsym(handle, "glGetShaderiv");
 	__gl_api.GetShaderSource = glsym(handle, "glGetShaderSource");
+	__gl_api.GetShaderSourceARB = glsym(handle, "glGetShaderSourceARB");
 	__gl_api.GetString = glsym(handle, "glGetString");
 	__gl_api.GetTexEnvfv = glsym(handle, "glGetTexEnvfv");
 	__gl_api.GetTexEnviv = glsym(handle, "glGetTexEnviv");
@@ -2201,12 +2895,19 @@ void apple_xgl_init_direct(void) {
 	__gl_api.GetTexParameterfv = glsym(handle, "glGetTexParameterfv");
 	__gl_api.GetTexParameteriv = glsym(handle, "glGetTexParameteriv");
 	__gl_api.GetUniformfv = glsym(handle, "glGetUniformfv");
+	__gl_api.GetUniformfvARB = glsym(handle, "glGetUniformfvARB");
 	__gl_api.GetUniformiv = glsym(handle, "glGetUniformiv");
+	__gl_api.GetUniformivARB = glsym(handle, "glGetUniformivARB");
 	__gl_api.GetUniformLocation = glsym(handle, "glGetUniformLocation");
+	__gl_api.GetUniformLocationARB = glsym(handle, "glGetUniformLocationARB");
 	__gl_api.GetVertexAttribdv = glsym(handle, "glGetVertexAttribdv");
+	__gl_api.GetVertexAttribdvARB = glsym(handle, "glGetVertexAttribdvARB");
 	__gl_api.GetVertexAttribfv = glsym(handle, "glGetVertexAttribfv");
+	__gl_api.GetVertexAttribfvARB = glsym(handle, "glGetVertexAttribfvARB");
 	__gl_api.GetVertexAttribiv = glsym(handle, "glGetVertexAttribiv");
+	__gl_api.GetVertexAttribivARB = glsym(handle, "glGetVertexAttribivARB");
 	__gl_api.GetVertexAttribPointerv = glsym(handle, "glGetVertexAttribPointerv");
+	__gl_api.GetVertexAttribPointervARB = glsym(handle, "glGetVertexAttribPointervARB");
 	__gl_api.Hint = glsym(handle, "glHint");
 	__gl_api.Histogram = glsym(handle, "glHistogram");
 	__gl_api.Indexd = glsym(handle, "glIndexd");
@@ -2224,10 +2925,15 @@ void apple_xgl_init_direct(void) {
 	__gl_api.InitNames = glsym(handle, "glInitNames");
 	__gl_api.InterleavedArrays = glsym(handle, "glInterleavedArrays");
 	__gl_api.IsBuffer = glsym(handle, "glIsBuffer");
+	__gl_api.IsBufferARB = glsym(handle, "glIsBufferARB");
 	__gl_api.IsEnabled = glsym(handle, "glIsEnabled");
+	__gl_api.IsFramebufferEXT = glsym(handle, "glIsFramebufferEXT");
 	__gl_api.IsList = glsym(handle, "glIsList");
 	__gl_api.IsProgram = glsym(handle, "glIsProgram");
+	__gl_api.IsProgramARB = glsym(handle, "glIsProgramARB");
 	__gl_api.IsQuery = glsym(handle, "glIsQuery");
+	__gl_api.IsQueryARB = glsym(handle, "glIsQueryARB");
+	__gl_api.IsRenderbufferEXT = glsym(handle, "glIsRenderbufferEXT");
 	__gl_api.IsShader = glsym(handle, "glIsShader");
 	__gl_api.IsTexture = glsym(handle, "glIsTexture");
 	__gl_api.Lightf = glsym(handle, "glLightf");
@@ -2241,19 +2947,24 @@ void apple_xgl_init_direct(void) {
 	__gl_api.LineStipple = glsym(handle, "glLineStipple");
 	__gl_api.LineWidth = glsym(handle, "glLineWidth");
 	__gl_api.LinkProgram = glsym(handle, "glLinkProgram");
+	__gl_api.LinkProgramARB = glsym(handle, "glLinkProgramARB");
 	__gl_api.ListBase = glsym(handle, "glListBase");
 	__gl_api.LoadIdentity = glsym(handle, "glLoadIdentity");
 	__gl_api.LoadMatrixd = glsym(handle, "glLoadMatrixd");
 	__gl_api.LoadMatrixf = glsym(handle, "glLoadMatrixf");
 	__gl_api.LoadName = glsym(handle, "glLoadName");
 	__gl_api.LoadTransposeMatrixd = glsym(handle, "glLoadTransposeMatrixd");
+	__gl_api.LoadTransposeMatrixdARB = glsym(handle, "glLoadTransposeMatrixdARB");
 	__gl_api.LoadTransposeMatrixf = glsym(handle, "glLoadTransposeMatrixf");
+	__gl_api.LoadTransposeMatrixfARB = glsym(handle, "glLoadTransposeMatrixfARB");
+	__gl_api.LockArraysEXT = glsym(handle, "glLockArraysEXT");
 	__gl_api.LogicOp = glsym(handle, "glLogicOp");
 	__gl_api.Map1d = glsym(handle, "glMap1d");
 	__gl_api.Map1f = glsym(handle, "glMap1f");
 	__gl_api.Map2d = glsym(handle, "glMap2d");
 	__gl_api.Map2f = glsym(handle, "glMap2f");
 	__gl_api.MapBuffer = glsym(handle, "glMapBuffer");
+	__gl_api.MapBufferARB = glsym(handle, "glMapBufferARB");
 	__gl_api.MapGrid1d = glsym(handle, "glMapGrid1d");
 	__gl_api.MapGrid1f = glsym(handle, "glMapGrid1f");
 	__gl_api.MapGrid2d = glsym(handle, "glMapGrid2d");
@@ -2265,7 +2976,9 @@ void apple_xgl_init_direct(void) {
 	__gl_api.MatrixMode = glsym(handle, "glMatrixMode");
 	__gl_api.Minmax = glsym(handle, "glMinmax");
 	__gl_api.MultiDrawArrays = glsym(handle, "glMultiDrawArrays");
+	__gl_api.MultiDrawArraysEXT = glsym(handle, "glMultiDrawArraysEXT");
 	__gl_api.MultiDrawElements = glsym(handle, "glMultiDrawElements");
+	__gl_api.MultiDrawElementsEXT = glsym(handle, "glMultiDrawElementsEXT");
 	__gl_api.MultiTexCoord1d = glsym(handle, "glMultiTexCoord1d");
 	__gl_api.MultiTexCoord1dARB = glsym(handle, "glMultiTexCoord1dARB");
 	__gl_api.MultiTexCoord1dv = glsym(handle, "glMultiTexCoord1dv");
@@ -2333,7 +3046,9 @@ void apple_xgl_init_direct(void) {
 	__gl_api.MultMatrixd = glsym(handle, "glMultMatrixd");
 	__gl_api.MultMatrixf = glsym(handle, "glMultMatrixf");
 	__gl_api.MultTransposeMatrixd = glsym(handle, "glMultTransposeMatrixd");
+	__gl_api.MultTransposeMatrixdARB = glsym(handle, "glMultTransposeMatrixdARB");
 	__gl_api.MultTransposeMatrixf = glsym(handle, "glMultTransposeMatrixf");
+	__gl_api.MultTransposeMatrixfARB = glsym(handle, "glMultTransposeMatrixfARB");
 	__gl_api.NewList = glsym(handle, "glNewList");
 	__gl_api.Normal3b = glsym(handle, "glNormal3b");
 	__gl_api.Normal3bv = glsym(handle, "glNormal3bv");
@@ -2371,6 +3086,18 @@ void apple_xgl_init_direct(void) {
 	__gl_api.PopMatrix = glsym(handle, "glPopMatrix");
 	__gl_api.PopName = glsym(handle, "glPopName");
 	__gl_api.PrioritizeTextures = glsym(handle, "glPrioritizeTextures");
+	__gl_api.ProgramEnvParameter4dARB = glsym(handle, "glProgramEnvParameter4dARB");
+	__gl_api.ProgramEnvParameter4dvARB = glsym(handle, "glProgramEnvParameter4dvARB");
+	__gl_api.ProgramEnvParameter4fARB = glsym(handle, "glProgramEnvParameter4fARB");
+	__gl_api.ProgramEnvParameter4fvARB = glsym(handle, "glProgramEnvParameter4fvARB");
+	__gl_api.ProgramEnvParameters4fvEXT = glsym(handle, "glProgramEnvParameters4fvEXT");
+	__gl_api.ProgramLocalParameter4dARB = glsym(handle, "glProgramLocalParameter4dARB");
+	__gl_api.ProgramLocalParameter4dvARB = glsym(handle, "glProgramLocalParameter4dvARB");
+	__gl_api.ProgramLocalParameter4fARB = glsym(handle, "glProgramLocalParameter4fARB");
+	__gl_api.ProgramLocalParameter4fvARB = glsym(handle, "glProgramLocalParameter4fvARB");
+	__gl_api.ProgramLocalParameters4fvEXT = glsym(handle, "glProgramLocalParameters4fvEXT");
+	__gl_api.ProgramParameteriEXT = glsym(handle, "glProgramParameteriEXT");
+	__gl_api.ProgramStringARB = glsym(handle, "glProgramStringARB");
 	__gl_api.PushAttrib = glsym(handle, "glPushAttrib");
 	__gl_api.PushClientAttrib = glsym(handle, "glPushClientAttrib");
 	__gl_api.PushMatrix = glsym(handle, "glPushMatrix");
@@ -2409,36 +3136,57 @@ void apple_xgl_init_direct(void) {
 	__gl_api.Rectiv = glsym(handle, "glRectiv");
 	__gl_api.Rects = glsym(handle, "glRects");
 	__gl_api.Rectsv = glsym(handle, "glRectsv");
+	__gl_api.RenderbufferStorageEXT = glsym(handle, "glRenderbufferStorageEXT");
+	__gl_api.RenderbufferStorageMultisampleEXT = glsym(handle, "glRenderbufferStorageMultisampleEXT");
 	__gl_api.RenderMode = glsym(handle, "glRenderMode");
 	__gl_api.ResetHistogram = glsym(handle, "glResetHistogram");
 	__gl_api.ResetMinmax = glsym(handle, "glResetMinmax");
 	__gl_api.Rotated = glsym(handle, "glRotated");
 	__gl_api.Rotatef = glsym(handle, "glRotatef");
 	__gl_api.SampleCoverage = glsym(handle, "glSampleCoverage");
+	__gl_api.SampleCoverageARB = glsym(handle, "glSampleCoverageARB");
 	__gl_api.Scaled = glsym(handle, "glScaled");
 	__gl_api.Scalef = glsym(handle, "glScalef");
 	__gl_api.Scissor = glsym(handle, "glScissor");
 	__gl_api.SecondaryColor3b = glsym(handle, "glSecondaryColor3b");
+	__gl_api.SecondaryColor3bEXT = glsym(handle, "glSecondaryColor3bEXT");
 	__gl_api.SecondaryColor3bv = glsym(handle, "glSecondaryColor3bv");
+	__gl_api.SecondaryColor3bvEXT = glsym(handle, "glSecondaryColor3bvEXT");
 	__gl_api.SecondaryColor3d = glsym(handle, "glSecondaryColor3d");
+	__gl_api.SecondaryColor3dEXT = glsym(handle, "glSecondaryColor3dEXT");
 	__gl_api.SecondaryColor3dv = glsym(handle, "glSecondaryColor3dv");
+	__gl_api.SecondaryColor3dvEXT = glsym(handle, "glSecondaryColor3dvEXT");
 	__gl_api.SecondaryColor3f = glsym(handle, "glSecondaryColor3f");
+	__gl_api.SecondaryColor3fEXT = glsym(handle, "glSecondaryColor3fEXT");
 	__gl_api.SecondaryColor3fv = glsym(handle, "glSecondaryColor3fv");
+	__gl_api.SecondaryColor3fvEXT = glsym(handle, "glSecondaryColor3fvEXT");
 	__gl_api.SecondaryColor3i = glsym(handle, "glSecondaryColor3i");
+	__gl_api.SecondaryColor3iEXT = glsym(handle, "glSecondaryColor3iEXT");
 	__gl_api.SecondaryColor3iv = glsym(handle, "glSecondaryColor3iv");
+	__gl_api.SecondaryColor3ivEXT = glsym(handle, "glSecondaryColor3ivEXT");
 	__gl_api.SecondaryColor3s = glsym(handle, "glSecondaryColor3s");
+	__gl_api.SecondaryColor3sEXT = glsym(handle, "glSecondaryColor3sEXT");
 	__gl_api.SecondaryColor3sv = glsym(handle, "glSecondaryColor3sv");
+	__gl_api.SecondaryColor3svEXT = glsym(handle, "glSecondaryColor3svEXT");
 	__gl_api.SecondaryColor3ub = glsym(handle, "glSecondaryColor3ub");
+	__gl_api.SecondaryColor3ubEXT = glsym(handle, "glSecondaryColor3ubEXT");
 	__gl_api.SecondaryColor3ubv = glsym(handle, "glSecondaryColor3ubv");
+	__gl_api.SecondaryColor3ubvEXT = glsym(handle, "glSecondaryColor3ubvEXT");
 	__gl_api.SecondaryColor3ui = glsym(handle, "glSecondaryColor3ui");
+	__gl_api.SecondaryColor3uiEXT = glsym(handle, "glSecondaryColor3uiEXT");
 	__gl_api.SecondaryColor3uiv = glsym(handle, "glSecondaryColor3uiv");
+	__gl_api.SecondaryColor3uivEXT = glsym(handle, "glSecondaryColor3uivEXT");
 	__gl_api.SecondaryColor3us = glsym(handle, "glSecondaryColor3us");
+	__gl_api.SecondaryColor3usEXT = glsym(handle, "glSecondaryColor3usEXT");
 	__gl_api.SecondaryColor3usv = glsym(handle, "glSecondaryColor3usv");
+	__gl_api.SecondaryColor3usvEXT = glsym(handle, "glSecondaryColor3usvEXT");
 	__gl_api.SecondaryColorPointer = glsym(handle, "glSecondaryColorPointer");
+	__gl_api.SecondaryColorPointerEXT = glsym(handle, "glSecondaryColorPointerEXT");
 	__gl_api.SelectBuffer = glsym(handle, "glSelectBuffer");
 	__gl_api.SeparableFilter2D = glsym(handle, "glSeparableFilter2D");
 	__gl_api.ShadeModel = glsym(handle, "glShadeModel");
 	__gl_api.ShaderSource = glsym(handle, "glShaderSource");
+	__gl_api.ShaderSourceARB = glsym(handle, "glShaderSourceARB");
 	__gl_api.StencilFunc = glsym(handle, "glStencilFunc");
 	__gl_api.StencilFuncSeparate = glsym(handle, "glStencilFuncSeparate");
 	__gl_api.StencilMask = glsym(handle, "glStencilMask");
@@ -2501,27 +3249,56 @@ void apple_xgl_init_direct(void) {
 	__gl_api.Translated = glsym(handle, "glTranslated");
 	__gl_api.Translatef = glsym(handle, "glTranslatef");
 	__gl_api.Uniform1f = glsym(handle, "glUniform1f");
+	__gl_api.Uniform1fARB = glsym(handle, "glUniform1fARB");
 	__gl_api.Uniform1fv = glsym(handle, "glUniform1fv");
+	__gl_api.Uniform1fvARB = glsym(handle, "glUniform1fvARB");
 	__gl_api.Uniform1i = glsym(handle, "glUniform1i");
+	__gl_api.Uniform1iARB = glsym(handle, "glUniform1iARB");
 	__gl_api.Uniform1iv = glsym(handle, "glUniform1iv");
+	__gl_api.Uniform1ivARB = glsym(handle, "glUniform1ivARB");
 	__gl_api.Uniform2f = glsym(handle, "glUniform2f");
+	__gl_api.Uniform2fARB = glsym(handle, "glUniform2fARB");
 	__gl_api.Uniform2fv = glsym(handle, "glUniform2fv");
+	__gl_api.Uniform2fvARB = glsym(handle, "glUniform2fvARB");
 	__gl_api.Uniform2i = glsym(handle, "glUniform2i");
+	__gl_api.Uniform2iARB = glsym(handle, "glUniform2iARB");
 	__gl_api.Uniform2iv = glsym(handle, "glUniform2iv");
+	__gl_api.Uniform2ivARB = glsym(handle, "glUniform2ivARB");
 	__gl_api.Uniform3f = glsym(handle, "glUniform3f");
+	__gl_api.Uniform3fARB = glsym(handle, "glUniform3fARB");
 	__gl_api.Uniform3fv = glsym(handle, "glUniform3fv");
+	__gl_api.Uniform3fvARB = glsym(handle, "glUniform3fvARB");
 	__gl_api.Uniform3i = glsym(handle, "glUniform3i");
+	__gl_api.Uniform3iARB = glsym(handle, "glUniform3iARB");
 	__gl_api.Uniform3iv = glsym(handle, "glUniform3iv");
+	__gl_api.Uniform3ivARB = glsym(handle, "glUniform3ivARB");
 	__gl_api.Uniform4f = glsym(handle, "glUniform4f");
+	__gl_api.Uniform4fARB = glsym(handle, "glUniform4fARB");
 	__gl_api.Uniform4fv = glsym(handle, "glUniform4fv");
+	__gl_api.Uniform4fvARB = glsym(handle, "glUniform4fvARB");
 	__gl_api.Uniform4i = glsym(handle, "glUniform4i");
+	__gl_api.Uniform4iARB = glsym(handle, "glUniform4iARB");
 	__gl_api.Uniform4iv = glsym(handle, "glUniform4iv");
+	__gl_api.Uniform4ivARB = glsym(handle, "glUniform4ivARB");
 	__gl_api.UniformMatrix2fv = glsym(handle, "glUniformMatrix2fv");
+	__gl_api.UniformMatrix2fvARB = glsym(handle, "glUniformMatrix2fvARB");
+	__gl_api.UniformMatrix2x3fv = glsym(handle, "glUniformMatrix2x3fv");
+	__gl_api.UniformMatrix2x4fv = glsym(handle, "glUniformMatrix2x4fv");
 	__gl_api.UniformMatrix3fv = glsym(handle, "glUniformMatrix3fv");
+	__gl_api.UniformMatrix3fvARB = glsym(handle, "glUniformMatrix3fvARB");
+	__gl_api.UniformMatrix3x2fv = glsym(handle, "glUniformMatrix3x2fv");
+	__gl_api.UniformMatrix3x4fv = glsym(handle, "glUniformMatrix3x4fv");
 	__gl_api.UniformMatrix4fv = glsym(handle, "glUniformMatrix4fv");
+	__gl_api.UniformMatrix4fvARB = glsym(handle, "glUniformMatrix4fvARB");
+	__gl_api.UniformMatrix4x2fv = glsym(handle, "glUniformMatrix4x2fv");
+	__gl_api.UniformMatrix4x3fv = glsym(handle, "glUniformMatrix4x3fv");
+	__gl_api.UnlockArraysEXT = glsym(handle, "glUnlockArraysEXT");
 	__gl_api.UnmapBuffer = glsym(handle, "glUnmapBuffer");
+	__gl_api.UnmapBufferARB = glsym(handle, "glUnmapBufferARB");
 	__gl_api.UseProgram = glsym(handle, "glUseProgram");
+	__gl_api.UseProgramObjectARB = glsym(handle, "glUseProgramObjectARB");
 	__gl_api.ValidateProgram = glsym(handle, "glValidateProgram");
+	__gl_api.ValidateProgramARB = glsym(handle, "glValidateProgramARB");
 	__gl_api.Vertex2d = glsym(handle, "glVertex2d");
 	__gl_api.Vertex2dv = glsym(handle, "glVertex2dv");
 	__gl_api.Vertex2f = glsym(handle, "glVertex2f");
@@ -2547,44 +3324,91 @@ void apple_xgl_init_direct(void) {
 	__gl_api.Vertex4s = glsym(handle, "glVertex4s");
 	__gl_api.Vertex4sv = glsym(handle, "glVertex4sv");
 	__gl_api.VertexAttrib1d = glsym(handle, "glVertexAttrib1d");
+	__gl_api.VertexAttrib1dARB = glsym(handle, "glVertexAttrib1dARB");
 	__gl_api.VertexAttrib1dv = glsym(handle, "glVertexAttrib1dv");
+	__gl_api.VertexAttrib1dvARB = glsym(handle, "glVertexAttrib1dvARB");
 	__gl_api.VertexAttrib1f = glsym(handle, "glVertexAttrib1f");
+	__gl_api.VertexAttrib1fARB = glsym(handle, "glVertexAttrib1fARB");
 	__gl_api.VertexAttrib1fv = glsym(handle, "glVertexAttrib1fv");
+	__gl_api.VertexAttrib1fvARB = glsym(handle, "glVertexAttrib1fvARB");
 	__gl_api.VertexAttrib1s = glsym(handle, "glVertexAttrib1s");
+	__gl_api.VertexAttrib1sARB = glsym(handle, "glVertexAttrib1sARB");
 	__gl_api.VertexAttrib1sv = glsym(handle, "glVertexAttrib1sv");
+	__gl_api.VertexAttrib1svARB = glsym(handle, "glVertexAttrib1svARB");
 	__gl_api.VertexAttrib2d = glsym(handle, "glVertexAttrib2d");
+	__gl_api.VertexAttrib2dARB = glsym(handle, "glVertexAttrib2dARB");
 	__gl_api.VertexAttrib2dv = glsym(handle, "glVertexAttrib2dv");
+	__gl_api.VertexAttrib2dvARB = glsym(handle, "glVertexAttrib2dvARB");
 	__gl_api.VertexAttrib2f = glsym(handle, "glVertexAttrib2f");
+	__gl_api.VertexAttrib2fARB = glsym(handle, "glVertexAttrib2fARB");
 	__gl_api.VertexAttrib2fv = glsym(handle, "glVertexAttrib2fv");
+	__gl_api.VertexAttrib2fvARB = glsym(handle, "glVertexAttrib2fvARB");
 	__gl_api.VertexAttrib2s = glsym(handle, "glVertexAttrib2s");
+	__gl_api.VertexAttrib2sARB = glsym(handle, "glVertexAttrib2sARB");
 	__gl_api.VertexAttrib2sv = glsym(handle, "glVertexAttrib2sv");
+	__gl_api.VertexAttrib2svARB = glsym(handle, "glVertexAttrib2svARB");
 	__gl_api.VertexAttrib3d = glsym(handle, "glVertexAttrib3d");
+	__gl_api.VertexAttrib3dARB = glsym(handle, "glVertexAttrib3dARB");
 	__gl_api.VertexAttrib3dv = glsym(handle, "glVertexAttrib3dv");
+	__gl_api.VertexAttrib3dvARB = glsym(handle, "glVertexAttrib3dvARB");
 	__gl_api.VertexAttrib3f = glsym(handle, "glVertexAttrib3f");
+	__gl_api.VertexAttrib3fARB = glsym(handle, "glVertexAttrib3fARB");
 	__gl_api.VertexAttrib3fv = glsym(handle, "glVertexAttrib3fv");
+	__gl_api.VertexAttrib3fvARB = glsym(handle, "glVertexAttrib3fvARB");
 	__gl_api.VertexAttrib3s = glsym(handle, "glVertexAttrib3s");
+	__gl_api.VertexAttrib3sARB = glsym(handle, "glVertexAttrib3sARB");
 	__gl_api.VertexAttrib3sv = glsym(handle, "glVertexAttrib3sv");
+	__gl_api.VertexAttrib3svARB = glsym(handle, "glVertexAttrib3svARB");
 	__gl_api.VertexAttrib4bv = glsym(handle, "glVertexAttrib4bv");
+	__gl_api.VertexAttrib4bvARB = glsym(handle, "glVertexAttrib4bvARB");
 	__gl_api.VertexAttrib4d = glsym(handle, "glVertexAttrib4d");
+	__gl_api.VertexAttrib4dARB = glsym(handle, "glVertexAttrib4dARB");
 	__gl_api.VertexAttrib4dv = glsym(handle, "glVertexAttrib4dv");
+	__gl_api.VertexAttrib4dvARB = glsym(handle, "glVertexAttrib4dvARB");
 	__gl_api.VertexAttrib4f = glsym(handle, "glVertexAttrib4f");
+	__gl_api.VertexAttrib4fARB = glsym(handle, "glVertexAttrib4fARB");
 	__gl_api.VertexAttrib4fv = glsym(handle, "glVertexAttrib4fv");
+	__gl_api.VertexAttrib4fvARB = glsym(handle, "glVertexAttrib4fvARB");
 	__gl_api.VertexAttrib4iv = glsym(handle, "glVertexAttrib4iv");
+	__gl_api.VertexAttrib4ivARB = glsym(handle, "glVertexAttrib4ivARB");
 	__gl_api.VertexAttrib4Nbv = glsym(handle, "glVertexAttrib4Nbv");
+	__gl_api.VertexAttrib4NbvARB = glsym(handle, "glVertexAttrib4NbvARB");
 	__gl_api.VertexAttrib4Niv = glsym(handle, "glVertexAttrib4Niv");
+	__gl_api.VertexAttrib4NivARB = glsym(handle, "glVertexAttrib4NivARB");
 	__gl_api.VertexAttrib4Nsv = glsym(handle, "glVertexAttrib4Nsv");
+	__gl_api.VertexAttrib4NsvARB = glsym(handle, "glVertexAttrib4NsvARB");
 	__gl_api.VertexAttrib4Nub = glsym(handle, "glVertexAttrib4Nub");
+	__gl_api.VertexAttrib4NubARB = glsym(handle, "glVertexAttrib4NubARB");
 	__gl_api.VertexAttrib4Nubv = glsym(handle, "glVertexAttrib4Nubv");
+	__gl_api.VertexAttrib4NubvARB = glsym(handle, "glVertexAttrib4NubvARB");
 	__gl_api.VertexAttrib4Nuiv = glsym(handle, "glVertexAttrib4Nuiv");
+	__gl_api.VertexAttrib4NuivARB = glsym(handle, "glVertexAttrib4NuivARB");
 	__gl_api.VertexAttrib4Nusv = glsym(handle, "glVertexAttrib4Nusv");
+	__gl_api.VertexAttrib4NusvARB = glsym(handle, "glVertexAttrib4NusvARB");
 	__gl_api.VertexAttrib4s = glsym(handle, "glVertexAttrib4s");
+	__gl_api.VertexAttrib4sARB = glsym(handle, "glVertexAttrib4sARB");
 	__gl_api.VertexAttrib4sv = glsym(handle, "glVertexAttrib4sv");
+	__gl_api.VertexAttrib4svARB = glsym(handle, "glVertexAttrib4svARB");
 	__gl_api.VertexAttrib4ubv = glsym(handle, "glVertexAttrib4ubv");
+	__gl_api.VertexAttrib4ubvARB = glsym(handle, "glVertexAttrib4ubvARB");
 	__gl_api.VertexAttrib4uiv = glsym(handle, "glVertexAttrib4uiv");
+	__gl_api.VertexAttrib4uivARB = glsym(handle, "glVertexAttrib4uivARB");
 	__gl_api.VertexAttrib4usv = glsym(handle, "glVertexAttrib4usv");
+	__gl_api.VertexAttrib4usvARB = glsym(handle, "glVertexAttrib4usvARB");
 	__gl_api.VertexAttribPointer = glsym(handle, "glVertexAttribPointer");
+	__gl_api.VertexAttribPointerARB = glsym(handle, "glVertexAttribPointerARB");
+	__gl_api.VertexBlendARB = glsym(handle, "glVertexBlendARB");
 	__gl_api.VertexPointer = glsym(handle, "glVertexPointer");
 	__gl_api.Viewport = glsym(handle, "glViewport");
+	__gl_api.WeightbvARB = glsym(handle, "glWeightbvARB");
+	__gl_api.WeightdvARB = glsym(handle, "glWeightdvARB");
+	__gl_api.WeightfvARB = glsym(handle, "glWeightfvARB");
+	__gl_api.WeightivARB = glsym(handle, "glWeightivARB");
+	__gl_api.WeightPointerARB = glsym(handle, "glWeightPointerARB");
+	__gl_api.WeightsvARB = glsym(handle, "glWeightsvARB");
+	__gl_api.WeightubvARB = glsym(handle, "glWeightubvARB");
+	__gl_api.WeightuivARB = glsym(handle, "glWeightuivARB");
+	__gl_api.WeightusvARB = glsym(handle, "glWeightusvARB");
 	__gl_api.WindowPos2d = glsym(handle, "glWindowPos2d");
 	__gl_api.WindowPos2dARB = glsym(handle, "glWindowPos2dARB");
 	__gl_api.WindowPos2dv = glsym(handle, "glWindowPos2dv");
