@@ -35,6 +35,9 @@
 #include <OpenGL/CGLTypes.h>
 #include <OpenGL/OpenGL.h>
 
+/* For GLint and GLsizei on Tiger */
+#include <OpenGL/gl.h>
+
 struct apple_cgl_api {
     CGLError (*choose_pixel_format)(const CGLPixelFormatAttribute *attribs, 
 				    CGLPixelFormatObj *pix, GLint *npix);
