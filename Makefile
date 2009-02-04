@@ -69,7 +69,7 @@ glxhash.o: glxhash.h glxhash.c
 	$(COMPILE) glxhash.c
 
 appledri.o: appledri.h appledristr.h appledri.c
-	$(COMPILE) -I/usr/X11/include/X11 appledri.c
+	$(COMPILE) -I$(X11_DIR)/include/X11 appledri.c
 
 apple_glx_context.o: apple_glx_context.c apple_glx_context.h apple_glx_context.h
 	$(COMPILE) apple_glx_context.c -F/System/Library/Frameworks/OpenGL.framework
