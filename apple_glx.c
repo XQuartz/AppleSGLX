@@ -102,7 +102,10 @@ bool apple_init_glx(Display *dpy) {
     if(initialized)
 	return false;
 
-    puts("HELLO from apple_init_glx!");
+    if(getenv("LIBGL_DIAGNOSTIC")) {
+	printf("initializing libGL in %s", __func__);
+    }
+
     apple_cgl_init();
     apple_xgl_init_direct();
     libgl_handle = dlopen(OPENGL_LIB_PATH, RTLD_LAZY);
