@@ -229,6 +229,7 @@ bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawabl
     xp_error error;
     struct apple_glx_drawable *newagd = NULL;
     CGLError cglerr;
+    bool same_drawable = false;
 
     assert(NULL != dpy);
 
@@ -250,24 +251,39 @@ bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawabl
     }
 
     newagd = apple_glx_find_drawable(dpy, drawable);
-
-    if(ac->drawable && newagd != ac->drawable) {
+    
+    if(ac->drawable == newagd)
+	same_drawable = true;
+    
+    /*
+     * Release and try to destroy the old drawable, so long as the new one
+     * isn't the old. 
+     */
+    if(ac->drawable && !same_drawable) {
 	apple_glx_release_drawable(ac->drawable);
 	apple_glx_destroy_drawable(ac->drawable);
 	ac->drawable = NULL;
     }
-
+    
     if(NULL == newagd) {
 	if(apple_glx_create_drawable(dpy, ac, drawable, &newagd))
 	    return true;
-        
+    
 	/* Save the new drawable with the context structure. */
 	ac->drawable = newagd;
-
+	
 	/* Save a reference to the new drawable. */
 	apple_glx_reference_drawable(ac->drawable);
+    } else {
+	/* We are reusing an existing drawable structure. */
+
+	if(!same_drawable) {
+	    /* The drawable isn't the same as the previously made current. */
+	    ac->drawable = newagd;
+	    apple_glx_reference_drawable(ac->drawable);
+	}
     }
-    
+
     cglerr = apple_cgl.set_current_context(ac->context_obj);
 
     if(kCGLNoError != cglerr) {
@@ -275,6 +291,9 @@ bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawabl
 		apple_cgl.error_string(cglerr));
 	return true;
     }
+
+    assert(NULL != ac->context_obj);
+    assert(NULL != ac->drawable);
 
     error = xp_attach_gl_context(ac->context_obj, ac->drawable->surface_id);
 
