@@ -88,6 +88,8 @@ void apple_cgl_init(void) {
     apple_cgl.error_string = sym(h, "CGLErrorString");
 
     apple_cgl.set_off_screen = sym(h, "CGLSetOffScreen");
+    
+    apple_cgl.copy_context = sym(h, "CGLCopyContext");
 
     initialized = true;
 }

@@ -58,6 +58,9 @@ struct apple_cgl_api {
 			       GLsizei width, GLsizei height, GLint rowbytes,
 			       void *baseaddr);
 
+    CGLError (*copy_context)(CGLContextObj src, CGLContextObj dst,
+			     GLbitfield mask);
+
 };
 
 extern struct apple_cgl_api apple_cgl;

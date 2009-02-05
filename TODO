@@ -1,12 +1,20 @@
+-- Feb 5, 2009
+
+glXUseXFont needs the xfont.c code imported from Mesa.
+
+Test Chimera with AppleSGLX.
+
+Test Pymol again with AppleSGLX.
+
 -- Jan 16, 2009
 
 (from my paper notes)
 
 DONE: glXSwapBuffers should do an implicit glFlush according to the GLX 1.4 spec.
 
-The first time a context is made current we should set the glViewport and glScissor according to the GLX 1.4 spec to the size of the new drawable.
+DONE The first time a context is made current we should set the glViewport and glScissor according to the GLX 1.4 spec to the size of the new drawable.
 
-test glXQueryServerString, glXGetClientString, and glXGetProcAddress.
+DONE test glXQueryServerString, glXGetClientString, and glXGetProcAddress.
 
 Use CGLGetVersion to assert ABI major version compatibility with the OpenGL framework.
 
@@ -23,11 +31,11 @@ Fix the missing #define for glxinfo IIRC or one of the glx-based programs from M
  
 Generate include/GL/gl.h as needed.
 
-Shared contexts may work now, test them.
+TEST Shared contexts may work now, test them.
 
 DestroyContext needs some work perhaps for the drawable destruction.
 
-glXCopyContext needs some work and additional code in apple_glx.c.
+TEST glXCopyContext needs some work and additional code in apple_glx.c.
 
 -- OLD:
 

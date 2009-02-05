@@ -146,7 +146,9 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
     }
     
     if(gc) {
-	if(apple_glx_make_current_context(dpy, gc ? gc->apple : NULL, draw))
+	if(apple_glx_make_current_context(dpy, oldGC ? oldGC->apple : NULL, 
+					  gc ? gc->apple : NULL,
+					  draw))
 	    return GL_FALSE;
     }
 

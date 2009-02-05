@@ -47,7 +47,9 @@ struct apple_glx_context {
     struct apple_glx_drawable *drawable;
     pthread_t thread_id;
     int screen;
-    Bool double_buffered;
+    bool double_buffered;
+    bool is_current; /* True if the context is current in some thread. */
+    bool made_current; /* True if the context has ever been made current. */
     struct apple_glx_context *previous, *next;
 };
 
@@ -55,11 +57,13 @@ void apple_glx_create_context(void **ptr, Display *dpy, int screen,
 			      const void *mode, void *sharedContext);
 void apple_glx_destroy_context(void **ptr, Display *dpy);
 
-bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawable);
+bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr, GLXDrawable drawable);
 bool apple_glx_is_current_drawable(void *ptr, GLXDrawable drawable);
 
 bool apple_glx_get_surface_from_uid(unsigned int uid, xp_surface_id *sid, 
         CGLContextObj *contextobj);
 
+bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr, 
+			    unsigned long mask, int *errorptr);
 
 #endif /*APPLE_GLX_CONTEXT_H*/

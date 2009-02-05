@@ -34,6 +34,6 @@
 
 /* mode is expected to be of type __GLcontextModes. */
 void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
-			       Bool *double_buffered);
+			       bool *double_buffered);
 
 #endif

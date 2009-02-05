@@ -711,6 +711,15 @@ PUBLIC void glXCopyContext(Display *dpy, GLXContext source,
     GLXContext gc = __glXGetCurrentContext();
     GLXContextTag tag;
     CARD8 opcode;
+    int error;
+
+    if(apple_glx_copy_context(gc->apple, source->apple, dest->apple,
+			      mask, &error)) {
+	/* FIXME We need to somehow invoke the X11 error handler with error. */
+	return;
+    }
+
+    return;
 
     opcode = __glXSetupForCommand(dpy);
     if (!opcode) {

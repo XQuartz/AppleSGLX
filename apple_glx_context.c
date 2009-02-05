@@ -38,10 +38,11 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-#include <GL/glx.h>
 #include <OpenGL/CGLTypes.h>
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/OpenGL.h>
+
+#include "glxclient.h"
 
 #include "apple_glx_context.h"
 #include "appledri.h"
@@ -76,7 +77,6 @@ static void unlock_context_list(void) {
     }
 }
 
-
 /* This creates an apple_private_context struct.  
  *
  * It's typically called to save the struct in a GLXContext.
@@ -100,6 +100,9 @@ void apple_glx_create_context(void **ptr, Display *dpy, int screen,
     ac->drawable = NULL;
     ac->thread_id = pthread_self();
     ac->screen = screen;
+    ac->double_buffered = false;
+    ac->is_current = false;
+    ac->made_current = false;
     
     apple_visual_create_pfobj(&ac->pixel_format_obj, mode, 
 			      &ac->double_buffered);
@@ -133,8 +136,10 @@ void apple_glx_destroy_context(void **ptr, Display *dpy) {
     if(NULL == ac)
 	return;
 
-    if(apple_cgl.set_current_context(NULL)) {
-	abort();
+    if(apple_cgl.get_current_context() == ac->context_obj) {
+	if(apple_cgl.set_current_context(NULL)) {
+	    abort();
+	}
     }
 
     /* Remove ac from the context_list as soon as possible. */
@@ -221,10 +226,23 @@ static bool setup_drawable(struct apple_glx_drawable *agd) {
 }
 #endif
 
+static void update_viewport_and_scissor(Display *dpy, GLXDrawable drawable) {
+    Window root;
+    int x, y;
+    unsigned int width, height, bd, depth;
+
+    XGetGeometry(dpy, drawable, &root, &x, &y, &width, &height, &bd, &depth);
+
+    glViewport(0, 0, width, height);
+    glScissor(0, 0, width, height);
+}
+
 /* Return true if an error occured. */
 /* TODO handle the readable GLXDrawable...? STUDY */
 
-bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawable) {
+bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
+				    GLXDrawable drawable) {
+    struct apple_glx_context *oldac = oldptr;
     struct apple_glx_context *ac = ptr;
     xp_error error;
     struct apple_glx_drawable *newagd = NULL;
@@ -232,6 +250,10 @@ bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawabl
     bool same_drawable = false;
 
     assert(NULL != dpy);
+
+    /* Reset the is_current state of the old context, if non-NULL. */
+    if(oldac)
+	oldac->is_current = false;
 
     if(NULL == ac) {
 	/*Clear the current context.*/
@@ -241,9 +263,11 @@ bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawabl
     }
     
     if(None == drawable) {
+	/* Clear the current drawable for this context_obj. */
+
 	if(apple_cgl.set_current_context(ac->context_obj))
 	    return true;
-
+	
 	if(apple_cgl.clear_drawable(ac->context_obj))
 	    return true;
 	
@@ -292,6 +316,8 @@ bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawabl
 	return true;
     }
 
+    ac->is_current = true;
+
     assert(NULL != ac->context_obj);
     assert(NULL != ac->drawable);
 
@@ -302,7 +328,16 @@ bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawabl
 		error);
 	return true;
     }
-    
+
+    if(!ac->made_current) {
+	/* 
+	 * The first time a new context is made current the glViewport
+	 * and glScissor should be updated.
+	 */
+	update_viewport_and_scissor(dpy, drawable);
+	ac->made_current = true;
+    }
+     
     ac->thread_id = pthread_self();
 
     return false;
@@ -335,4 +370,39 @@ bool apple_glx_get_surface_from_uid(unsigned int uid, xp_surface_id *sid,
     unlock_context_list();
 
     return true;
+}
+
+bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr, 
+			   unsigned long mask, int *errorptr) {
+    struct apple_glx_context *src, *dest;
+    CGLError err;
+
+    src = srcptr;
+    dest = destptr;
+
+    if(src->screen != dest->screen) {
+	*errorptr = BadMatch;
+	return true;
+    }
+    
+    if(dest == currentptr || dest->is_current) {
+	*errorptr = BadAccess;
+	return true;
+    }
+
+    /* 
+     * If srcptr is the current context then we should do an implicit glFlush.
+     */
+    if(currentptr == srcptr)
+	glFlush();
+    
+    err = apple_cgl.copy_context(src->context_obj, dest->context_obj, 
+				 (GLbitfield)mask);
+    
+    if(kCGLNoError != err) {
+	*errorptr = GLXBadContext;
+	return true;
+    }
+    
+    return false;
 }
