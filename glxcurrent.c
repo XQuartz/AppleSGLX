@@ -144,9 +144,10 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
     if ((gc != NULL) && (gc->xid == None)) {
 	return GL_FALSE;
     }
-  
+    
     if(gc) {
-	apple_glx_make_current_context(dpy, gc->apple, draw);
+	if(apple_glx_make_current_context(dpy, gc ? gc->apple : NULL, draw))
+	    return GL_FALSE;
     }
 
     __glXLock();

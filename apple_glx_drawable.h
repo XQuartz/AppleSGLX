@@ -30,6 +30,7 @@
 #ifndef APPLE_GLX_DRAWABLE_H
 #define APPLE_GLX_DRAWABLE_H
 
+#include <pthread.h>
 #include <stdbool.h>
 #include <limits.h>
 #include <GL/glx.h>
@@ -43,6 +44,15 @@ struct apple_glx_drawable {
     GLXDrawable drawable;
     xp_surface_id surface_id;
     unsigned int uid;
+
+    /* 
+     * This mutex protects the reference count and any other drawable data.
+     * It's used to prevent an early release of a drawable.
+     */
+    pthread_mutex_t mutex;
+    void (*lock)(struct apple_glx_drawable *agd);
+    void (*unlock)(struct apple_glx_drawable *agd);
+
 /*BEGIN These are used for the mixed mode drawing... */
     int width, height;
     int row_bytes;
@@ -61,7 +71,10 @@ struct apple_glx_context;
 struct apple_glx_drawable *apple_glx_find_drawable(Display *dpy, 
 						   GLXDrawable drawable);
 
-/* Reference count management for struct apple_glx_drawables. */
+/*
+ * Reference count management for struct apple_glx_drawables. 
+ * These explicitly lock the drawable, to prevent races.
+ */
 void apple_glx_reference_drawable(struct apple_glx_drawable *agd);
 void apple_glx_release_drawable(struct apple_glx_drawable *agd);
 

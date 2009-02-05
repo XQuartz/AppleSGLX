@@ -154,9 +154,9 @@ void apple_glx_destroy_context(void **ptr, Display *dpy) {
 
 
     if(apple_cgl.clear_drawable(ac->context_obj)) {
+	fprintf(stderr, "error: while clearing drawable!\n");
 	abort();
     }
-
     
     /*
      * This causes surface_notify_handler to be called in apple_glx.c... 
@@ -227,59 +227,47 @@ static bool setup_drawable(struct apple_glx_drawable *agd) {
 bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawable) {
     struct apple_glx_context *ac = ptr;
     xp_error error;
-    struct apple_glx_drawable *agd = NULL;
+    struct apple_glx_drawable *newagd = NULL;
     CGLError cglerr;
 
     assert(NULL != dpy);
-    assert(NULL != ac);
-  
-    if(None == drawable) {
-	if(apple_cgl.clear_drawable(ac->context_obj))
-	    return true;
 
+    if(NULL == ac) {
+	/*Clear the current context.*/
+	apple_cgl.set_current_context(NULL);
+	
+	return false;
+    }
+    
+    if(None == drawable) {
 	if(apple_cgl.set_current_context(ac->context_obj))
 	    return true;
 
+	if(apple_cgl.clear_drawable(ac->context_obj))
+	    return true;
+	
 	return false;
     }
 
-    /* Release the reference to the old drawable. */
-    if(ac->drawable) {
+    newagd = apple_glx_find_drawable(dpy, drawable);
+
+    if(ac->drawable && newagd != ac->drawable) {
 	apple_glx_release_drawable(ac->drawable);
+	apple_glx_destroy_drawable(ac->drawable);
 	ac->drawable = NULL;
     }
 
-    agd = apple_glx_find_drawable(dpy, drawable);
-
-    if(NULL == agd) {
-	if(apple_glx_create_drawable(dpy, ac, drawable, &agd)) {
+    if(NULL == newagd) {
+	if(apple_glx_create_drawable(dpy, ac, drawable, &newagd))
 	    return true;
-	}
+        
+	/* Save the new drawable with the context structure. */
+	ac->drawable = newagd;
 
-#if 0   
-	if(!XAppleDRICreateSharedBuffer(dpy, ac->screen, drawable,
-					ac->double_buffered, agd->path,
-					sizeof(agd->path), 
-					&agd->width, 
-					&agd->height)) {
-	    return true;
-	}
-
-	if(setup_drawable(agd))
-	    return true;
-#endif
+	/* Save a reference to the new drawable. */
+	apple_glx_reference_drawable(ac->drawable);
     }
-
-    ac->drawable = agd;
-  
-    error = xp_attach_gl_context(ac->context_obj, agd->surface_id);
-
-    if(error) {
-	fprintf(stderr, "error: xp_attach_gl_context returned: %d\n",
-		error);
-	return true;
-    }
-
+    
     cglerr = apple_cgl.set_current_context(ac->context_obj);
 
     if(kCGLNoError != cglerr) {
@@ -287,27 +275,15 @@ bool apple_glx_make_current_context(Display *dpy, void *ptr, GLXDrawable drawabl
 		apple_cgl.error_string(cglerr));
 	return true;
     }
-    
-    //apple_cgl.clear_drawable(ac->context_obj);
 
-#if 0
-    printf("agd->buffer %p\n", agd->buffer);
-#endif
+    error = xp_attach_gl_context(ac->context_obj, ac->drawable->surface_id);
 
-#if 0
-    cglerr = apple_cgl.set_off_screen(ac->context_obj,
-				      agd->width, agd->height,
-				      agd->row_bytes, agd->buffer);
-#endif
-
-#if 0
-    if(kCGLNoError != cglerr) {
-	fprintf(stderr, "set off screen error: %s\n",
-		apple_cgl.error_string(cglerr));
+    if(error) {
+	fprintf(stderr, "error: xp_attach_gl_context returned: %d\n",
+		error);
 	return true;
     }
-#endif
-
+    
     ac->thread_id = pthread_self();
 
     return false;

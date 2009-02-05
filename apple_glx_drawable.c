@@ -107,22 +107,48 @@ static bool create_surface(Display *dpy, struct apple_glx_context *ac,
     return true;
 }
 
+static void drawable_lock(struct apple_glx_drawable *agd) {
+    int err;
+
+    err = pthread_mutex_lock(&agd->mutex);
+
+    if(err) {
+	fprintf(stderr, "pthread_mutex_lock error: %d\n", err);
+	abort();
+    }
+}
+
+static void drawable_unlock(struct apple_glx_drawable *agd) {
+    int err;
+
+    err = pthread_mutex_unlock(&agd->mutex);
+
+    if(err) {
+	fprintf(stderr, "pthread_mutex_unlock error: %d\n", err);
+	abort();
+    }
+}
+
 
 void apple_glx_reference_drawable(struct apple_glx_drawable *agd) {
+    agd->lock(agd);
     agd->reference_count++;
+    agd->unlock(agd);
 }
 
 void apple_glx_release_drawable(struct apple_glx_drawable *agd) {
+    agd->lock(agd);
     agd->reference_count--;
+    agd->unlock(agd);
 }
-
 
 bool apple_glx_create_drawable(Display *dpy,
 			       struct apple_glx_context *ac,
 			       GLXDrawable drawable, 
 			       struct apple_glx_drawable **agdResult) {
     struct apple_glx_drawable *agd;
-
+    int err;
+    
     *agdResult = NULL;
 
     agd = malloc(sizeof *agd);
@@ -136,6 +162,17 @@ bool apple_glx_create_drawable(Display *dpy,
     agd->reference_count = 0;
     agd->drawable = drawable;
     agd->surface_id = 0;
+    agd->uid = 0;
+    err = pthread_mutex_init(&agd->mutex, NULL);
+
+    agd->lock = drawable_lock;
+    agd->unlock = drawable_unlock;
+
+    if(err) {
+	fprintf(stderr, "pthread_mutex_init error: %d\n", err);
+	abort();
+    }
+
     agd->width = -1;
     agd->height = -1;
     agd->row_bytes = 0;
@@ -172,10 +209,16 @@ bool apple_glx_create_drawable(Display *dpy,
 /* Return true if the drawable was destroyed. */
 static bool destroy_drawable(struct apple_glx_drawable *agd) {
     xp_error error;
-    bool result = false;
     
-    apple_glx_release_drawable(agd);
+    agd->lock(agd);
 
+    if(agd->reference_count > 0) {
+	agd->unlock(agd);
+	return false;
+    }
+
+    agd->unlock(agd);
+  
     if(agd->previous) {
 	agd->previous->next = agd->next;
     } else {
@@ -189,18 +232,15 @@ static bool destroy_drawable(struct apple_glx_drawable *agd) {
     if(agd->next)
 	agd->next->previous = agd->previous;
 
-    if(agd->reference_count <= 0) {
-	error = xp_destroy_surface(agd->surface_id);
-
-	if(error)
-	    abort();
-
-	result = true;
+    error = xp_destroy_surface(agd->surface_id);
+	
+    if(error) {
+	fprintf(stderr, "xp_destroy_surface error: %d\n", (int)error);
     }
     
     free(agd);
 
-    return result;
+    return true;
 }
 
 /* This delinks the drawable from the list. */
@@ -250,14 +290,19 @@ void apple_glx_garbage_collect_drawables(Display *dpy) {
     for(d = drawables; d;) {
 	dnext = d->next;
 
+	d->lock(d);
+
 	if(d->reference_count > 0) {
 	    /* 
 	     * Skip this, because some context still retains a reference 
 	     * to the drawable.
 	     */
+	    d->unlock(d);
 	    d = dnext;
 	    continue;
 	}
+
+	d->unlock(d);
 
 	error_count = 0;
 
@@ -270,6 +315,11 @@ void apple_glx_garbage_collect_drawables(Display *dpy) {
 		     &depth);
 	
 	if(error_count > 0) {
+	    /*
+	     * Note: this may not actually destroy the drawable.
+	     * If another context retains a reference to the drawable
+	     * after the reference count test above. 
+	     */
 	    (void)destroy_drawable(d);
 	    error_count = 0;
 	}
