@@ -539,7 +539,6 @@ PUBLIC void glXWaitX(void)
 
 PUBLIC void glXUseXFont(Font font, int first, int count, int listBase)
 {
-    xGLXUseXFontReq *req;
     GLXContext gc = __glXGetCurrentContext();
     Display *dpy = gc->currentDpy;
 
@@ -547,26 +546,8 @@ PUBLIC void glXUseXFont(Font font, int first, int count, int listBase)
 
     /* Flush any pending commands out */
     (void) __glXFlushRenderBuffer(gc, gc->pc);
-
-#ifdef GLX_DIRECT_RENDERING
-    if (gc->driContext) {
-      DRI_glXUseXFont(font, first, count, listBase);
-      return;
-    }
-#endif
-
-    /* Send the glXUseFont request */
-    LockDisplay(dpy);
-    GetReq(GLXUseXFont,req);
-    req->reqType = gc->majorOpcode;
-    req->glxCode = X_GLXUseXFont;
-    req->contextTag = gc->currentContextTag;
-    req->font = font;
-    req->first = first;
-    req->count = count;
-    req->listBase = listBase;
-    UnlockDisplay(dpy);
-    SyncHandle();
+    
+    DRI_glXUseXFont(font, first, count, listBase);    
 }
 
 /************************************************************************/

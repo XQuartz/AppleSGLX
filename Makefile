@@ -22,7 +22,7 @@ include tests/tests.mk
 OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.o \
     appledri.o apple_glx_context.o apple_glx.o pixel.o \
     compsize.o apple_visual.o apple_cgl.o glxreply.o glcontextmodes.o \
-    apple_xgl_api.o apple_glx_drawable.o
+    apple_xgl_api.o apple_glx_drawable.o xfont.o
 
 #This target is used for the tests.
 
@@ -85,6 +85,9 @@ apple_visual.o: apple_visual.h apple_visual.c
 
 apple_cgl.o: apple_cgl.h apple_cgl.c
 	$(COMPILE) -Iinclude apple_cgl.c 
+
+xfont.o: xfont.c glxclient.h
+	$(COMPILE) xfont.c
 
 compsize.o: compsize.c
 	$(COMPILE) $?

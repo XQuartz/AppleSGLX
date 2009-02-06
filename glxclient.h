@@ -159,6 +159,9 @@ extern const char *glXGetDriverConfig (const char *driverName);
 
 #endif
 
+/*Apple*/
+extern void DRI_glXUseXFont( Font font, int first, int count, int listbase );
+
 /************************************************************************/
 
 #define __GL_CLIENT_ATTRIB_STACK_DEPTH 16
