@@ -1,7 +1,7 @@
 /*
  * SGI FREE SOFTWARE LICENSE B (Version 2.0, Sept. 18, 2008)
  * Copyright (C) 1991-2000 Silicon Graphics, Inc. All Rights Reserved.
- * Copyright (c) 2008 Apple Inc. All Rights Reserved.
+ * Copyright (c) 2008, 2009 Apple Inc. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -354,7 +354,9 @@ CreateContext(Display *dpy, XVisualInfo *vis,
 {
     GLXContext gc;
     int screen = (fbconfig == NULL) ? vis->screen : fbconfig->screen;
-    __GLXscreenConfigs * const psc = GetGLXScreenConfigs(dpy, screen);
+    __GLXscreenConfigs *const psc = GetGLXScreenConfigs(dpy, screen);
+    const __GLcontextModes *mode;
+    int errorcode;
 
     if ( dpy == NULL )
        return NULL;
@@ -367,105 +369,54 @@ CreateContext(Display *dpy, XVisualInfo *vis,
 	if ( (vis == NULL) && (fbconfig == NULL) )
 	    return NULL;
 
-#if 0
-	LockDisplay(dpy);
-	if ( fbconfig == NULL ) {
-	    xGLXCreateContextReq *req;
-
-	    /* Send the glXCreateContext request */
-	    GetReq(GLXCreateContext,req);
-	    req->reqType = gc->majorOpcode;
-	    req->glxCode = X_GLXCreateContext;
-	    req->context = gc->xid = XAllocID(dpy);
-	    req->visual = vis->visualid;
-	    req->screen = vis->screen;
-	    req->shareList = shareList ? shareList->xid : None;
-#ifdef GLX_DIRECT_RENDERING
-	    req->isDirect = gc->driContext != NULL;
-#else
-	    req->isDirect = 0;
-#endif
-	}
-	else if ( use_glx_1_3 ) {
-	    xGLXCreateNewContextReq *req;
-
-	    /* Send the glXCreateNewContext request */
-	    GetReq(GLXCreateNewContext,req);
-	    req->reqType = gc->majorOpcode;
-	    req->glxCode = X_GLXCreateNewContext;
-	    req->context = gc->xid = XAllocID(dpy);
-	    req->fbconfig = fbconfig->fbconfigID;
-	    req->screen = fbconfig->screen;
-	    req->renderType = renderType;
-	    req->shareList = shareList ? shareList->xid : None;
-#ifdef GLX_DIRECT_RENDERING
-	    req->isDirect = gc->driContext != NULL;
-#else
-	    req->isDirect = 0;
-#endif
-	}
-	else {
-	    xGLXVendorPrivateWithReplyReq *vpreq;
-	    xGLXCreateContextWithConfigSGIXReq *req;
-
-	    /* Send the glXCreateNewContext request */
-	    GetReqExtra(GLXVendorPrivateWithReply,
-			sz_xGLXCreateContextWithConfigSGIXReq-sz_xGLXVendorPrivateWithReplyReq,vpreq);
-	    req = (xGLXCreateContextWithConfigSGIXReq *)vpreq;
-	    req->reqType = gc->majorOpcode;
-	    req->glxCode = X_GLXVendorPrivateWithReply;
-	    req->vendorCode = X_GLXvop_CreateContextWithConfigSGIX;
-	    req->context = gc->xid = XAllocID(dpy);
-	    req->fbconfig = fbconfig->fbconfigID;
-	    req->screen = fbconfig->screen;
-	    req->renderType = renderType;
-	    req->shareList = shareList ? shareList->xid : None;
-#ifdef GLX_DIRECT_RENDERING
-	    req->isDirect = gc->driContext != NULL;
-#else
-	    req->isDirect = 0;
-#endif
-	}
-
-	UnlockDisplay(dpy);
-	SyncHandle();
-	gc->imported = GL_FALSE;
-#endif
     }
-    else {
-	gc->xid = contextID;
-	gc->imported = GL_TRUE;
-    }
+    
+    gc->xid = contextID;
+    gc->imported = GL_FALSE;
 
-
-
-    /*gstaplin: this may not be the right place for this.  Time will tell. */
-    {
-	const __GLcontextModes * mode;
-
-	LockDisplay(dpy);
-	mode = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
-
-	if (NULL == mode) {
-	    xError error;
-	    
-	    error.errorCode = BadValue;
-	    error.resourceID = vis->visualid;
-	    error.sequenceNumber = dpy->request;
-	    error.type = X_Error;
-	    error.majorCode = gc->majorOpcode;
-	    error.minorCode = X_GLXCreateContext;
-	    _XError(dpy, &error);
-	    return NULL;
-	}
-
-	gc->xid = XAllocID(dpy);
+    LockDisplay(dpy);
+    mode = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
+    
+    if (NULL == mode) {
+	xError error;
 	
-	apple_glx_create_context(&gc->apple, dpy, screen, mode, 
-			     shareList ? shareList->apple : NULL);
+	error.errorCode = BadValue;
+	error.resourceID = vis->visualid;
+	error.sequenceNumber = dpy->request;
+	error.type = X_Error;
+	error.majorCode = gc->majorOpcode;
+	error.minorCode = X_GLXCreateContext;
+	_XError(dpy, &error);
+	
 	UnlockDisplay(dpy);
-    }
 
+	__glXFreeContext(gc);
+
+	return NULL;
+    }
+    
+    
+    if(apple_glx_create_context(&gc->apple, dpy, screen, mode, 
+				shareList ? shareList->apple : NULL,
+				&errorcode)) {
+	xError error;
+	error.errorCode = errorcode;
+	error.resourceID = 0;
+	error.sequenceNumber = dpy->request;
+	error.type = X_Error;
+	error.majorCode = gc->majorOpcode;
+	error.minorCode = X_GLXCreateContext;
+	_XError(dpy, &error);
+
+	UnlockDisplay(dpy);
+	
+	__glXFreeContext(gc);
+
+	return NULL;
+    }
+    
+    UnlockDisplay(dpy);
+       
     return gc;
 }
 
@@ -497,34 +448,7 @@ _X_HIDDEN void __glXFreeContext(__GLXcontext *gc)
 static void 
 DestroyContext(Display *dpy, GLXContext gc)
 {
-    xGLXDestroyContextReq *req;
-    GLXContextID xid;
-    CARD8 opcode;
-    GLboolean imported;
-
-    opcode = __glXSetupForCommand(dpy);
-    if (!opcode || !gc) {
-	return;
-    }
-
     __glXLock();
-    xid = gc->xid;
-    imported = gc->imported;
-    gc->xid = None;
-
-#ifdef GLX_DIRECT_RENDERING
-    /* Destroy the direct rendering context */
-    if (gc->driContext) {
-	(*gc->driContext->destroyContext)(gc->driContext, gc->psc, dpy);
-	gc->driContext = NULL;
-	GarbageCollectDRIDrawables(dpy, gc->psc);
-    }
-#endif
-    apple_glx_destroy_context(&gc->apple, dpy);
-
-    /*gstaplin: revisit the GarbageCollectDRIDrawables code. */
-
-    //__glXFreeVertexArrayState(gc);
 
     if (gc->currentDpy) {
 	/* Have to free later cuz it's in use now */
@@ -532,21 +456,11 @@ DestroyContext(Display *dpy, GLXContext gc)
     } else {
 	/* Destroy the handle if not current to anybody */
 	__glXUnlock();
-	__glXFreeContext(gc);
-    }
 
-    if (/*apple*/ 0 && !imported) {
-	/* 
-	** This dpy also created the server side part of the context.
-	** Send the glXDestroyContext request.
-	*/
-	LockDisplay(dpy);
-	GetReq(GLXDestroyContext,req);
-	req->reqType = opcode;
-	req->glxCode = X_GLXDestroyContext;
-	req->context = xid;
-	UnlockDisplay(dpy);
-	SyncHandle();
+	if(gc->apple)
+	    apple_glx_destroy_context(&gc->apple, dpy);
+
+	__glXFreeContext(gc);
     }
 }
 
@@ -593,7 +507,6 @@ PUBLIC Bool glXQueryExtension(Display *dpy, int *errorBase, int *eventBase)
 */
 PUBLIC void glXWaitGL(void)
 {
-    xGLXWaitGLReq *req;
     GLXContext gc = __glXGetCurrentContext();
     Display *dpy = gc->currentDpy;
 
@@ -603,28 +516,6 @@ PUBLIC void glXWaitGL(void)
     __glXFlushRenderBuffer(gc, gc->pc);
 
     glFinish();
-
-    return;
-
-#ifdef GLX_DIRECT_RENDERING
-    if (gc->driContext) {
-/* This bit of ugliness unwraps the glFinish function */
-#ifdef glFinish
-#undef glFinish
-#endif
-	glFinish();
-	return;
-    }
-#endif
-
-    /* Send the glXWaitGL request */
-    LockDisplay(dpy);
-    GetReq(GLXWaitGL,req);
-    req->reqType = gc->majorOpcode;
-    req->glxCode = X_GLXWaitGL;
-    req->contextTag = gc->currentContextTag;
-    UnlockDisplay(dpy);
-    SyncHandle();
 }
 
 /*
@@ -633,7 +524,6 @@ PUBLIC void glXWaitGL(void)
 */
 PUBLIC void glXWaitX(void)
 {
-    xGLXWaitXReq *req;
     GLXContext gc = __glXGetCurrentContext();
     Display *dpy = gc->currentDpy;
 
@@ -645,25 +535,6 @@ PUBLIC void glXWaitX(void)
     apple_glx_waitx(dpy, gc->apple);
 
     return;
-
-    /* 
-     * glXWaitX is rather limited with regard to threading in the
-     * xorg-server-1.5-apple branch.
-     * Comment out the code below for now.  We may fix the server eventually.
-     */
- 
-#if 0
-    /*
-    ** Send the glXWaitX request.
-    */
-    LockDisplay(dpy);
-    GetReq(GLXWaitX,req);
-    req->reqType = gc->majorOpcode;
-    req->glxCode = X_GLXWaitX;
-    req->contextTag = gc->currentContextTag;
-    UnlockDisplay(dpy);
-    SyncHandle();
-#endif
 }
 
 PUBLIC void glXUseXFont(Font font, int first, int count, int listBase)
@@ -711,11 +582,24 @@ PUBLIC void glXCopyContext(Display *dpy, GLXContext source,
     GLXContext gc = __glXGetCurrentContext();
     GLXContextTag tag;
     CARD8 opcode;
-    int error;
+    int errorcode;
 
     if(apple_glx_copy_context(gc->apple, source->apple, dest->apple,
-			      mask, &error)) {
-	/* FIXME We need to somehow invoke the X11 error handler with error. */
+			      mask, &errorcode)) {
+	xError error;
+	
+	LockDisplay(dpy);
+	
+	error.errorCode = errorcode;
+	error.resourceID = 0;
+	error.sequenceNumber = dpy->request;
+	error.type = X_Error;
+	error.majorCode = gc->majorOpcode;
+	error.minorCode = X_GLXCopyContext;
+	_XError(dpy, &error);
+	
+	UnlockDisplay(dpy);
+	
 	return;
     }
 

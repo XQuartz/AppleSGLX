@@ -137,14 +137,6 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
 {
     const GLXContext oldGC = __glXGetCurrentContext();
 
-    /* Make sure that the new context has a nonzero ID.  In the request,
-     * a zero context ID is used only to mean that we bind to no current
-     * context.
-     */
-    if ((gc != NULL) && (gc->xid == None)) {
-	return GL_FALSE;
-    }
-    
     if(gc) {
 	if(apple_glx_make_current_context(dpy, oldGC ? oldGC->apple : NULL, 
 					  gc ? gc->apple : NULL,
@@ -168,14 +160,6 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
 	    oldGC->currentDrawable = None;
 	    oldGC->currentReadable = None;
 	    oldGC->currentContextTag = 0;
-
-	    if (oldGC->xid == None) {
-		/* We are switching away from a context that was
-		 * previously destroyed, so we need to free the memory
-		 * for the old handle.
-		 */
-		__glXFreeContext(oldGC);
-	    }
 	}
 	
 	if (gc) {
@@ -189,6 +173,7 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
 	}
     }
     __glXUnlock();
+
     return GL_TRUE;
 }
 

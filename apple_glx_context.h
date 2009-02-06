@@ -53,8 +53,9 @@ struct apple_glx_context {
     struct apple_glx_context *previous, *next;
 };
 
-void apple_glx_create_context(void **ptr, Display *dpy, int screen, 
-			      const void *mode, void *sharedContext);
+bool apple_glx_create_context(void **ptr, Display *dpy, int screen, 
+			      const void *mode, void *sharedContext,
+                              int *errorptr);
 void apple_glx_destroy_context(void **ptr, Display *dpy);
 
 bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr, GLXDrawable drawable);

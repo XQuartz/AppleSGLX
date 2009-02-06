@@ -1,5 +1,5 @@
 /* 
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -64,17 +64,44 @@ static struct apple_glx_context *context_list = NULL;
 
 /* This guards the context_list above. */
 static void lock_context_list(void) {
-    if(pthread_mutex_lock(&context_lock)) {
-	perror("pthread_mutex_lock");
+    int err;
+
+    err = pthread_mutex_lock(&context_lock);
+
+    if(err) {
+	fprintf(stderr, "pthread_mutex_lock failure in %s: %d\n",
+		__func__, err);
 	abort();
     }
 }
 
 static void unlock_context_list(void) {
-    if(pthread_mutex_unlock(&context_lock)) {
-	perror("pthread_mutex_unlock");
+    int err;
+
+    err = pthread_mutex_unlock(&context_lock);
+
+    if(err) {
+	fprintf(stderr, "pthread_mutex_unlock failure in %s: %d\n",
+		__func__, err);
 	abort();
     }
+}
+
+static bool is_context_valid(struct apple_glx_context *ac) {
+    struct apple_glx_context *i;
+
+    lock_context_list();
+    
+    for(i = context_list; i; i = i->next) {
+	if(ac == i) {
+	    unlock_context_list();
+	    return true;
+	}
+    }
+    
+    unlock_context_list();
+    
+    return false;
 }
 
 /* This creates an apple_private_context struct.  
@@ -83,16 +110,25 @@ static void unlock_context_list(void) {
  *
  * This is also where the CGLContextObj is created, and the CGLPixelFormatObj.
  */
-void apple_glx_create_context(void **ptr, Display *dpy, int screen, 
-			  const void *mode, void *sharedContext) {
+bool apple_glx_create_context(void **ptr, Display *dpy, int screen, 
+			      const void *mode, void *sharedContext,
+			      int *errorptr) {
     struct apple_glx_context *ac;
     struct apple_glx_context *sharedac = sharedContext;
     CGLError error;
 
+    *ptr = NULL;
+
     ac = malloc(sizeof *ac);
+
     if(NULL == ac) {
-	perror("malloc");
-	abort();   
+	*errorptr = BadAlloc;
+	return true;
+    }
+
+    if(sharedac && !is_context_valid(sharedac)) {
+	*errorptr = GLXBadContext;
+	return true;
     }
     
     ac->context_obj = NULL;
@@ -110,16 +146,30 @@ void apple_glx_create_context(void **ptr, Display *dpy, int screen,
     error = apple_cgl.create_context(ac->pixel_format_obj, 
 				     sharedac ? sharedac->context_obj : NULL,
 				     &ac->context_obj);
+
+    
     if(error) {
-	fprintf(stderr, "error: %s\n", apple_cgl.error_string(error));
-	abort();
+	(void)apple_cgl.destroy_pixel_format(ac->pixel_format_obj);		
+
+	free(ac);
+	
+	if(kCGLBadMatch == error) {
+	    *errorptr = BadMatch;
+	} else {
+	    *errorptr = GLXBadContext;
+	}
+
+	if(getenv("LIBGL_DIAGNOSTIC"))
+	    fprintf(stderr, "error: %s\n", apple_cgl.error_string(error));
+	
+	return true;
     }
 
+    /* The context creation succeeded, so we can link in the new context. */
     lock_context_list();
 
-    if(context_list) {
+    if(context_list)
 	context_list->previous = ac;
-    }
 
     ac->previous = NULL;
     ac->next = context_list;
@@ -128,6 +178,8 @@ void apple_glx_create_context(void **ptr, Display *dpy, int screen,
     unlock_context_list();
 
     *ptr = ac;
+
+    return false;
 }
 
 void apple_glx_destroy_context(void **ptr, Display *dpy) {
