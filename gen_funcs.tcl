@@ -1,4 +1,38 @@
+package require Tcl 8.5
+
 #input is specs/gl.spec
+
+set license {
+/*
+ Copyright (c) 2008, 2009 Apple Inc.
+ 
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of this software and associated documentation files
+ (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge,
+ publish, distribute, sublicense, and/or sell copies of the Software,
+ and to permit persons to whom the Software is furnished to do so,
+ subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT.  IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT
+ HOLDER(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ DEALINGS IN THE SOFTWARE.
+ 
+ Except as contained in this notice, the name(s) of the above
+ copyright holders shall not be used in advertising or otherwise to
+ promote the sale, use or other dealings in this Software without
+ prior written authorization.
+*/
+}
+
 
 proc extension name {
     global extensions
@@ -6,9 +40,16 @@ proc extension name {
     set extensions($name) 1
 }
 
+proc alias {from to} {
+    global aliases
+    
+    set aliases($from) $to
+}
+
 set dir [file dirname [info script]]
 
 source [file join $dir GL_extensions]
+source [file join $dir GL_aliases]
 
 proc is-extension-supported? name {
     global extensions
@@ -305,7 +346,7 @@ proc is-valid-category? c {
 }
 
 proc main {argc argv} {
-    global extensions typemap
+    global extensions typemap aliases
 
     set fd [open [lindex $argv 0] r]
     set data [read $fd]
@@ -326,10 +367,6 @@ proc main {argc argv} {
 	
 	#Invalidate any of the extensions and things not in the spec we support.
 	set valid 0
-
-	#if {![is-extension? $key]} {
-	#    set valid 1
-	#} 
 
 	set valid [is-valid-category? $category]
 	puts VALID:$valid
@@ -410,9 +447,16 @@ proc main {argc argv} {
 	return 1
     }
 
+    foreach {from to} [array get aliases] {
+	set d $newapi($to)
+	dict set d alias_for $to
+	set newapi($from) $d
+    }
+
+
     puts "NOW GENERATING:[lindex $::argv 1]"
     set fd [open [lindex $::argv 1] w]
-    
+
     set sorted [lsort -dictionary [array names newapi]]
 
     foreach f $sorted {

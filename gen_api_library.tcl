@@ -2,7 +2,7 @@ package require Tcl 8.5
 
 set license {
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -154,7 +154,14 @@ proc main {argc argv} {
 	    set return "return "
 	}
 
-	set body "[set return]__gl_api.[set f]([set callvars]);"
+	set impfunc $f
+
+	if {[dict exists $attr alias_for]} {
+	    set impfunc [dict get $attr alias_for]
+	}
+	
+
+	set body "[set return]__gl_api.[set impfunc]([set callvars]);"
 
         puts $fd "[dict get $attr return] gl[set f]([set pstr]) \{\n\t$body\n\}"
     }
@@ -207,6 +214,14 @@ proc main {argc argv} {
     puts $fd $::dlopen_code
     
     foreach f $sorted {
+	set attr $api($f)
+
+	if {[dict exists $attr alias_for]} {
+	    #Function f is an alias_for another, so we shouldn't try
+	    #to load it.
+	    continue
+	}
+
 	puts $fd "\t__gl_api.$f = glsym(handle, \"gl$f\");"
     }
     

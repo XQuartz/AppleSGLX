@@ -1,0 +1,8 @@
+#GL_EXT_texture_object
+alias GenTexturesExt GenTextures
+alias DeleteTexturesEXT DeleteTextures
+alias BindTextureEXT BindTexture
+alias PrioritizeTexturesEXT PrioritizeTextures
+alias AreTexturesResidentEXT AreTexturesResident
+alias IsTextureEXT IsTexture
+

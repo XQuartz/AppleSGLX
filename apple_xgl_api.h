@@ -40,6 +40,7 @@ struct apple_xgl_api {
 	void (*ActiveTextureARB)(GLenum texture);
 	void (*AlphaFunc)(GLenum func, GLclampf ref);
 	GLboolean (*AreTexturesResident)(GLsizei n, const GLuint * textures, GLboolean * residences);
+	GLboolean (*AreTexturesResidentEXT)(GLsizei n, const GLuint * textures, GLboolean * residences);
 	void (*ArrayElement)(GLint i);
 	void (*AttachObjectARB)(GLhandleARB containerObj, GLhandleARB obj);
 	void (*AttachShader)(GLuint program, GLuint shader);
@@ -54,6 +55,7 @@ struct apple_xgl_api {
 	void (*BindProgramARB)(GLenum target, GLuint program);
 	void (*BindRenderbufferEXT)(GLenum target, GLuint renderbuffer);
 	void (*BindTexture)(GLenum target, GLuint texture);
+	void (*BindTextureEXT)(GLenum target, GLuint texture);
 	void (*Bitmap)(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte * bitmap);
 	void (*BlendColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 	void (*BlendColorEXT)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
@@ -167,6 +169,7 @@ struct apple_xgl_api {
 	void (*DeleteRenderbuffersEXT)(GLsizei n, const GLuint * renderbuffers);
 	void (*DeleteShader)(GLuint shader);
 	void (*DeleteTextures)(GLsizei n, const GLuint * textures);
+	void (*DeleteTexturesEXT)(GLsizei n, const GLuint * textures);
 	void (*DepthFunc)(GLenum func);
 	void (*DepthMask)(GLboolean flag);
 	void (*DepthRange)(GLclampd near, GLclampd far);
@@ -240,6 +243,7 @@ struct apple_xgl_api {
 	void (*GenQueriesARB)(GLsizei n, GLuint * ids);
 	void (*GenRenderbuffersEXT)(GLsizei n, GLuint * renderbuffers);
 	void (*GenTextures)(GLsizei n, GLuint * textures);
+	void (*GenTexturesExt)(GLsizei n, GLuint * textures);
 	void (*GetActiveAttrib)(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name);
 	void (*GetActiveAttribARB)(GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei * length, GLint * size, GLenum * type, GLcharARB * name);
 	void (*GetActiveUniform)(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name);
@@ -364,6 +368,7 @@ struct apple_xgl_api {
 	GLboolean (*IsRenderbufferEXT)(GLuint renderbuffer);
 	GLboolean (*IsShader)(GLuint shader);
 	GLboolean (*IsTexture)(GLuint texture);
+	GLboolean (*IsTextureEXT)(GLuint texture);
 	void (*Lightf)(GLenum light, GLenum pname, GLfloat param);
 	void (*Lightfv)(GLenum light, GLenum pname, const GLfloat * params);
 	void (*Lighti)(GLenum light, GLenum pname, GLint param);
@@ -514,6 +519,7 @@ struct apple_xgl_api {
 	void (*PopMatrix)();
 	void (*PopName)();
 	void (*PrioritizeTextures)(GLsizei n, const GLuint * textures, const GLclampf * priorities);
+	void (*PrioritizeTexturesEXT)(GLsizei n, const GLuint * textures, const GLclampf * priorities);
 	void (*ProgramEnvParameter4dARB)(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
 	void (*ProgramEnvParameter4dvARB)(GLenum target, GLuint index, const GLdouble * params);
 	void (*ProgramEnvParameter4fARB)(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);

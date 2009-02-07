@@ -4,6 +4,7 @@ _glActiveTexture
 _glActiveTextureARB
 _glAlphaFunc
 _glAreTexturesResident
+_glAreTexturesResidentEXT
 _glArrayElement
 _glAttachObjectARB
 _glAttachShader
@@ -18,6 +19,7 @@ _glBindFramebufferEXT
 _glBindProgramARB
 _glBindRenderbufferEXT
 _glBindTexture
+_glBindTextureEXT
 _glBitmap
 _glBlendColor
 _glBlendColorEXT
@@ -131,6 +133,7 @@ _glDeleteQueriesARB
 _glDeleteRenderbuffersEXT
 _glDeleteShader
 _glDeleteTextures
+_glDeleteTexturesEXT
 _glDepthFunc
 _glDepthMask
 _glDepthRange
@@ -204,6 +207,7 @@ _glGenQueries
 _glGenQueriesARB
 _glGenRenderbuffersEXT
 _glGenTextures
+_glGenTexturesExt
 _glGetActiveAttrib
 _glGetActiveAttribARB
 _glGetActiveUniform
@@ -328,6 +332,7 @@ _glIsQueryARB
 _glIsRenderbufferEXT
 _glIsShader
 _glIsTexture
+_glIsTextureEXT
 _glLightf
 _glLightfv
 _glLighti
@@ -478,6 +483,7 @@ _glPopClientAttrib
 _glPopMatrix
 _glPopName
 _glPrioritizeTextures
+_glPrioritizeTexturesEXT
 _glProgramEnvParameter4dARB
 _glProgramEnvParameter4dvARB
 _glProgramEnvParameter4fARB
