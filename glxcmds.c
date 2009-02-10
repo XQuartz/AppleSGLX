@@ -726,8 +726,26 @@ PUBLIC void glXDestroyGLXPixmap(Display *dpy, GLXPixmap glxpixmap)
 PUBLIC void glXSwapBuffers(Display *dpy, GLXDrawable drawable) {
     GLXContext gc = glXGetCurrentContext();
 
+    if(NULL == gc || NULL == gc->apple) {
+	fprintf(stderr, "%s: invalid context\n", __func__);
+	abort();
+    }
+
     if(apple_glx_is_current_drawable(gc->apple, drawable)) {
 	apple_glx_swap_buffers(gc->apple);
+    } else {
+	LockDisplay(dpy);
+
+	xError error;
+	error.errorCode = GLXBadCurrentWindow;
+	error.resourceID = 0;
+	error.sequenceNumber = dpy->request;
+	error.type = X_Error;
+	error.majorCode = gc->majorOpcode;
+	error.minorCode = X_GLXSwapBuffers;
+	_XError(dpy, &error);
+
+	UnlockDisplay(dpy);
     }
 }
 
