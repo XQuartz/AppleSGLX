@@ -75,6 +75,7 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     int screen;
 
     pbuf = malloc(sizeof(*pbuf));
+
     if(NULL == pbuf) {
 	/*FIXME set BadAlloc.*/
 	return true;
@@ -90,15 +91,20 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
 
     if(kCGLNoError != err) {
 	free(pbuf);
-	/*FIXME Fill in BadMatch and so on.*/
+	/*FIXME Fill in BadMatch and so on if needed.*/
 	return true;
     }
 
     root = DefaultRootWindow(dpy);
     screen = DefaultScreen(dpy);
 
-    pbuf->xid = XCreatePixmap(dpy, root, (unsigned int)width,
-			      (unsigned int)height,
+    /*
+     * This pixmap is only used for a persistent XID.
+     * The XC-MISC extension cleans up XIDs and reuses them transparently,
+     * so we need to retain a server-side reference.
+     */
+    pbuf->xid = XCreatePixmap(dpy, root, (unsigned int)1,
+			      (unsigned int)1,
 			      DefaultDepth(dpy, screen));
 
     if(None == pbuf->xid) {
@@ -115,6 +121,8 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     
     if(pbuffer_list)
 	pbuffer_list->previous = pbuf;
+
+    pbuffer_list = pbuf;
 
     unlock_list();
     
