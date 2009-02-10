@@ -38,5 +38,5 @@ void glDrawBuffers(GLsizei n, const GLenum *bufs) {
 }
 
 void glDrawBuffersARB(GLsizei n, const GLenum *bufs) {
-    __gl_api.DrawBuffers(n, bufs);
+    glDrawBuffers(n, bufs);
 }
