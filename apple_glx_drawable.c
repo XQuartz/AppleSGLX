@@ -35,6 +35,7 @@
 #include "apple_glx.h"
 #include "apple_glx_context.h"
 #include "apple_glx_drawable.h"
+#include "apple_glx_pbuffer.h"
 #include "appledri.h"
 
 static pthread_mutex_t drawables_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -155,6 +156,7 @@ void apple_glx_release_drawable(struct apple_glx_drawable *agd) {
 bool apple_glx_create_drawable(Display *dpy,
 			       struct apple_glx_context *ac,
 			       GLXDrawable drawable, 
+			       CGLPBufferObj pbuf,
 			       struct apple_glx_drawable **agdResult) {
     struct apple_glx_drawable *agd;
     int err;
@@ -173,6 +175,8 @@ bool apple_glx_create_drawable(Display *dpy,
     agd->drawable = drawable;
     agd->surface_id = 0;
     agd->uid = 0;
+    agd->pbuffer_obj = pbuf;
+
     err = pthread_mutex_init(&agd->mutex, NULL);
 
     agd->lock = drawable_lock;
@@ -193,7 +197,7 @@ bool apple_glx_create_drawable(Display *dpy,
     
     agd->previous = NULL;
 
-    if(create_surface(dpy, ac, agd)) {
+    if(!agd->pbuffer_obj && create_surface(dpy, ac, agd)) {
 	free(agd);
 	return true;
     }
@@ -242,10 +246,14 @@ static bool destroy_drawable(struct apple_glx_drawable *agd) {
     if(agd->next)
 	agd->next->previous = agd->previous;
 
-    error = xp_destroy_surface(agd->surface_id);
+    if(agd->pbuffer_obj) {
+	apple_glx_pbuffer_destroy(agd->display, agd->drawable);
+    } else {
+	error = xp_destroy_surface(agd->surface_id);
 	
-    if(error) {
-	fprintf(stderr, "xp_destroy_surface error: %d\n", (int)error);
+	if(error) {
+	    fprintf(stderr, "xp_destroy_surface error: %d\n", (int)error);
+	}
     }
     
     free(agd);

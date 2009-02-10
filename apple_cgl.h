@@ -69,6 +69,12 @@ struct apple_cgl_api {
 			       CGLPBufferObj *pbuffer);
 
     CGLError (*destroy_pbuffer)(CGLPBufferObj pbuffer);
+
+    CGLError (*set_pbuffer)(CGLContextObj ctx,
+			    CGLPBufferObj pbuffer,
+			    GLenum face,
+			    GLint level,
+			    GLint screen);
 };
 
 extern struct apple_cgl_api apple_cgl;

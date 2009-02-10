@@ -6,6 +6,8 @@
 GLXPbuffer pbuf;
 
 void draw(Display *dpy, Window w) {
+    GLenum err;
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();   
     glColor3f(0.5f, 0.5f, 1.0f);
@@ -14,7 +16,15 @@ void draw(Display *dpy, Window w) {
     glVertex3f(-1.0f,-1.0f, 0.0f);
     glVertex3f( 1.0f,-1.0f, 0.0f);
     glEnd();    
-    glXSwapBuffers(dpy, w);
+    glFinish();
+
+    puts("RENDER");
+
+    err = glGetError();
+    if(GL_NO_ERROR != err) {
+	fprintf(stderr, "an unexpect error occurred: %d\n", err);
+	abort();
+    }
 }
 
 void resize(Display *dpy, Window w, int width, int height) {
@@ -119,6 +129,8 @@ int main() {
 	fprintf(stderr, "unable to create a GLXPbuffer!\n");
 	return EXIT_FAILURE;
     }
+
+    printf("pbuf %lx\n", pbuf);
     
     if(!glXMakeCurrent(dpy, pbuf, ctx)) {
 	fprintf(stderr, "glXMakeCurrent failed!\n");

@@ -49,7 +49,7 @@
 #include "apple_visual.h"
 #include "apple_cgl.h"
 #include "apple_glx_drawable.h"
-
+#include "apple_glx_pbuffer.h"
 
 static pthread_mutex_t context_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -300,6 +300,7 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     struct apple_glx_drawable *newagd = NULL;
     CGLError cglerr;
     bool same_drawable = false;
+    bool is_pbuffer = false;
 
     assert(NULL != dpy);
 
@@ -327,7 +328,7 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     }
 
     newagd = apple_glx_find_drawable(dpy, drawable);
-    
+
     if(ac->drawable == newagd)
 	same_drawable = true;
     
@@ -342,12 +343,19 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     }
     
     if(NULL == newagd) {
-	if(apple_glx_create_drawable(dpy, ac, drawable, &newagd))
+	CGLPBufferObj pbufobj;
+
+	/* First check if it's a pbuffer. */
+	if(apple_glx_pbuffer_get(drawable, &pbufobj))
+	    is_pbuffer = true;
+	
+	if(apple_glx_create_drawable(dpy, ac, drawable,
+				     is_pbuffer ? pbufobj : NULL, &newagd))
 	    return true;
     
 	/* Save the new drawable with the context structure. */
 	ac->drawable = newagd;
-	
+
 	/* Save a reference to the new drawable. */
 	apple_glx_reference_drawable(ac->drawable);
     } else {
@@ -371,25 +379,42 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     ac->is_current = true;
 
     assert(NULL != ac->context_obj);
-    assert(NULL != ac->drawable);
+  
+    if(is_pbuffer) {
+	assert(NULL != ac->drawable);
+	assert(NULL != ac->drawable->pbuffer_obj);
 
-    error = xp_attach_gl_context(ac->context_obj, ac->drawable->surface_id);
+	cglerr = apple_cgl.set_pbuffer(ac->context_obj, 
+				       ac->drawable->pbuffer_obj,
+				       0, 0, 0);
 
-    if(error) {
-	fprintf(stderr, "error: xp_attach_gl_context returned: %d\n",
-		error);
-	return true;
+	if(kCGLNoError != cglerr) {
+	    fprintf(stderr, "set_pbuffer: %s\n", apple_cgl.error_string(cglerr));
+	    return true;
+	}
+	    
+    } else {
+	assert(NULL != ac->drawable);
+
+	error = xp_attach_gl_context(ac->context_obj, ac->drawable->surface_id);
+
+	if(error) {
+	    fprintf(stderr, "error: xp_attach_gl_context returned: %d\n",
+		    error);
+	    return true;
+	}
+    
+    
+	if(!ac->made_current) {
+	    /* 
+	     * The first time a new context is made current the glViewport
+	     * and glScissor should be updated.
+	     */
+	    update_viewport_and_scissor(dpy, drawable);
+	    ac->made_current = true;
+	}
     }
 
-    if(!ac->made_current) {
-	/* 
-	 * The first time a new context is made current the glViewport
-	 * and glScissor should be updated.
-	 */
-	update_viewport_and_scissor(dpy, drawable);
-	ac->made_current = true;
-    }
-     
     ac->thread_id = pthread_self();
 
     return false;

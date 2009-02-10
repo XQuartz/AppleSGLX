@@ -1,3 +1,7 @@
+-- Feb 10, 2009
+
+GLXPbuffer: Handle GLX_LARGEST_PBUFFER and glXQueryDrawable and glXSelectEvent() (make it a no-op).
+
 -- Feb 9, 2009
 
 DONE Add glDrawBuffersARB to the exclusion list, and make it forward to the glDrawBuffers().

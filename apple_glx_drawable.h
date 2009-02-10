@@ -44,6 +44,7 @@ struct apple_glx_drawable {
     GLXDrawable drawable;
     xp_surface_id surface_id;
     unsigned int uid;
+    CGLPBufferObj pbuffer_obj;
 
     /* 
      * This mutex protects the reference count and any other drawable data.
@@ -81,7 +82,8 @@ void apple_glx_release_drawable(struct apple_glx_drawable *agd);
 /* Returns true on error */
 bool apple_glx_create_drawable(Display *dpy, 
 			       struct apple_glx_context *ac,
-			       GLXDrawable drawable, 
+			       GLXDrawable drawable,
+			       CGLPBufferObj pbuf,
 			       struct apple_glx_drawable **agd);
 
 /* Return true if the drawable was destroyed. */

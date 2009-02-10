@@ -93,6 +93,7 @@ void apple_cgl_init(void) {
 
     apple_cgl.create_pbuffer = sym(h, "CGLCreatePBuffer");
     apple_cgl.destroy_pbuffer = sym(h, "CGLDestroyPBuffer");
+    apple_cgl.set_pbuffer = sym(h, "CGLSetPBuffer");
 
     initialized = true;
 }
