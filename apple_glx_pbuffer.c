@@ -68,7 +68,7 @@ static void unlock_list(void) {
 
 
 bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config, 
-			      int width, int height, GLXPbuffer *pbufResult) {
+			      int width, int height, GLXPbuffer *result) {
     CGLError err;
     struct apple_glx_pbuffer *pbuf;
     Window root;
@@ -107,7 +107,7 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
 	return true;
     } 
 
-    *pbufResult = pbuf->xid;
+    *result = pbuf->xid;
 
     lock_list();
 

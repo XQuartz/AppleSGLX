@@ -1,5 +1,6 @@
 /*
  * (C) Copyright IBM Corporation 2004
+ * Copyright (C) 2009 Apple Inc.
  * All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -40,6 +41,7 @@
 #include "glcontextmodes.h"
 //#include "glheader.h"
 
+#include "apple_glx_pbuffer.h"
 
 /**
  * Change a drawable's attribute.
@@ -539,6 +541,7 @@ PUBLIC GLXPbuffer
 glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list)
 {
    int i, width, height;
+   GLXPbuffer result;
 
    width = 0;
    height = 0;
@@ -554,9 +557,19 @@ glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list)
       }
    }
 
+#if 0
+
    return (GLXPbuffer) CreatePbuffer( dpy, (__GLcontextModes *) config,
 				      width, height,
 				      attrib_list, GL_TRUE );
+#endif
+   // printf("pbuffer width %d height %d\n", width, height);
+   
+   if(apple_glx_pbuffer_create(dpy, config, width, height, &result)) {
+       return None;
+   }
+
+   return result;
 }
 
 
@@ -566,7 +579,8 @@ glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list)
 PUBLIC void
 glXDestroyPbuffer(Display *dpy, GLXPbuffer pbuf)
 {
-   DestroyPbuffer( dpy, pbuf );
+    //DestroyPbuffer( dpy, pbuf );
+    apple_glx_pbuffer_destroy(dpy, pbuf);
 }
 
 
