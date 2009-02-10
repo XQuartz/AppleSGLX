@@ -41,15 +41,25 @@ static pthread_mutex_t drawables_lock = PTHREAD_MUTEX_INITIALIZER;
 static struct apple_glx_drawable *drawables = NULL;
 
 static void lock_drawables_list(void) {
-    if(pthread_mutex_lock(&drawables_lock)) {
-        perror("pthread_mutex_lock");
+    int err;
+    
+    err = pthread_mutex_lock(&drawables_lock);
+
+    if(err) {
+	fprintf(stderr, "pthread_mutex_lock failure in %s: %d\n",
+		__func__, err);
         abort();
     }
 }
 
 static void unlock_drawables_list(void) {
-    if(pthread_mutex_unlock(&drawables_lock)) {
-        perror("pthread_mutex_unlock");
+    int err;
+    
+    err = pthread_mutex_unlock(&drawables_lock);
+
+    if(err) {
+	fprintf(stderr, "pthread_mutex_unlock failure in %s: %d\n",
+		__func__, err);
         abort();
     }
 }
