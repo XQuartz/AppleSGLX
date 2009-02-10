@@ -120,7 +120,10 @@ int main() {
 	return EXIT_FAILURE;
     }
     
-    glXMakeCurrent(dpy, pbuf, ctx);
+    if(!glXMakeCurrent(dpy, pbuf, ctx)) {
+	fprintf(stderr, "glXMakeCurrent failed!\n");
+	return EXIT_FAILURE;
+    }
 
     event_loop(dpy);
 
