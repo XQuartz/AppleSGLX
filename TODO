@@ -1,3 +1,7 @@
+-- Feb 9, 2009
+
+DONE Add glDrawBuffersARB to the exclusion list, and make it forward to the glDrawBuffers().
+
 -- Feb 7, 2009
 
 Extend the GL_aliases for compatibility with the old libGL (wherever possible).
