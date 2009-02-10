@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -30,8 +30,13 @@
 #define APPLE_GLX_PBUFFER_H
 
 #include <stdbool.h>
+#include "GL/glx.h"
+#include "apple_cgl.h"
 
-bool apple_glx_pbuffer_create(void *apple);
-void apple_glx_pbuffer_destroy(void *apple);
+bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config, 
+			      int width, int height, GLXPbuffer *pbuf);
+void apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer pbuf);
+
+bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result); 
 
 #endif

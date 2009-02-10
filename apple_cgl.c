@@ -91,6 +91,9 @@ void apple_cgl_init(void) {
     
     apple_cgl.copy_context = sym(h, "CGLCopyContext");
 
+    apple_cgl.create_pbuffer = sym(h, "CGLCreatePBuffer");
+    apple_cgl.destroy_pbuffer = sym(h, "CGLDestroyPBuffer");
+
     initialized = true;
 }
 

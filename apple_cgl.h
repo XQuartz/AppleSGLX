@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -61,6 +61,14 @@ struct apple_cgl_api {
     CGLError (*copy_context)(CGLContextObj src, CGLContextObj dst,
 			     GLbitfield mask);
 
+    CGLError (*create_pbuffer)(GLsizei width,
+			       GLsizei height,
+			       GLenum target,
+			       GLenum internalFormat,
+			       GLint max_level,
+			       CGLPBufferObj *pbuffer);
+
+    CGLError (*destroy_pbuffer)(CGLPBufferObj pbuffer);
 };
 
 extern struct apple_cgl_api apple_cgl;
