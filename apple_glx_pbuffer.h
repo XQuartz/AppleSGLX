@@ -33,10 +33,16 @@
 #include "GL/glx.h"
 #include "apple_cgl.h"
 
+/* Returns true if an error occurred. */
 bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config, 
-			      int width, int height, GLXPbuffer *pbuf);
+			      int width, int height, int *errorcode,
+			      GLXPbuffer *pbuf);
 void apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer pbuf);
 
+/* Returns true if the drawable has a valid pbuffer object result. */
 bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result); 
+
+/* Returns true if an error occurred. */
+bool apple_glx_pbuffer_get_max_size(int *widthresult, int *heightresult);
 
 #endif

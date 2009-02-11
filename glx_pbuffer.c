@@ -108,6 +108,7 @@ ChangeDrawableAttribute( Display * dpy, GLXDrawable drawable,
 }
 
 
+#if 0
 /**
  * Destroy a pbuffer.
  *
@@ -164,6 +165,7 @@ DestroyPbuffer( Display * dpy, GLXDrawable drawable )
 
    return;
 }
+#endif
 
 
 #ifdef GLX_DIRECT_RENDERING
@@ -434,6 +436,7 @@ DestroyDrawable( Display * dpy, GLXDrawable drawable, CARD32 glxCode )
 }
 
 
+#if 0
 /**
  * Create a pbuffer.
  *
@@ -518,7 +521,7 @@ CreatePbuffer( Display *dpy, const __GLcontextModes * fbconfig,
 
    return id;
 }
-
+#endif
 
 /**
  * Create a new pbuffer.
@@ -528,9 +531,42 @@ glXCreateGLXPbufferSGIX(Display *dpy, GLXFBConfigSGIX config,
 			unsigned int width, unsigned int height,
 			int *attrib_list)
 {
-   return (GLXPbufferSGIX) CreatePbuffer( dpy, (__GLcontextModes *) config,
-					  width, height,
-					  attrib_list, GL_FALSE );
+    GLXContext gc = __glXGetCurrentContext();
+    GLXPbuffer result;
+    int errorcode;
+
+    /*
+     * TODO if we really need this SGIX extension, we should handle the
+     *attrib_list here too. 
+     */
+
+    if(apple_glx_pbuffer_create(dpy, config, width, height, &errorcode, 
+				&result)) {
+	xError error;
+	
+	LockDisplay(dpy);
+
+	error.errorCode = errorcode;
+	error.resourceID = 0;
+	error.sequenceNumber = dpy->request;
+	error.type = X_Error;
+	error.majorCode = gc->majorOpcode;
+	error.minorCode = X_GLXCreatePbuffer;
+
+	_XError(dpy, &error);
+	
+	UnlockDisplay(dpy);
+	
+	return None;
+    }
+
+    return result;
+
+#if 0    
+    return (GLXPbufferSGIX) CreatePbuffer( dpy, (__GLcontextModes *) config,
+					   width, height,
+					   attrib_list, GL_FALSE );
+#endif
 }
 
 
@@ -538,37 +574,59 @@ glXCreateGLXPbufferSGIX(Display *dpy, GLXFBConfigSGIX config,
  * Create a new pbuffer.
  */
 PUBLIC GLXPbuffer
-glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list)
-{
-   int i, width, height;
-   GLXPbuffer result;
+glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list) {
+    GLXContext gc = __glXGetCurrentContext();
+    int i, width, height;
+    GLXPbuffer result;
+    int errorcode;
+    
+    width = 0;
+    height = 0;
+    
+    for(i = 0; attrib_list[i]; ++i) {
+	switch(attrib_list[i]) {
+	case GLX_PBUFFER_WIDTH:
+	    width = attrib_list[i + 1];
+	    ++i;
+	    break;
+	    
+	case GLX_PBUFFER_HEIGHT:
+	    height = attrib_list[i + 1];
+	    ++i;
+	    break;
+	    
+	case GLX_LARGEST_PBUFFER:
+	    /* This is a hint we should probably handle, but how? */
+	    break;
 
-   width = 0;
-   height = 0;
-
-   for (i = 0; attrib_list[i * 2]; i++) {
-      switch (attrib_list[i * 2]) {
-      case GLX_PBUFFER_WIDTH:
-	 width = attrib_list[i * 2 + 1];
-	 break;
-      case GLX_PBUFFER_HEIGHT:
-	 height = attrib_list[i * 2 + 1];
-	 break;
-      }
-   }
-
-#if 0
-
-   return (GLXPbuffer) CreatePbuffer( dpy, (__GLcontextModes *) config,
-				      width, height,
-				      attrib_list, GL_TRUE );
-#endif
-   // printf("pbuffer width %d height %d\n", width, height);
-   
-   if(apple_glx_pbuffer_create(dpy, config, width, height, &result)) {
-       return None;
-   }
-
+	case GLX_PRESERVED_CONTENTS:
+	    /* The contents are always preserved with AppleSGLX with CGL. */
+	    break;
+	    
+	default:
+	    return None;
+	}
+    }
+    
+    if(apple_glx_pbuffer_create(dpy, config, width, height, &errorcode, 
+				&result)) {
+	xError error;
+	
+	LockDisplay(dpy);
+	
+	error.errorCode = errorcode;
+	error.resourceID = 0;
+	error.sequenceNumber = dpy->request;
+	error.type = X_Error;
+	error.majorCode = gc->majorOpcode;
+	error.minorCode = X_GLXCreatePbuffer;
+	_XError(dpy, &error);
+	
+	UnlockDisplay(dpy);
+	
+	return None;
+    }
+    
    return result;
 }
 
@@ -629,6 +687,8 @@ glXGetSelectedEvent(Display *dpy, GLXDrawable drawable, unsigned long *mask)
 {
    unsigned int value;
 
+   /*This is a no-op with Apple CGL pbuffers.*/
+   return;
 
    /* The non-sense with value is required because on LP64 platforms
     * sizeof(unsigned int) != sizeof(unsigned long).  On little-endian

@@ -68,7 +68,8 @@ static void unlock_list(void) {
 
 
 bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config, 
-			      int width, int height, GLXPbuffer *result) {
+			      int width, int height, int *errorcode,
+			      GLXPbuffer *result) {
     CGLError err;
     struct apple_glx_pbuffer *pbuf;
     Window root;
@@ -77,7 +78,7 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     pbuf = malloc(sizeof(*pbuf));
 
     if(NULL == pbuf) {
-	/*FIXME set BadAlloc.*/
+	*errorcode = BadAlloc;
 	return true;
     }
 
@@ -86,12 +87,13 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     pbuf->previous = NULL;
     pbuf->next = NULL;
 
+    /*TODO perhaps use GL_RGB if the config specifies a 0 alpha. */
     err = apple_cgl.create_pbuffer(width, height, GL_TEXTURE_RECTANGLE_EXT,
 		     GL_RGBA, 0, &pbuf->buffer_obj);
 
     if(kCGLNoError != err) {
 	free(pbuf);
-	/*FIXME Fill in BadMatch and so on if needed.*/
+	*errorcode = BadMatch;
 	return true;
     }
 
@@ -110,11 +112,13 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     if(None == pbuf->xid) {
 	apple_cgl.destroy_pbuffer(pbuf->buffer_obj);
 	free(pbuf);
+	*errorcode = BadAlloc;
 	return true;
     } 
 
     *result = pbuf->xid;
 
+    /* Link the pbuffer into the list. */
     lock_list();
 
     pbuf->next = pbuffer_list;
@@ -157,6 +161,7 @@ void apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer xid) {
     unlock_list();    
 }
 
+/* Return true if able to get the pbuffer object for the drawable. */
 bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result) {
     struct apple_glx_pbuffer *pbuf;
 
@@ -172,5 +177,76 @@ bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result) {
 
     unlock_list();
 
+    return false;
+}
+
+/* Return true if an error occurred. */
+bool apple_glx_pbuffer_get_max_size(int *widthresult, int *heightresult) {
+    CGLContextObj oldcontext;
+    GLint ar[2];
+   
+    oldcontext = apple_cgl.get_current_context();
+
+    if(!oldcontext) {
+	/* 
+	 * There is no current context, so we need to make one in order
+	 * to call glGetInteger.
+	 */
+	CGLPixelFormatObj pfobj;
+	CGLError err;
+	CGLPixelFormatAttribute attr[10];
+	int c = 0;
+	GLint vsref = 0;
+	CGLContextObj newcontext;
+       
+	attr[c++] = kCGLPFAColorSize;
+	attr[c++] = 32;
+	attr[c++] = 0;
+
+	err = apple_cgl.choose_pixel_format(attr, &pfobj, &vsref);
+	if(kCGLNoError != err) {
+	    if(getenv("LIBGL_DIAGNOSTIC")) {
+		printf("choose_pixel_format error in %s: %s\n", __func__,
+		       apple_cgl.error_string(err));
+	    }
+
+	    return true;
+	}
+	    
+
+	err = apple_cgl.create_context(pfobj, NULL, &newcontext);
+
+	if(kCGLNoError != err) {
+	    if(getenv("LIBGL_DIAGNOSTIC")) {
+		printf("create_context error in %s: %s\n", __func__,
+		       apple_cgl.error_string(err));
+	    }
+
+	    apple_cgl.destroy_pixel_format(pfobj);
+	   
+	    return true;
+	}
+
+	err = apple_cgl.set_current_context(newcontext);
+
+	if (kCGLNoError != err) {
+	    printf("set_current_context error in %s: %s\n", __func__,
+		   apple_cgl.error_string(err));
+	    return true;
+	}
+
+	
+	glGetIntegerv(GL_MAX_VIEWPORT_DIMS, ar);
+
+	apple_cgl.set_current_context(oldcontext);
+	apple_cgl.destroy_context(newcontext);
+	apple_cgl.destroy_pixel_format(pfobj);	
+    } else {
+	glGetIntegerv(GL_MAX_VIEWPORT_DIMS, ar);
+    }
+
+    *widthresult = ar[0];
+    *heightresult = ar[1];
+        
     return false;
 }
