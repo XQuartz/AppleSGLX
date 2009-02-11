@@ -45,7 +45,7 @@ void dump_pbuffer(Display *dpy) {
     }
 }
 
-void draw(Display *dpy, Window w) {
+void draw(Display *dpy) {
     GLenum err;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -67,30 +67,6 @@ void draw(Display *dpy, Window w) {
     }
 
     dump_pbuffer(dpy);
-}
-
-void resize(Display *dpy, Window w, int width, int height) {
-    glViewport(0, 0, width, height);
-    draw(dpy, w);
-}
-
-void event_loop(Display *dpy) {
-    XEvent event;
-    
-    while(1) {
-	XNextEvent(dpy, &event);
-
-	switch(event.type) {
-	case Expose:
-	    draw(dpy, event.xexpose.window);
-	    break;
-	    
-	case ConfigureNotify:
-	    resize(dpy, event.xconfigure.window, event.xconfigure.width,
-		   event.xconfigure.height);
-	    break;
-	}	
-    }
 }
 
 int main() {
@@ -181,7 +157,9 @@ int main() {
 	return EXIT_FAILURE;
     }
 
-    event_loop(dpy);
+    draw(dpy);
+    glXDestroyPbuffer(dpy, pbuf);
+    draw(dpy);
 
     return EXIT_SUCCESS;
 }
