@@ -647,9 +647,50 @@ glXDestroyPbuffer(Display *dpy, GLXPbuffer pbuf)
  */
 PUBLIC void
 glXQueryDrawable(Display *dpy, GLXDrawable drawable,
-		 int attribute, unsigned int *value)
-{
-   GetDrawableAttribute( dpy, drawable, attribute, value );
+		 int attribute, unsigned int *value) {
+    
+    switch(attribute) {
+    case GLX_WIDTH: {
+	int width;
+
+	if(apple_glx_pbuffer_get_width(drawable, &width)) {
+	    *value = (unsigned int)width;
+	    return;
+	} 
+    }
+	break;
+
+    case GLX_HEIGHT: {
+	int height;
+
+	if(apple_glx_pbuffer_get_height(drawable, &height)) {
+	    *value = (unsigned int)height;
+	    return;
+	}
+    }
+	break;
+
+    case GLX_PRESERVED_CONTENTS:
+	*value = true;
+	return;
+	break;
+
+    case GLX_FBCONFIG_ID: {
+	XID id;
+
+	if(apple_glx_pbuffer_get_fbconfig_id(drawable, &id)) {
+	    *value = id;
+	    return;
+	}
+    }
+	break;
+
+    default:
+	fprintf(stderr, "%s invalid attribute: %d\n", __func__, attribute);
+	abort();
+    }
+
+    //GetDrawableAttribute( dpy, drawable, attribute, value );
 }
 
 

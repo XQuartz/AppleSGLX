@@ -29,11 +29,13 @@
 
 #include <stdlib.h>
 #include <pthread.h>
+#include "glcontextmodes.h"
 #include "apple_glx_pbuffer.h"
 
 struct apple_glx_pbuffer {
     GLXPbuffer xid; /* our pixmap */
     int width, height;
+    XID fbconfig_id;
     CGLPBufferObj buffer_obj;
     struct apple_glx_pbuffer *previous, *next;
 };
@@ -66,6 +68,24 @@ static void unlock_list(void) {
     }
 }
 
+static bool find_pbuffer(GLXDrawable d, struct apple_glx_pbuffer **result) {
+    struct apple_glx_pbuffer *pbuf;
+
+    lock_list();
+
+    for(pbuf = pbuffer_list; pbuf; pbuf = pbuf->next) {
+	if(pbuf->xid == d) {
+	    *result = pbuf;
+	    unlock_list();
+	    return true;
+	}
+    }
+    
+    unlock_list();
+
+    return false;
+}
+
 
 bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config, 
 			      int width, int height, int *errorcode,
@@ -74,6 +94,7 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     struct apple_glx_pbuffer *pbuf;
     Window root;
     int screen;
+    __GLcontextModes *mode = (__GLcontextModes *)config;
 
     pbuf = malloc(sizeof(*pbuf));
 
@@ -115,6 +136,9 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
 	*errorcode = BadAlloc;
 	return true;
     } 
+
+    printf("mode->fbconfigID %d\n", mode->fbconfigID);
+    pbuf->fbconfig_id = mode->fbconfigID;
 
     *result = pbuf->xid;
 
@@ -165,20 +189,47 @@ void apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer xid) {
 bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result) {
     struct apple_glx_pbuffer *pbuf;
 
-    lock_list();
-
-    for(pbuf = pbuffer_list; pbuf; pbuf = pbuf->next) {
-	if(pbuf->xid == d) {
-	    *result = pbuf->buffer_obj;
-	    unlock_list();
-	    return true;
-	}
+    if(find_pbuffer(d, &pbuf)) {
+	*result = pbuf->buffer_obj;
+	return true;
     }
-
-    unlock_list();
 
     return false;
 }
+
+bool apple_glx_pbuffer_get_width(GLXDrawable d, int *width) {
+    struct apple_glx_pbuffer *pbuf;
+
+    if(find_pbuffer(d, &pbuf)) {
+	*width = pbuf->width;
+	return true;
+    }
+
+    return false;
+}
+
+bool apple_glx_pbuffer_get_height(GLXDrawable d, int *height) {
+    struct apple_glx_pbuffer *pbuf;
+
+    if(find_pbuffer(d, &pbuf)) {
+	*height = pbuf->height;
+	return true;
+    }
+    
+    return false;
+}
+
+bool apple_glx_pbuffer_get_fbconfig_id(GLXDrawable d, XID *id) {
+    struct apple_glx_pbuffer *pbuf;
+
+    if(find_pbuffer(d, &pbuf)) {
+	*id = pbuf->fbconfig_id;
+	return true;
+    }
+
+    return false;
+}
+
 
 /* Return true if an error occurred. */
 bool apple_glx_pbuffer_get_max_size(int *widthresult, int *heightresult) {

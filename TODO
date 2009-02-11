@@ -1,10 +1,12 @@
 -- Feb 10, 2009
 
+Add the PBUFFER_BIT to the fbconfigs/visualconfigs in the X server.
+
 DONE Test the pbuffer by using glReadPixels to verify it's being written to.
 
 PLAN Handle GLX_LARGEST_PBUFFER (it's unclear how to handle this so far).
 
-glXQueryDrawable support for Pbuffer drawables.
+DONE glXQueryDrawable support for Pbuffer drawables.
 
 DONE make glXSelectEvent() a no-op.
 

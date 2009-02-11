@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 
 GLXPbuffer pbuf;
 
-void dump_pbuffer(void) {
+void dump_pbuffer(Display *dpy) {
     size_t length = 400 * 400 * /*RGBA*/ 4;
     void *p = malloc(length);
     unsigned char *cp;
@@ -27,6 +28,18 @@ void dump_pbuffer(void) {
 	    cp += 4;
 	}
 	putchar('\n');	    
+    }
+
+    {
+	unsigned int width = 0, height = 0, fbid = 0;
+
+	glXQueryDrawable(dpy, pbuf, GLX_WIDTH, &width);
+	glXQueryDrawable(dpy, pbuf, GLX_HEIGHT, &height);
+	glXQueryDrawable(dpy, pbuf, GLX_FBCONFIG_ID, &fbid);
+
+	printf("queried drawable width %u height %u fbconfigID %x\n",
+	       width, height, fbid);
+	
     }
 }
 
@@ -51,7 +64,7 @@ void draw(Display *dpy, Window w) {
 	abort();
     }
 
-    dump_pbuffer();
+    dump_pbuffer(dpy);
 }
 
 void resize(Display *dpy, Window w, int width, int height) {
@@ -151,6 +164,8 @@ int main() {
    
     /*THIS ISN'T RIGHT YET.  We need to check the fbconfig for the Pbuffer bit. */
     pbuf = glXCreatePbuffer(dpy, fbconfig[0], pbattrib);
+  
+    printf("numfbconfig %d\n", numfbconfig);
 
     if(None == pbuf) {
 	fprintf(stderr, "unable to create a GLXPbuffer!\n");
