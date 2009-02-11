@@ -1,6 +1,12 @@
 -- Feb 10, 2009
 
-GLXPbuffer: Handle GLX_LARGEST_PBUFFER and glXQueryDrawable and glXSelectEvent() (make it a no-op).
+DONE Test the pbuffer by using glReadPixels to verify it's being written to.
+
+PLAN Handle GLX_LARGEST_PBUFFER (it's unclear how to handle this so far).
+
+glXQueryDrawable support for Pbuffer drawables.
+
+DONE make glXSelectEvent() a no-op.
 
 -- Feb 9, 2009
 

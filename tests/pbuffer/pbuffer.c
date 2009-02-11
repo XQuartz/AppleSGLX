@@ -5,6 +5,31 @@
 
 GLXPbuffer pbuf;
 
+void dump_pbuffer(void) {
+    size_t length = 400 * 400 * /*RGBA*/ 4;
+    void *p = malloc(length);
+    unsigned char *cp;
+    int x, y;
+
+    if(NULL == p) {
+	perror("malloc");
+	abort();
+    }
+
+    memset(p, 0, length);
+
+    glReadPixels(0, 0, 400, 400, GL_RGBA, GL_UNSIGNED_BYTE, p); 
+
+    cp = p;
+    for(y = 0; y < 400; ++y) {
+	for(x = 0; x < 400; ++x) {
+	    printf("%d %d %d %d, ", cp[0], cp[1], cp[2], cp[3]);
+	    cp += 4;
+	}
+	putchar('\n');	    
+    }
+}
+
 void draw(Display *dpy, Window w) {
     GLenum err;
 
@@ -25,6 +50,8 @@ void draw(Display *dpy, Window w) {
 	fprintf(stderr, "an unexpect error occurred: %d\n", err);
 	abort();
     }
+
+    dump_pbuffer();
 }
 
 void resize(Display *dpy, Window w, int width, int height) {
