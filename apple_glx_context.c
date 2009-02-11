@@ -224,7 +224,7 @@ void apple_glx_destroy_context(void **ptr, Display *dpy) {
     if(ac->drawable) {
 	Drawable drawable = ac->drawable->drawable;
 	
-	if(apple_glx_destroy_drawable(ac->drawable)) {
+	if(ac->drawable->destroy(ac->drawable)) {
 	    /* 
 	     * The drawable has no more references, so we can destroy
 	     * the surface. 
@@ -337,8 +337,8 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
      * isn't the old. 
      */
     if(ac->drawable && !same_drawable) {
-	apple_glx_release_drawable(ac->drawable);
-	apple_glx_destroy_drawable(ac->drawable);
+	ac->drawable->release(ac->drawable);
+	ac->drawable->destroy(ac->drawable);
 	ac->drawable = NULL;
     }
     
@@ -357,14 +357,14 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 	ac->drawable = newagd;
 
 	/* Save a reference to the new drawable. */
-	apple_glx_reference_drawable(ac->drawable);
+	ac->drawable->reference(ac->drawable);
     } else {
 	/* We are reusing an existing drawable structure. */
 
 	if(!same_drawable) {
 	    /* The drawable isn't the same as the previously made current. */
 	    ac->drawable = newagd;
-	    apple_glx_reference_drawable(ac->drawable);
+	    ac->drawable->reference(ac->drawable);
 	}
     }
 
@@ -482,4 +482,23 @@ bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr,
     }
     
     return false;
+}
+
+void apple_glx_destroy_drawable_in_any(Display *dpy, GLXDrawable d) {
+    struct apple_glx_context *ac;
+    struct apple_glx_drawable *agd;
+
+    lock_context_list();
+
+    for(ac = context_list; ac; ac = ac->next) {
+	if(ac->drawable && ac->drawable->drawable == d) {
+	    agd = ac->drawable;
+	    ac->drawable = NULL;
+	    agd->release(agd);
+	    (void)agd->destroy(agd);
+	    apple_cgl.clear_drawable(ac->context_obj);
+	}
+    }
+
+    unlock_context_list();
 }

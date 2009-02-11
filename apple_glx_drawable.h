@@ -54,6 +54,11 @@ struct apple_glx_drawable {
     void (*lock)(struct apple_glx_drawable *agd);
     void (*unlock)(struct apple_glx_drawable *agd);
 
+    void (*reference)(struct apple_glx_drawable *agd);
+    void (*release)(struct apple_glx_drawable *agd);
+    
+    bool (*destroy)(struct apple_glx_drawable *agd);
+
 /*BEGIN These are used for the mixed mode drawing... */
     int width, height;
     int row_bytes;
@@ -72,13 +77,6 @@ struct apple_glx_context;
 struct apple_glx_drawable *apple_glx_find_drawable(Display *dpy, 
 						   GLXDrawable drawable);
 
-/*
- * Reference count management for struct apple_glx_drawables. 
- * These explicitly lock the drawable, to prevent races.
- */
-void apple_glx_reference_drawable(struct apple_glx_drawable *agd);
-void apple_glx_release_drawable(struct apple_glx_drawable *agd);
-
 /* Returns true on error */
 bool apple_glx_create_drawable(Display *dpy, 
 			       struct apple_glx_context *ac,
@@ -86,10 +84,8 @@ bool apple_glx_create_drawable(Display *dpy,
 			       CGLPBufferObj pbuf,
 			       struct apple_glx_drawable **agd);
 
-/* Return true if the drawable was destroyed. */
-/* This also reduces the reference count of agd by 1. */
-bool apple_glx_destroy_drawable(struct apple_glx_drawable *agd);
-
 void apple_glx_garbage_collect_drawables(Display *dpy);
+
+void apple_glx_destroy_drawable_in_any(Display *dpy, GLXDrawable d);
 
 #endif

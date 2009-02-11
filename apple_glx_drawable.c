@@ -141,82 +141,16 @@ static void drawable_unlock(struct apple_glx_drawable *agd) {
 }
 
 
-void apple_glx_reference_drawable(struct apple_glx_drawable *agd) {
+static void reference_drawable(struct apple_glx_drawable *agd) {
     agd->lock(agd);
     agd->reference_count++;
     agd->unlock(agd);
 }
 
-void apple_glx_release_drawable(struct apple_glx_drawable *agd) {
+static void release_drawable(struct apple_glx_drawable *agd) {
     agd->lock(agd);
     agd->reference_count--;
     agd->unlock(agd);
-}
-
-bool apple_glx_create_drawable(Display *dpy,
-			       struct apple_glx_context *ac,
-			       GLXDrawable drawable, 
-			       CGLPBufferObj pbuf,
-			       struct apple_glx_drawable **agdResult) {
-    struct apple_glx_drawable *agd;
-    int err;
-    
-    *agdResult = NULL;
-
-    agd = malloc(sizeof *agd);
-
-    if(NULL == agd) {
-	perror("malloc");
-	return true;
-    }
-
-    agd->display = dpy;
-    agd->reference_count = 0;
-    agd->drawable = drawable;
-    agd->surface_id = 0;
-    agd->uid = 0;
-    agd->pbuffer_obj = pbuf;
-
-    err = pthread_mutex_init(&agd->mutex, NULL);
-
-    agd->lock = drawable_lock;
-    agd->unlock = drawable_unlock;
-
-    if(err) {
-	fprintf(stderr, "pthread_mutex_init error: %d\n", err);
-	abort();
-    }
-
-    agd->width = -1;
-    agd->height = -1;
-    agd->row_bytes = 0;
-    agd->path[0] = '\0';
-    agd->fd = -1;
-    agd->buffer = NULL;
-    agd->buffer_length = 0;
-    
-    agd->previous = NULL;
-
-    if(!agd->pbuffer_obj && create_surface(dpy, ac, agd)) {
-	free(agd);
-	return true;
-    }
-
-    lock_drawables_list();
-       
-    /* Link the new drawable into the global list. */
-    agd->next = drawables;
-
-    if(drawables)
-	drawables->previous = agd;
-
-    drawables = agd;
-
-    unlock_drawables_list();
-
-    *agdResult = agd;
-
-    return false;
 }
 
 /* The drawables list must be locked prior to calling this. */
@@ -258,7 +192,7 @@ static bool destroy_drawable(struct apple_glx_drawable *agd) {
 	    fprintf(stderr, "xp_destroy_surface error: %d\n", (int)error);
 	}
     }
-    
+        
     free(agd);
 
     return true;
@@ -269,7 +203,7 @@ static bool destroy_drawable(struct apple_glx_drawable *agd) {
  * This is typically called when a context is destroyed or 
  * garbage is collected below. 
  */
-bool apple_glx_destroy_drawable(struct apple_glx_drawable *agd) {
+static bool destroy_drawable_callback(struct apple_glx_drawable *agd) {
     bool result;
 
     lock_drawables_list();
@@ -279,6 +213,77 @@ bool apple_glx_destroy_drawable(struct apple_glx_drawable *agd) {
     unlock_drawables_list();
 
     return result;
+}
+
+bool apple_glx_create_drawable(Display *dpy,
+			       struct apple_glx_context *ac,
+			       GLXDrawable drawable, 
+			       CGLPBufferObj pbuf,
+			       struct apple_glx_drawable **agdResult) {
+    struct apple_glx_drawable *agd;
+    int err;
+    
+    *agdResult = NULL;
+
+    agd = malloc(sizeof *agd);
+
+    if(NULL == agd) {
+	perror("malloc");
+	return true;
+    }
+
+    agd->display = dpy;
+    agd->reference_count = 0;
+    agd->drawable = drawable;
+    agd->surface_id = 0;
+    agd->uid = 0;
+    agd->pbuffer_obj = pbuf;
+
+    err = pthread_mutex_init(&agd->mutex, NULL);
+    
+    if(err) {
+	fprintf(stderr, "pthread_mutex_init error: %d\n", err);
+	abort();
+    }
+
+    agd->lock = drawable_lock;
+    agd->unlock = drawable_unlock;
+
+    agd->reference = reference_drawable;
+    agd->release = release_drawable;
+
+    agd->destroy = destroy_drawable_callback;
+
+    agd->width = -1;
+    agd->height = -1;
+    agd->row_bytes = 0;
+    agd->path[0] = '\0';
+    agd->fd = -1;
+    agd->buffer = NULL;
+    agd->buffer_length = 0;
+    
+    agd->previous = NULL;
+
+    if(!agd->pbuffer_obj && create_surface(dpy, ac, agd)) {
+	free(agd);
+	return true;
+    }
+
+    lock_drawables_list();
+       
+    /* Link the new drawable into the global list. */
+    agd->next = drawables;
+
+    if(drawables)
+	drawables->previous = agd;
+
+    drawables = agd;
+
+    unlock_drawables_list();
+
+    *agdResult = agd;
+
+    return false;
 }
 
 static int error_count = 0;

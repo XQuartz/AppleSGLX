@@ -637,7 +637,6 @@ glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list) {
 PUBLIC void
 glXDestroyPbuffer(Display *dpy, GLXPbuffer pbuf)
 {
-    //DestroyPbuffer( dpy, pbuf );
     apple_glx_pbuffer_destroy(dpy, pbuf);
 }
 
@@ -648,7 +647,9 @@ glXDestroyPbuffer(Display *dpy, GLXPbuffer pbuf)
 PUBLIC void
 glXQueryDrawable(Display *dpy, GLXDrawable drawable,
 		 int attribute, unsigned int *value) {
-    
+    GLXContext gc = __glXGetCurrentContext();
+    xError error;
+
     switch(attribute) {
     case GLX_WIDTH: {
 	int width;
@@ -689,6 +690,19 @@ glXQueryDrawable(Display *dpy, GLXDrawable drawable,
 	fprintf(stderr, "%s invalid attribute: %d\n", __func__, attribute);
 	abort();
     }
+
+    
+    LockDisplay(dpy);
+    
+    error.errorCode = GLXBadDrawable;
+    error.resourceID = 0;
+    error.sequenceNumber = dpy->request;
+    error.type = X_Error;
+    error.majorCode = gc->majorOpcode;
+    error.minorCode = X_GLXGetDrawableAttributes;
+    _XError(dpy, &error);
+	
+    UnlockDisplay(dpy);
 
     //GetDrawableAttribute( dpy, drawable, attribute, value );
 }

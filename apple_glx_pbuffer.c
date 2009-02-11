@@ -31,6 +31,7 @@
 #include <pthread.h>
 #include "glcontextmodes.h"
 #include "apple_glx_pbuffer.h"
+#include "apple_glx_drawable.h"
 
 struct apple_glx_pbuffer {
     GLXPbuffer xid; /* our pixmap */
@@ -160,6 +161,12 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
 void apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer xid) {
     struct apple_glx_pbuffer *pbuf;
 
+    /*
+     * This cleans up the drawable associated with any currently alive
+     * context.
+     */
+    apple_glx_destroy_drawable_in_any(dpy, xid);
+    
     lock_list();
 
     for(pbuf = pbuffer_list; pbuf; pbuf = pbuf->next) {
@@ -229,7 +236,6 @@ bool apple_glx_pbuffer_get_fbconfig_id(GLXDrawable d, XID *id) {
 
     return false;
 }
-
 
 /* Return true if an error occurred. */
 bool apple_glx_pbuffer_get_max_size(int *widthresult, int *heightresult) {
