@@ -20,6 +20,7 @@ _glBindProgramARB
 _glBindRenderbufferEXT
 _glBindTexture
 _glBindTextureEXT
+_glBindVertexArrayAPPLE
 _glBitmap
 _glBlendColor
 _glBlendColorEXT
@@ -33,6 +34,7 @@ _glBlendFuncSeparateEXT
 _glBlitFramebufferEXT
 _glBufferData
 _glBufferDataARB
+_glBufferParameteriAPPLE
 _glBufferSubData
 _glBufferSubDataARB
 _glCallList
@@ -134,6 +136,7 @@ _glDeleteRenderbuffersEXT
 _glDeleteShader
 _glDeleteTextures
 _glDeleteTexturesEXT
+_glDeleteVertexArraysAPPLE
 _glDepthFunc
 _glDepthMask
 _glDepthRange
@@ -147,13 +150,16 @@ _glDrawArrays
 _glDrawBuffer
 _glDrawBuffers
 _glDrawBuffersARB
+_glDrawElementArrayAPPLE
 _glDrawElements
 _glDrawPixels
+_glDrawRangeElementArrayAPPLE
 _glDrawRangeElements
 _glDrawRangeElementsEXT
 _glEdgeFlag
 _glEdgeFlagPointer
 _glEdgeFlagv
+_glElementPointerAPPLE
 _glEnable
 _glEnableClientState
 _glEnableVertexAttribArray
@@ -177,6 +183,7 @@ _glEvalPoint2
 _glFeedbackBuffer
 _glFinish
 _glFlush
+_glFlushMappedBufferRangeAPPLE
 _glFogCoordd
 _glFogCoorddEXT
 _glFogCoorddv
@@ -208,6 +215,7 @@ _glGenQueriesARB
 _glGenRenderbuffersEXT
 _glGenTextures
 _glGenTexturesExt
+_glGenVertexArraysAPPLE
 _glGetActiveAttrib
 _glGetActiveAttribARB
 _glGetActiveUniform
@@ -333,6 +341,7 @@ _glIsRenderbufferEXT
 _glIsShader
 _glIsTexture
 _glIsTextureEXT
+_glIsVertexArrayAPPLE
 _glLightf
 _glLightfv
 _glLighti
@@ -374,8 +383,10 @@ _glMatrixMode
 _glMinmax
 _glMultiDrawArrays
 _glMultiDrawArraysEXT
+_glMultiDrawElementArrayAPPLE
 _glMultiDrawElements
 _glMultiDrawElementsEXT
+_glMultiDrawRangeElementArrayAPPLE
 _glMultiTexCoord1d
 _glMultiTexCoord1dARB
 _glMultiTexCoord1dv

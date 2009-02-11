@@ -70,12 +70,12 @@ extension EXT_blend_equation_separate
 extension EXT_texture_mirror_clamp
 extension EXT_packed_depth_stencil
 
-if 0 {
 extension APPLE_client_storage
 extension APPLE_specular_vector
 extension APPLE_transform_hint
 extension APPLE_packed_pixels
-extension APPLE_fence
+#The gl.spec has different argument types for this:
+#extension APPLE_fence
 extension APPLE_vertex_array_object
 extension APPLE_vertex_program_evaluators
 extension APPLE_element_array
@@ -83,10 +83,10 @@ extension APPLE_flush_render
 extension APPLE_aux_depth_stencil
 extension APPLE_flush_buffer_range
 extension APPLE_ycbcr_422
-extension APPLE_vertex_array_range
+#The gl.spec has different argument types for this:
+#extension APPLE_vertex_array_range
 extension APPLE_texture_range
 extension APPLE_float_pixels
 extension APPLE_pixel_buffer
 extension APPLE_object_purgeable
-}
 

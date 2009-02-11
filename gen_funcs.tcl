@@ -228,6 +228,10 @@ array set typemap {
     HintTargetPGI GLenum
     ProgramParameterPName GLenum
     ProgramPropertyARB GLenum
+    ElementPointerTypeATI GLenum
+    FenceNV GLuint
+    ObjectTypeAPPLE GLenum
+    VertexArrayPNameAPPLE GLenum
 }
 
 proc psplit s {

@@ -102,6 +102,9 @@ void glBindTexture(GLenum target, GLuint texture) {
 void glBindTextureEXT(GLenum target, GLuint texture) {
 	__gl_api.BindTexture(target, texture);
 }
+void glBindVertexArrayAPPLE(GLuint array) {
+	__gl_api.BindVertexArrayAPPLE(array);
+}
 void glBitmap(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte * bitmap) {
 	__gl_api.Bitmap(width, height, xorig, yorig, xmove, ymove, bitmap);
 }
@@ -140,6 +143,9 @@ void glBufferData(GLenum target, GLsizeiptrARB size, const const GLvoid * data, 
 }
 void glBufferDataARB(GLenum target, GLsizeiptr size, const const GLvoid * data, GLenum usage) {
 	__gl_api.BufferDataARB(target, size, data, usage);
+}
+void glBufferParameteriAPPLE(GLenum target, GLenum pname, GLint param) {
+	__gl_api.BufferParameteriAPPLE(target, pname, param);
 }
 void glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const const GLvoid * data) {
 	__gl_api.BufferSubData(target, offset, size, data);
@@ -444,6 +450,9 @@ void glDeleteTextures(GLsizei n, const GLuint * textures) {
 void glDeleteTexturesEXT(GLsizei n, const GLuint * textures) {
 	__gl_api.DeleteTextures(n, textures);
 }
+void glDeleteVertexArraysAPPLE(GLsizei n, const GLuint * arrays) {
+	__gl_api.DeleteVertexArraysAPPLE(n, arrays);
+}
 void glDepthFunc(GLenum func) {
 	__gl_api.DepthFunc(func);
 }
@@ -474,11 +483,17 @@ void glDisableVertexAttribArrayARB(GLuint index) {
 void glDrawArrays(GLenum mode, GLint first, GLsizei count) {
 	__gl_api.DrawArrays(mode, first, count);
 }
+void glDrawElementArrayAPPLE(GLenum mode, GLint first, GLsizei count) {
+	__gl_api.DrawElementArrayAPPLE(mode, first, count);
+}
 void glDrawElements(GLenum mode, GLsizei count, GLenum type, const void * indices) {
 	__gl_api.DrawElements(mode, count, type, indices);
 }
 void glDrawPixels(GLsizei width, GLsizei height, GLenum format, GLenum type, const void * pixels) {
 	__gl_api.DrawPixels(width, height, format, type, pixels);
+}
+void glDrawRangeElementArrayAPPLE(GLenum mode, GLuint start, GLuint end, GLint first, GLsizei count) {
+	__gl_api.DrawRangeElementArrayAPPLE(mode, start, end, first, count);
 }
 void glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void * indices) {
 	__gl_api.DrawRangeElements(mode, start, end, count, type, indices);
@@ -494,6 +509,9 @@ void glEdgeFlagPointer(GLsizei stride, const void * pointer) {
 }
 void glEdgeFlagv(const GLboolean * flag) {
 	__gl_api.EdgeFlagv(flag);
+}
+void glElementPointerAPPLE(GLenum type, const void * pointer) {
+	__gl_api.ElementPointerAPPLE(type, pointer);
 }
 void glEnable(GLenum cap) {
 	__gl_api.Enable(cap);
@@ -563,6 +581,9 @@ void glFinish(void) {
 }
 void glFlush(void) {
 	__gl_api.Flush();
+}
+void glFlushMappedBufferRangeAPPLE(GLenum target, GLintptrARB offset, GLsizeiptrARB size) {
+	__gl_api.FlushMappedBufferRangeAPPLE(target, offset, size);
 }
 void glFogCoordd(GLdouble coord) {
 	__gl_api.FogCoordd(coord);
@@ -656,6 +677,9 @@ void glGenTextures(GLsizei n, GLuint * textures) {
 }
 void glGenTexturesExt(GLsizei n, GLuint * textures) {
 	__gl_api.GenTextures(n, textures);
+}
+void glGenVertexArraysAPPLE(GLsizei n, GLuint * arrays) {
+	__gl_api.GenVertexArraysAPPLE(n, arrays);
 }
 void glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name) {
 	__gl_api.GetActiveAttrib(program, index, bufSize, length, size, type, name);
@@ -1032,6 +1056,9 @@ GLboolean glIsTexture(GLuint texture) {
 GLboolean glIsTextureEXT(GLuint texture) {
 	return __gl_api.IsTexture(texture);
 }
+GLboolean glIsVertexArrayAPPLE(GLuint array) {
+	return __gl_api.IsVertexArrayAPPLE(array);
+}
 void glLightf(GLenum light, GLenum pname, GLfloat param) {
 	__gl_api.Lightf(light, pname, param);
 }
@@ -1155,11 +1182,17 @@ void glMultiDrawArrays(GLenum mode, const GLint * first, const GLsizei * count, 
 void glMultiDrawArraysEXT(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount) {
 	__gl_api.MultiDrawArraysEXT(mode, first, count, primcount);
 }
+void glMultiDrawElementArrayAPPLE(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount) {
+	__gl_api.MultiDrawElementArrayAPPLE(mode, first, count, primcount);
+}
 void glMultiDrawElements(GLenum mode, const GLsizei * count, GLenum type, const void * * indices, GLsizei primcount) {
 	__gl_api.MultiDrawElements(mode, count, type, indices, primcount);
 }
 void glMultiDrawElementsEXT(GLenum mode, const GLsizei * count, GLenum type, const void * * indices, GLsizei primcount) {
 	__gl_api.MultiDrawElementsEXT(mode, count, type, indices, primcount);
+}
+void glMultiDrawRangeElementArrayAPPLE(GLenum mode, GLuint start, GLuint end, const GLint * first, const GLsizei * count, GLsizei primcount) {
+	__gl_api.MultiDrawRangeElementArrayAPPLE(mode, start, end, first, count, primcount);
 }
 void glMultiTexCoord1d(GLenum target, GLdouble s) {
 	__gl_api.MultiTexCoord1d(target, s);
@@ -2603,6 +2636,7 @@ void apple_xgl_init_direct(void) {
 	__gl_api.BindProgramARB = glsym(handle, "glBindProgramARB");
 	__gl_api.BindRenderbufferEXT = glsym(handle, "glBindRenderbufferEXT");
 	__gl_api.BindTexture = glsym(handle, "glBindTexture");
+	__gl_api.BindVertexArrayAPPLE = glsym(handle, "glBindVertexArrayAPPLE");
 	__gl_api.Bitmap = glsym(handle, "glBitmap");
 	__gl_api.BlendColor = glsym(handle, "glBlendColor");
 	__gl_api.BlendColorEXT = glsym(handle, "glBlendColorEXT");
@@ -2616,6 +2650,7 @@ void apple_xgl_init_direct(void) {
 	__gl_api.BlitFramebufferEXT = glsym(handle, "glBlitFramebufferEXT");
 	__gl_api.BufferData = glsym(handle, "glBufferData");
 	__gl_api.BufferDataARB = glsym(handle, "glBufferDataARB");
+	__gl_api.BufferParameteriAPPLE = glsym(handle, "glBufferParameteriAPPLE");
 	__gl_api.BufferSubData = glsym(handle, "glBufferSubData");
 	__gl_api.BufferSubDataARB = glsym(handle, "glBufferSubDataARB");
 	__gl_api.CallList = glsym(handle, "glCallList");
@@ -2716,6 +2751,7 @@ void apple_xgl_init_direct(void) {
 	__gl_api.DeleteRenderbuffersEXT = glsym(handle, "glDeleteRenderbuffersEXT");
 	__gl_api.DeleteShader = glsym(handle, "glDeleteShader");
 	__gl_api.DeleteTextures = glsym(handle, "glDeleteTextures");
+	__gl_api.DeleteVertexArraysAPPLE = glsym(handle, "glDeleteVertexArraysAPPLE");
 	__gl_api.DepthFunc = glsym(handle, "glDepthFunc");
 	__gl_api.DepthMask = glsym(handle, "glDepthMask");
 	__gl_api.DepthRange = glsym(handle, "glDepthRange");
@@ -2729,13 +2765,16 @@ void apple_xgl_init_direct(void) {
 	__gl_api.DrawBuffer = glsym(handle, "glDrawBuffer");
 	__gl_api.DrawBuffers = glsym(handle, "glDrawBuffers");
 	__gl_api.DrawBuffersARB = glsym(handle, "glDrawBuffersARB");
+	__gl_api.DrawElementArrayAPPLE = glsym(handle, "glDrawElementArrayAPPLE");
 	__gl_api.DrawElements = glsym(handle, "glDrawElements");
 	__gl_api.DrawPixels = glsym(handle, "glDrawPixels");
+	__gl_api.DrawRangeElementArrayAPPLE = glsym(handle, "glDrawRangeElementArrayAPPLE");
 	__gl_api.DrawRangeElements = glsym(handle, "glDrawRangeElements");
 	__gl_api.DrawRangeElementsEXT = glsym(handle, "glDrawRangeElementsEXT");
 	__gl_api.EdgeFlag = glsym(handle, "glEdgeFlag");
 	__gl_api.EdgeFlagPointer = glsym(handle, "glEdgeFlagPointer");
 	__gl_api.EdgeFlagv = glsym(handle, "glEdgeFlagv");
+	__gl_api.ElementPointerAPPLE = glsym(handle, "glElementPointerAPPLE");
 	__gl_api.Enable = glsym(handle, "glEnable");
 	__gl_api.EnableClientState = glsym(handle, "glEnableClientState");
 	__gl_api.EnableVertexAttribArray = glsym(handle, "glEnableVertexAttribArray");
@@ -2759,6 +2798,7 @@ void apple_xgl_init_direct(void) {
 	__gl_api.FeedbackBuffer = glsym(handle, "glFeedbackBuffer");
 	__gl_api.Finish = glsym(handle, "glFinish");
 	__gl_api.Flush = glsym(handle, "glFlush");
+	__gl_api.FlushMappedBufferRangeAPPLE = glsym(handle, "glFlushMappedBufferRangeAPPLE");
 	__gl_api.FogCoordd = glsym(handle, "glFogCoordd");
 	__gl_api.FogCoorddEXT = glsym(handle, "glFogCoorddEXT");
 	__gl_api.FogCoorddv = glsym(handle, "glFogCoorddv");
@@ -2789,6 +2829,7 @@ void apple_xgl_init_direct(void) {
 	__gl_api.GenQueriesARB = glsym(handle, "glGenQueriesARB");
 	__gl_api.GenRenderbuffersEXT = glsym(handle, "glGenRenderbuffersEXT");
 	__gl_api.GenTextures = glsym(handle, "glGenTextures");
+	__gl_api.GenVertexArraysAPPLE = glsym(handle, "glGenVertexArraysAPPLE");
 	__gl_api.GetActiveAttrib = glsym(handle, "glGetActiveAttrib");
 	__gl_api.GetActiveAttribARB = glsym(handle, "glGetActiveAttribARB");
 	__gl_api.GetActiveUniform = glsym(handle, "glGetActiveUniform");
@@ -2913,6 +2954,7 @@ void apple_xgl_init_direct(void) {
 	__gl_api.IsRenderbufferEXT = glsym(handle, "glIsRenderbufferEXT");
 	__gl_api.IsShader = glsym(handle, "glIsShader");
 	__gl_api.IsTexture = glsym(handle, "glIsTexture");
+	__gl_api.IsVertexArrayAPPLE = glsym(handle, "glIsVertexArrayAPPLE");
 	__gl_api.Lightf = glsym(handle, "glLightf");
 	__gl_api.Lightfv = glsym(handle, "glLightfv");
 	__gl_api.Lighti = glsym(handle, "glLighti");
@@ -2954,8 +2996,10 @@ void apple_xgl_init_direct(void) {
 	__gl_api.Minmax = glsym(handle, "glMinmax");
 	__gl_api.MultiDrawArrays = glsym(handle, "glMultiDrawArrays");
 	__gl_api.MultiDrawArraysEXT = glsym(handle, "glMultiDrawArraysEXT");
+	__gl_api.MultiDrawElementArrayAPPLE = glsym(handle, "glMultiDrawElementArrayAPPLE");
 	__gl_api.MultiDrawElements = glsym(handle, "glMultiDrawElements");
 	__gl_api.MultiDrawElementsEXT = glsym(handle, "glMultiDrawElementsEXT");
+	__gl_api.MultiDrawRangeElementArrayAPPLE = glsym(handle, "glMultiDrawRangeElementArrayAPPLE");
 	__gl_api.MultiTexCoord1d = glsym(handle, "glMultiTexCoord1d");
 	__gl_api.MultiTexCoord1dARB = glsym(handle, "glMultiTexCoord1dARB");
 	__gl_api.MultiTexCoord1dv = glsym(handle, "glMultiTexCoord1dv");

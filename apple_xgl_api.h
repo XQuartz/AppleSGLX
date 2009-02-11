@@ -56,6 +56,7 @@ struct apple_xgl_api {
 	void (*BindRenderbufferEXT)(GLenum target, GLuint renderbuffer);
 	void (*BindTexture)(GLenum target, GLuint texture);
 	void (*BindTextureEXT)(GLenum target, GLuint texture);
+	void (*BindVertexArrayAPPLE)(GLuint array);
 	void (*Bitmap)(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte * bitmap);
 	void (*BlendColor)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 	void (*BlendColorEXT)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
@@ -69,6 +70,7 @@ struct apple_xgl_api {
 	void (*BlitFramebufferEXT)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
 	void (*BufferData)(GLenum target, GLsizeiptrARB size, const const GLvoid * data, GLenum usage);
 	void (*BufferDataARB)(GLenum target, GLsizeiptr size, const const GLvoid * data, GLenum usage);
+	void (*BufferParameteriAPPLE)(GLenum target, GLenum pname, GLint param);
 	void (*BufferSubData)(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const const GLvoid * data);
 	void (*BufferSubDataARB)(GLenum target, GLintptr offset, GLsizeiptr size, const const GLvoid * data);
 	void (*CallList)(GLuint list);
@@ -170,6 +172,7 @@ struct apple_xgl_api {
 	void (*DeleteShader)(GLuint shader);
 	void (*DeleteTextures)(GLsizei n, const GLuint * textures);
 	void (*DeleteTexturesEXT)(GLsizei n, const GLuint * textures);
+	void (*DeleteVertexArraysAPPLE)(GLsizei n, const GLuint * arrays);
 	void (*DepthFunc)(GLenum func);
 	void (*DepthMask)(GLboolean flag);
 	void (*DepthRange)(GLclampd near, GLclampd far);
@@ -183,13 +186,16 @@ struct apple_xgl_api {
 	void (*DrawBuffer)(GLenum mode);
 	void (*DrawBuffers)(GLsizei n, const GLenum * bufs);
 	void (*DrawBuffersARB)(GLsizei n, const GLenum * bufs);
+	void (*DrawElementArrayAPPLE)(GLenum mode, GLint first, GLsizei count);
 	void (*DrawElements)(GLenum mode, GLsizei count, GLenum type, const void * indices);
 	void (*DrawPixels)(GLsizei width, GLsizei height, GLenum format, GLenum type, const void * pixels);
+	void (*DrawRangeElementArrayAPPLE)(GLenum mode, GLuint start, GLuint end, GLint first, GLsizei count);
 	void (*DrawRangeElements)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void * indices);
 	void (*DrawRangeElementsEXT)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void * indices);
 	void (*EdgeFlag)(GLboolean flag);
 	void (*EdgeFlagPointer)(GLsizei stride, const void * pointer);
 	void (*EdgeFlagv)(const GLboolean * flag);
+	void (*ElementPointerAPPLE)(GLenum type, const void * pointer);
 	void (*Enable)(GLenum cap);
 	void (*EnableClientState)(GLenum array);
 	void (*EnableVertexAttribArray)(GLuint index);
@@ -213,6 +219,7 @@ struct apple_xgl_api {
 	void (*FeedbackBuffer)(GLsizei size, GLenum type, GLfloat * buffer);
 	void (*Finish)();
 	void (*Flush)();
+	void (*FlushMappedBufferRangeAPPLE)(GLenum target, GLintptrARB offset, GLsizeiptrARB size);
 	void (*FogCoordd)(GLdouble coord);
 	void (*FogCoorddEXT)(GLdouble coord);
 	void (*FogCoorddv)(const GLdouble * coord);
@@ -244,6 +251,7 @@ struct apple_xgl_api {
 	void (*GenRenderbuffersEXT)(GLsizei n, GLuint * renderbuffers);
 	void (*GenTextures)(GLsizei n, GLuint * textures);
 	void (*GenTexturesExt)(GLsizei n, GLuint * textures);
+	void (*GenVertexArraysAPPLE)(GLsizei n, GLuint * arrays);
 	void (*GetActiveAttrib)(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name);
 	void (*GetActiveAttribARB)(GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei * length, GLint * size, GLenum * type, GLcharARB * name);
 	void (*GetActiveUniform)(GLuint program, GLuint index, GLsizei bufSize, GLsizei * length, GLint * size, GLenum * type, GLchar * name);
@@ -369,6 +377,7 @@ struct apple_xgl_api {
 	GLboolean (*IsShader)(GLuint shader);
 	GLboolean (*IsTexture)(GLuint texture);
 	GLboolean (*IsTextureEXT)(GLuint texture);
+	GLboolean (*IsVertexArrayAPPLE)(GLuint array);
 	void (*Lightf)(GLenum light, GLenum pname, GLfloat param);
 	void (*Lightfv)(GLenum light, GLenum pname, const GLfloat * params);
 	void (*Lighti)(GLenum light, GLenum pname, GLint param);
@@ -410,8 +419,10 @@ struct apple_xgl_api {
 	void (*Minmax)(GLenum target, GLenum internalformat, GLboolean sink);
 	void (*MultiDrawArrays)(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount);
 	void (*MultiDrawArraysEXT)(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount);
+	void (*MultiDrawElementArrayAPPLE)(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount);
 	void (*MultiDrawElements)(GLenum mode, const GLsizei * count, GLenum type, const void * * indices, GLsizei primcount);
 	void (*MultiDrawElementsEXT)(GLenum mode, const GLsizei * count, GLenum type, const void * * indices, GLsizei primcount);
+	void (*MultiDrawRangeElementArrayAPPLE)(GLenum mode, GLuint start, GLuint end, const GLint * first, const GLsizei * count, GLsizei primcount);
 	void (*MultiTexCoord1d)(GLenum target, GLdouble s);
 	void (*MultiTexCoord1dARB)(GLenum target, GLdouble s);
 	void (*MultiTexCoord1dv)(GLenum target, const GLdouble * v);
