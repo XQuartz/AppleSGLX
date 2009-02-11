@@ -246,9 +246,12 @@ static bool destroy_drawable(struct apple_glx_drawable *agd) {
     if(agd->next)
 	agd->next->previous = agd->previous;
 
-    if(agd->pbuffer_obj) {
-	apple_glx_pbuffer_destroy(agd->display, agd->drawable);
-    } else {
+    /*
+     * Only destroy the surface if it wasn't a pbuffer. 
+     *
+     * The pbuffer should be cleaned up explicitly with glXDestroyPbuffer.
+     */
+    if(!agd->pbuffer_obj) {
 	error = xp_destroy_surface(agd->surface_id);
 	
 	if(error) {
