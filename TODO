@@ -1,5 +1,7 @@
 -- Feb 10, 2009
 
+Test glXCopyContext.
+
 Add the PBUFFER_BIT to the fbconfigs/visualconfigs in the X server.
 
 DONE Test the pbuffer by using glReadPixels to verify it's being written to.
