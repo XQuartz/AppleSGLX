@@ -300,7 +300,6 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     struct apple_glx_drawable *newagd = NULL;
     CGLError cglerr;
     bool same_drawable = false;
-    bool is_pbuffer = false;
 
     assert(NULL != dpy);
 
@@ -344,6 +343,7 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     
     if(NULL == newagd) {
 	CGLPBufferObj pbufobj;
+	bool is_pbuffer = false;
 
 	/* First check if it's a pbuffer. */
 	if(apple_glx_pbuffer_get(drawable, &pbufobj))
@@ -380,8 +380,10 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 
     assert(NULL != ac->context_obj);
   
-    if(is_pbuffer) {
-	assert(NULL != ac->drawable);
+    assert(NULL != ac->drawable);
+
+    if(ac->drawable->is_pbuffer(ac->drawable)) {
+	
 	assert(NULL != ac->drawable->pbuffer_obj);
 
 	cglerr = apple_cgl.set_pbuffer(ac->context_obj, 
@@ -394,8 +396,6 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 	}
 	    
     } else {
-	assert(NULL != ac->drawable);
-
 	error = xp_attach_gl_context(ac->context_obj, ac->drawable->surface_id);
 
 	if(error) {

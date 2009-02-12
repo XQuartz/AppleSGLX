@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -58,6 +58,8 @@ struct apple_glx_drawable {
     void (*release)(struct apple_glx_drawable *agd);
     
     bool (*destroy)(struct apple_glx_drawable *agd);
+
+    bool (*is_pbuffer)(struct apple_glx_drawable *agd);
 
 /*BEGIN These are used for the mixed mode drawing... */
     int width, height;

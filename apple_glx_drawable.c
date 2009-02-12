@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -215,6 +215,10 @@ static bool destroy_drawable_callback(struct apple_glx_drawable *agd) {
     return result;
 }
 
+static bool is_pbuffer(struct apple_glx_drawable *agd) {
+    return agd->pbuffer_obj ? true : false;
+}
+
 bool apple_glx_create_drawable(Display *dpy,
 			       struct apple_glx_context *ac,
 			       GLXDrawable drawable, 
@@ -253,6 +257,8 @@ bool apple_glx_create_drawable(Display *dpy,
     agd->release = release_drawable;
 
     agd->destroy = destroy_drawable_callback;
+
+    agd->is_pbuffer = is_pbuffer;
 
     agd->width = -1;
     agd->height = -1;
