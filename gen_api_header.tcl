@@ -62,7 +62,7 @@ proc main {argc argv} {
 	set attr $api($f)
 	set pstr ""
 
-	if {[dict exists $attr alias_for]} {
+	if {[dict exists $attr alias_for] || [dict exists $attr noop]} {
 	    #Skip this function.
 	    continue
 	}

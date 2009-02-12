@@ -52,11 +52,18 @@ proc promoted name {
     set promoted($name) 1
 }
 
+proc noop name {
+    global noop
+    
+    set noop($name) 1
+}
+
 set dir [file dirname [info script]]
 
 source [file join $dir GL_extensions]
 source [file join $dir GL_aliases]
 source [file join $dir GL_promoted]
+source [file join $dir GL_noop]
 
 proc is-extension-supported? name {
     global extensions
@@ -417,7 +424,7 @@ proc api-new-entry {info func} {
 }
 
 proc main {argc argv} {
-    global extensions typemap aliases promoted
+    global extensions typemap aliases promoted noop
 
     set fd [open [lindex $argv 0] r]
     set data [read $fd]
@@ -460,8 +467,8 @@ proc main {argc argv} {
 	set newapi($key) [api-new-entry $value $key]
     }
 
-    #Now iterate and support as many aliases as we can, based on if
-    #the newapi contains the function.
+    #Now iterate and support as many aliases as we can for promoted functions
+    #based on if the newapi contains the function.
     foreach {func value} [array get ar] {
 	if {![info exists promoted([dict get $value category])]} {
 	    continue
@@ -481,6 +488,24 @@ proc main {argc argv} {
 	    }
 	}
     } 
+
+    parray noop
+
+    #Now handle the no-op compatibility categories.
+    foreach {func value} [array get ar] {
+	if {[info exists noop([dict get $value category])]} {
+	    if {[info exists newapi($func)]} {
+		puts stderr "$func shouldn't be a noop"
+		exit 1
+	    }
+	    
+	    set master [api-new-entry $value $func]
+	    dict set master noop 1
+	    set newapi($func) $master
+	}
+    }
+
+    
 
     parray newapi
 

@@ -303,8 +303,17 @@ void glColorTable(GLenum target, GLenum internalformat, GLsizei width, GLenum fo
 void glColorTableParameterfv(GLenum target, GLenum pname, const GLfloat * params) {
 	__gl_api.ColorTableParameterfv(target, pname, params);
 }
+void glColorTableParameterfvSGI(const GLfloat * params) {
+	/*noop*/
+}
 void glColorTableParameteriv(GLenum target, GLenum pname, const GLint * params) {
 	__gl_api.ColorTableParameteriv(target, pname, params);
+}
+void glColorTableParameterivSGI(const GLint * params) {
+	/*noop*/
+}
+void glColorTableSGI(GLenum internalformat, GLsizei width, GLenum format, GLenum type, const void * table) {
+	/*noop*/
 }
 void glCompileShader(GLuint shader) {
 	__gl_api.CompileShader(shader);
@@ -351,20 +360,38 @@ void glCompressedTexSubImage3DARB(GLenum target, GLint level, GLint xoffset, GLi
 void glConvolutionFilter1D(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const void * image) {
 	__gl_api.ConvolutionFilter1D(target, internalformat, width, format, type, image);
 }
+void glConvolutionFilter1DEXT(GLenum internalformat, GLsizei width, GLenum format, GLenum type, const void * image) {
+	/*noop*/
+}
 void glConvolutionFilter2D(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * image) {
 	__gl_api.ConvolutionFilter2D(target, internalformat, width, height, format, type, image);
+}
+void glConvolutionFilter2DEXT(GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * image) {
+	/*noop*/
 }
 void glConvolutionParameterf(GLenum target, GLenum pname, GLfloat params) {
 	__gl_api.ConvolutionParameterf(target, pname, params);
 }
+void glConvolutionParameterfEXT(GLfloat params) {
+	/*noop*/
+}
 void glConvolutionParameterfv(GLenum target, GLenum pname, const GLfloat * params) {
 	__gl_api.ConvolutionParameterfv(target, pname, params);
+}
+void glConvolutionParameterfvEXT(const GLfloat * params) {
+	/*noop*/
 }
 void glConvolutionParameteri(GLenum target, GLenum pname, GLint params) {
 	__gl_api.ConvolutionParameteri(target, pname, params);
 }
+void glConvolutionParameteriEXT(GLint params) {
+	/*noop*/
+}
 void glConvolutionParameteriv(GLenum target, GLenum pname, const GLint * params) {
 	__gl_api.ConvolutionParameteriv(target, pname, params);
+}
+void glConvolutionParameterivEXT(const GLint * params) {
+	/*noop*/
 }
 void glCopyColorSubTable(GLenum target, GLsizei start, GLint x, GLint y, GLsizei width) {
 	__gl_api.CopyColorSubTable(target, start, x, y, width);
@@ -372,11 +399,20 @@ void glCopyColorSubTable(GLenum target, GLsizei start, GLint x, GLint y, GLsizei
 void glCopyColorTable(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width) {
 	__gl_api.CopyColorTable(target, internalformat, x, y, width);
 }
+void glCopyColorTableSGI(GLenum internalformat, GLint x, GLint y, GLsizei width) {
+	/*noop*/
+}
 void glCopyConvolutionFilter1D(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width) {
 	__gl_api.CopyConvolutionFilter1D(target, internalformat, x, y, width);
 }
+void glCopyConvolutionFilter1DEXT(GLenum internalformat, GLint x, GLint y, GLsizei width) {
+	/*noop*/
+}
 void glCopyConvolutionFilter2D(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height) {
 	__gl_api.CopyConvolutionFilter2D(target, internalformat, x, y, width, height);
+}
+void glCopyConvolutionFilter2DEXT(GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height) {
+	/*noop*/
 }
 void glCopyPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type) {
 	__gl_api.CopyPixels(x, y, width, height, type);
@@ -384,17 +420,32 @@ void glCopyPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type) 
 void glCopyTexImage1D(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border) {
 	__gl_api.CopyTexImage1D(target, level, internalformat, x, y, width, border);
 }
+void glCopyTexImage1DEXT(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border) {
+	 glCopyTexImage1D(target, level, internalformat, x, y, width, border);
+}
 void glCopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border) {
 	__gl_api.CopyTexImage2D(target, level, internalformat, x, y, width, height, border);
+}
+void glCopyTexImage2DEXT(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border) {
+	 glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
 }
 void glCopyTexSubImage1D(GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width) {
 	__gl_api.CopyTexSubImage1D(target, level, xoffset, x, y, width);
 }
+void glCopyTexSubImage1DEXT(GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width) {
+	 glCopyTexSubImage1D(target, level, xoffset, x, y, width);
+}
 void glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height) {
 	__gl_api.CopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
 }
+void glCopyTexSubImage2DEXT(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height) {
+	 glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
+}
 void glCopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height) {
 	__gl_api.CopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+}
+void glCopyTexSubImage3DEXT(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height) {
+	 glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
 }
 GLuint glCreateProgram(void) {
 	return __gl_api.CreateProgram();
@@ -410,6 +461,12 @@ GLhandleARB glCreateShaderObjectARB(GLenum shaderType) {
 }
 void glCullFace(GLenum mode) {
 	__gl_api.CullFace(mode);
+}
+void glCullParameterdvEXT(GLdouble * params) {
+	/*noop*/
+}
+void glCullParameterfvEXT(GLfloat * params) {
+	/*noop*/
 }
 void glDeleteBuffers(GLsizei n, const const GLuint * buffers) {
 	__gl_api.DeleteBuffers(n, buffers);
@@ -735,8 +792,17 @@ void glGetColorTable(GLenum target, GLenum format, GLenum type, void * table) {
 void glGetColorTableParameterfv(GLenum target, GLenum pname, GLfloat * params) {
 	__gl_api.GetColorTableParameterfv(target, pname, params);
 }
+void glGetColorTableParameterfvSGI(GLfloat * params) {
+	/*noop*/
+}
 void glGetColorTableParameteriv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetColorTableParameteriv(target, pname, params);
+}
+void glGetColorTableParameterivSGI(GLint * params) {
+	/*noop*/
+}
+void glGetColorTableSGI(GLenum format, GLenum type, void * table) {
+	/*noop*/
 }
 void glGetCompressedTexImage(GLenum target, GLint level, void * img) {
 	__gl_api.GetCompressedTexImage(target, level, img);
@@ -747,11 +813,20 @@ void glGetCompressedTexImageARB(GLenum target, GLint level, void * img) {
 void glGetConvolutionFilter(GLenum target, GLenum format, GLenum type, void * image) {
 	__gl_api.GetConvolutionFilter(target, format, type, image);
 }
+void glGetConvolutionFilterEXT(GLenum format, GLenum type, void * image) {
+	/*noop*/
+}
 void glGetConvolutionParameterfv(GLenum target, GLenum pname, GLfloat * params) {
 	__gl_api.GetConvolutionParameterfv(target, pname, params);
 }
+void glGetConvolutionParameterfvEXT(GLfloat * params) {
+	/*noop*/
+}
 void glGetConvolutionParameteriv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetConvolutionParameteriv(target, pname, params);
+}
+void glGetConvolutionParameterivEXT(GLint * params) {
+	/*noop*/
 }
 void glGetDoublev(GLenum pname, GLdouble * params) {
 	__gl_api.GetDoublev(pname, params);
@@ -881,6 +956,9 @@ void glGetRenderbufferParameterivEXT(GLenum target, GLenum pname, GLint * params
 }
 void glGetSeparableFilter(GLenum target, GLenum format, GLenum type, void * row, void * column, void * span) {
 	__gl_api.GetSeparableFilter(target, format, type, row, column, span);
+}
+void glGetSeparableFilterEXT(GLenum format, GLenum type, void * row, void * column, void * span) {
+	/*noop*/
 }
 void glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei * length, GLchar * infoLog) {
 	__gl_api.GetShaderInfoLog(shader, bufSize, length, infoLog);
@@ -1811,6 +1889,9 @@ void glSelectBuffer(GLsizei size, GLuint * buffer) {
 }
 void glSeparableFilter2D(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * row, const void * column) {
 	__gl_api.SeparableFilter2D(target, internalformat, width, height, format, type, row, column);
+}
+void glSeparableFilter2DEXT(GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * row, const void * column) {
+	/*noop*/
 }
 void glShadeModel(GLenum mode) {
 	__gl_api.ShadeModel(mode);

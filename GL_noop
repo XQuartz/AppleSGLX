@@ -1,0 +1,3 @@
+noop SGI_color_table
+noop EXT_convolution
+noop EXT_cull_vertex

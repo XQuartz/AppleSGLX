@@ -132,6 +132,7 @@ proc main {argc argv} {
 	}
 
 	set attr $api($f)
+
         set pstr ""
 
         foreach p [dict get $attr parameters] {
@@ -157,7 +158,13 @@ proc main {argc argv} {
 	    set return "return "
 	}
 
-	if {[dict exists $attr alias_for]} {
+	if {[dict exists $attr noop]} {
+	    if {"void" eq [dict get $attr return]} {
+		set body "/*noop*/"
+	    } else {
+		set body "return 0; /*noop*/"
+	    }
+	} elseif {[dict exists $attr alias_for]} {
 	    set alias [dict get $attr alias_for]
 	    set body "[set return] gl[set alias]([set callvars]);"
 	} else {
@@ -182,7 +189,7 @@ proc main {argc argv} {
 	puts $attr
 	puts $f
 
-	if {[dict exists $attr alias_for]} {
+	if {[dict exists $attr alias_for] || [dict exists $attr noop]} {
 	    #Function f is an alias_for another, so we shouldn't try
 	    #to load it.
 	    continue
