@@ -51,6 +51,9 @@ void glActiveTextureARB(GLenum texture) {
 void glAlphaFunc(GLenum func, GLclampf ref) {
 	__gl_api.AlphaFunc(func, ref);
 }
+GLboolean glAreProgramsResidentNV(GLsizei n, const GLuint * programs, GLboolean * residences) {
+	return 0; /*noop*/
+}
 GLboolean glAreTexturesResident(GLsizei n, const GLuint * textures, GLboolean * residences) {
 	return __gl_api.AreTexturesResident(n, textures, residences);
 }
@@ -59,6 +62,9 @@ GLboolean glAreTexturesResidentEXT(GLsizei n, const GLuint * textures, GLboolean
 }
 void glArrayElement(GLint i) {
 	__gl_api.ArrayElement(i);
+}
+void glArrayElementEXT(GLint i) {
+	/*noop*/
 }
 void glAttachObjectARB(GLhandleARB containerObj, GLhandleARB obj) {
 	__gl_api.AttachObjectARB(containerObj, obj);
@@ -92,6 +98,9 @@ void glBindFramebufferEXT(GLenum target, GLuint framebuffer) {
 }
 void glBindProgramARB(GLenum target, GLuint program) {
 	__gl_api.BindProgramARB(target, program);
+}
+void glBindProgramNV(GLuint id) {
+	/*noop*/
 }
 void glBindRenderbufferEXT(GLenum target, GLuint renderbuffer) {
 	__gl_api.BindRenderbufferEXT(target, renderbuffer);
@@ -294,6 +303,9 @@ void glColorMaterial(GLenum face, GLenum mode) {
 void glColorPointer(GLint size, GLenum type, GLsizei stride, const void * pointer) {
 	__gl_api.ColorPointer(size, type, stride, pointer);
 }
+void glColorPointerEXT(GLint size, GLenum type, GLsizei stride, GLsizei count, const void * pointer) {
+	/*noop*/
+}
 void glColorSubTable(GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, const void * data) {
 	__gl_api.ColorSubTable(target, start, count, format, type, data);
 }
@@ -474,6 +486,9 @@ void glDeleteBuffers(GLsizei n, const const GLuint * buffers) {
 void glDeleteBuffersARB(GLsizei n, const const GLuint * buffers) {
 	__gl_api.DeleteBuffersARB(n, buffers);
 }
+void glDeleteFencesNV(GLsizei n, const GLuint * fences) {
+	/*noop*/
+}
 void glDeleteFramebuffersEXT(GLsizei n, const GLuint * framebuffers) {
 	__gl_api.DeleteFramebuffersEXT(n, framebuffers);
 }
@@ -488,6 +503,9 @@ void glDeleteProgram(GLuint program) {
 }
 void glDeleteProgramsARB(GLsizei n, const GLuint * programs) {
 	__gl_api.DeleteProgramsARB(n, programs);
+}
+void glDeleteProgramsNV(GLsizei n, const GLuint * programs) {
+	/*noop*/
 }
 void glDeleteQueries(GLsizei n, const GLuint * ids) {
 	__gl_api.DeleteQueries(n, ids);
@@ -525,6 +543,9 @@ void glDetachObjectARB(GLhandleARB containerObj, GLhandleARB attachedObj) {
 void glDetachShader(GLuint program, GLuint shader) {
 	__gl_api.DetachShader(program, shader);
 }
+void glDetailTexFuncSGIS(GLenum target, GLsizei n, const GLfloat * points) {
+	/*noop*/
+}
 void glDisable(GLenum cap) {
 	__gl_api.Disable(cap);
 }
@@ -539,6 +560,9 @@ void glDisableVertexAttribArrayARB(GLuint index) {
 }
 void glDrawArrays(GLenum mode, GLint first, GLsizei count) {
 	__gl_api.DrawArrays(mode, first, count);
+}
+void glDrawArraysEXT(GLenum mode, GLint first, GLsizei count) {
+	/*noop*/
 }
 void glDrawElementArrayAPPLE(GLenum mode, GLint first, GLsizei count) {
 	__gl_api.DrawElementArrayAPPLE(mode, first, count);
@@ -563,6 +587,9 @@ void glEdgeFlag(GLboolean flag) {
 }
 void glEdgeFlagPointer(GLsizei stride, const void * pointer) {
 	__gl_api.EdgeFlagPointer(stride, pointer);
+}
+void glEdgeFlagPointerEXT(GLsizei stride, GLsizei count, const GLboolean * pointer) {
+	/*noop*/
 }
 void glEdgeFlagv(const GLboolean * flag) {
 	__gl_api.EdgeFlagv(flag);
@@ -630,17 +657,26 @@ void glEvalPoint1(GLint i) {
 void glEvalPoint2(GLint i, GLint j) {
 	__gl_api.EvalPoint2(i, j);
 }
+void glExecuteProgramNV(GLuint id, const GLfloat * params) {
+	/*noop*/
+}
 void glFeedbackBuffer(GLsizei size, GLenum type, GLfloat * buffer) {
 	__gl_api.FeedbackBuffer(size, type, buffer);
 }
 void glFinish(void) {
 	__gl_api.Finish();
 }
+void glFinishFenceNV(GLuint fence) {
+	/*noop*/
+}
 void glFlush(void) {
 	__gl_api.Flush();
 }
 void glFlushMappedBufferRangeAPPLE(GLenum target, GLintptrARB offset, GLsizeiptrARB size) {
 	__gl_api.FlushMappedBufferRangeAPPLE(target, offset, size);
+}
+void glFlushRasterSGIX(void) {
+	/*noop*/
 }
 void glFogCoordd(GLdouble coord) {
 	__gl_api.FogCoordd(coord);
@@ -684,6 +720,45 @@ void glFogi(GLenum pname, GLint param) {
 void glFogiv(GLenum pname, const GLint * params) {
 	__gl_api.Fogiv(pname, params);
 }
+void glFragmentColorMaterialSGIX(GLenum face, GLenum mode) {
+	/*noop*/
+}
+void glFragmentLightfSGIX(GLfloat param) {
+	/*noop*/
+}
+void glFragmentLightfvSGIX(const GLfloat * params) {
+	/*noop*/
+}
+void glFragmentLightiSGIX(GLint param) {
+	/*noop*/
+}
+void glFragmentLightivSGIX(const GLint * params) {
+	/*noop*/
+}
+void glFragmentLightModelfSGIX(GLfloat param) {
+	/*noop*/
+}
+void glFragmentLightModelfvSGIX(const GLfloat * params) {
+	/*noop*/
+}
+void glFragmentLightModeliSGIX(GLint param) {
+	/*noop*/
+}
+void glFragmentLightModelivSGIX(const GLint * params) {
+	/*noop*/
+}
+void glFragmentMaterialfSGIX(GLenum face, GLenum pname, GLfloat param) {
+	/*noop*/
+}
+void glFragmentMaterialfvSGIX(GLenum face, GLenum pname, const GLfloat * params) {
+	/*noop*/
+}
+void glFragmentMaterialiSGIX(GLenum face, GLenum pname, GLint param) {
+	/*noop*/
+}
+void glFragmentMaterialivSGIX(GLenum face, GLenum pname, const GLint * params) {
+	/*noop*/
+}
 void glFramebufferRenderbufferEXT(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) {
 	__gl_api.FramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);
 }
@@ -711,6 +786,9 @@ void glGenBuffersARB(GLsizei n, GLuint * buffers) {
 void glGenerateMipmapEXT(GLenum target) {
 	__gl_api.GenerateMipmapEXT(target);
 }
+void glGenFencesNV(GLsizei n, GLuint * fences) {
+	/*noop*/
+}
 void glGenFramebuffersEXT(GLsizei n, GLuint * framebuffers) {
 	__gl_api.GenFramebuffersEXT(n, framebuffers);
 }
@@ -719,6 +797,9 @@ GLuint glGenLists(GLsizei range) {
 }
 void glGenProgramsARB(GLsizei n, GLuint * programs) {
 	__gl_api.GenProgramsARB(n, programs);
+}
+void glGenProgramsNV(GLsizei n, GLuint * programs) {
+	/*noop*/
 }
 void glGenQueries(GLsizei n, GLuint * ids) {
 	__gl_api.GenQueries(n, ids);
@@ -828,14 +909,32 @@ void glGetConvolutionParameteriv(GLenum target, GLenum pname, GLint * params) {
 void glGetConvolutionParameterivEXT(GLint * params) {
 	/*noop*/
 }
+void glGetDetailTexFuncSGIS(GLenum target, GLfloat * points) {
+	/*noop*/
+}
 void glGetDoublev(GLenum pname, GLdouble * params) {
 	__gl_api.GetDoublev(pname, params);
 }
 GLenum glGetError(void) {
 	return __gl_api.GetError();
 }
+void glGetFenceivNV(GLuint fence, GLint * params) {
+	/*noop*/
+}
 void glGetFloatv(GLenum pname, GLfloat * params) {
 	__gl_api.GetFloatv(pname, params);
+}
+void glGetFragmentLightfvSGIX(GLfloat * params) {
+	/*noop*/
+}
+void glGetFragmentLightivSGIX(GLint * params) {
+	/*noop*/
+}
+void glGetFragmentMaterialfvSGIX(GLenum face, GLenum pname, GLfloat * params) {
+	/*noop*/
+}
+void glGetFragmentMaterialivSGIX(GLenum face, GLenum pname, GLint * params) {
+	/*noop*/
 }
 void glGetFramebufferAttachmentParameterivEXT(GLenum target, GLenum attachment, GLenum pname, GLint * params) {
 	__gl_api.GetFramebufferAttachmentParameterivEXT(target, attachment, pname, params);
@@ -846,14 +945,26 @@ GLhandleARB glGetHandleARB(GLenum pname) {
 void glGetHistogram(GLenum target, GLboolean reset, GLenum format, GLenum type, void * values) {
 	__gl_api.GetHistogram(target, reset, format, type, values);
 }
+void glGetHistogramEXT(GLboolean reset, GLenum format, GLenum type, void * values) {
+	/*noop*/
+}
 void glGetHistogramParameterfv(GLenum target, GLenum pname, GLfloat * params) {
 	__gl_api.GetHistogramParameterfv(target, pname, params);
+}
+void glGetHistogramParameterfvEXT(GLfloat * params) {
+	/*noop*/
 }
 void glGetHistogramParameteriv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetHistogramParameteriv(target, pname, params);
 }
+void glGetHistogramParameterivEXT(GLint * params) {
+	/*noop*/
+}
 void glGetInfoLogARB(GLhandleARB obj, GLsizei maxLength, GLsizei * length, GLcharARB * infoLog) {
 	__gl_api.GetInfoLogARB(obj, maxLength, length, infoLog);
+}
+GLint glGetInstrumentsSGIX(void) {
+	return 0; /*noop*/
 }
 void glGetIntegerv(GLenum pname, GLint * params) {
 	__gl_api.GetIntegerv(pname, params);
@@ -882,11 +993,20 @@ void glGetMaterialiv(GLenum face, GLenum pname, GLint * params) {
 void glGetMinmax(GLenum target, GLboolean reset, GLenum format, GLenum type, void * values) {
 	__gl_api.GetMinmax(target, reset, format, type, values);
 }
+void glGetMinmaxEXT(GLboolean reset, GLenum format, GLenum type, void * values) {
+	/*noop*/
+}
 void glGetMinmaxParameterfv(GLenum target, GLenum pname, GLfloat * params) {
 	__gl_api.GetMinmaxParameterfv(target, pname, params);
 }
+void glGetMinmaxParameterfvEXT(GLfloat * params) {
+	/*noop*/
+}
 void glGetMinmaxParameteriv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetMinmaxParameteriv(target, pname, params);
+}
+void glGetMinmaxParameterivEXT(GLint * params) {
+	/*noop*/
 }
 void glGetObjectParameterfvARB(GLhandleARB obj, GLenum pname, GLfloat * params) {
 	__gl_api.GetObjectParameterfvARB(obj, pname, params);
@@ -906,6 +1026,9 @@ void glGetPixelMapusv(GLenum map, GLushort * values) {
 void glGetPointerv(GLenum pname, void * * params) {
 	__gl_api.GetPointerv(pname, params);
 }
+void glGetPointervEXT(GLenum pname, void * * params) {
+	/*noop*/
+}
 void glGetPolygonStipple(GLubyte * mask) {
 	__gl_api.GetPolygonStipple(mask);
 }
@@ -924,14 +1047,26 @@ void glGetProgramiv(GLuint program, GLenum pname, GLint * params) {
 void glGetProgramivARB(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetProgramivARB(target, pname, params);
 }
+void glGetProgramivNV(GLuint id, GLint * params) {
+	/*noop*/
+}
 void glGetProgramLocalParameterdvARB(GLenum target, GLuint index, GLdouble * params) {
 	__gl_api.GetProgramLocalParameterdvARB(target, index, params);
 }
 void glGetProgramLocalParameterfvARB(GLenum target, GLuint index, GLfloat * params) {
 	__gl_api.GetProgramLocalParameterfvARB(target, index, params);
 }
+void glGetProgramParameterdvNV(GLuint index, GLdouble * params) {
+	/*noop*/
+}
+void glGetProgramParameterfvNV(GLuint index, GLfloat * params) {
+	/*noop*/
+}
 void glGetProgramStringARB(GLenum target, GLenum pname, void * string) {
 	__gl_api.GetProgramStringARB(target, pname, string);
+}
+void glGetProgramStringNV(GLuint id) {
+	/*noop*/
 }
 void glGetQueryiv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetQueryiv(target, pname, params);
@@ -1005,6 +1140,9 @@ void glGetTexParameterfv(GLenum target, GLenum pname, GLfloat * params) {
 void glGetTexParameteriv(GLenum target, GLenum pname, GLint * params) {
 	__gl_api.GetTexParameteriv(target, pname, params);
 }
+void glGetTrackMatrixivNV(GLuint address, GLint * params) {
+	/*noop*/
+}
 void glGetUniformfv(GLuint program, GLint location, GLfloat * params) {
 	__gl_api.GetUniformfv(program, location, params);
 }
@@ -1029,11 +1167,17 @@ void glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble * params) {
 void glGetVertexAttribdvARB(GLuint index, GLenum pname, GLdouble * params) {
 	__gl_api.GetVertexAttribdvARB(index, pname, params);
 }
+void glGetVertexAttribdvNV(GLuint index, GLdouble * params) {
+	/*noop*/
+}
 void glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat * params) {
 	__gl_api.GetVertexAttribfv(index, pname, params);
 }
 void glGetVertexAttribfvARB(GLuint index, GLenum pname, GLfloat * params) {
 	__gl_api.GetVertexAttribfvARB(index, pname, params);
+}
+void glGetVertexAttribfvNV(GLuint index, GLfloat * params) {
+	/*noop*/
 }
 void glGetVertexAttribiv(GLuint index, GLenum pname, GLint * params) {
 	__gl_api.GetVertexAttribiv(index, pname, params);
@@ -1041,17 +1185,29 @@ void glGetVertexAttribiv(GLuint index, GLenum pname, GLint * params) {
 void glGetVertexAttribivARB(GLuint index, GLenum pname, GLint * params) {
 	__gl_api.GetVertexAttribivARB(index, pname, params);
 }
+void glGetVertexAttribivNV(GLuint index, GLint * params) {
+	/*noop*/
+}
 void glGetVertexAttribPointerv(GLuint index, GLenum pname, void * * pointer) {
 	__gl_api.GetVertexAttribPointerv(index, pname, pointer);
 }
 void glGetVertexAttribPointervARB(GLuint index, GLenum pname, void * * pointer) {
 	__gl_api.GetVertexAttribPointervARB(index, pname, pointer);
 }
+void glGetVertexAttribPointervNV(GLuint index, void * * pointer) {
+	/*noop*/
+}
 void glHint(GLenum target, GLenum mode) {
 	__gl_api.Hint(target, mode);
 }
+void glHintPGI(GLenum target, GLint mode) {
+	/*noop*/
+}
 void glHistogram(GLenum target, GLsizei width, GLenum internalformat, GLboolean sink) {
 	__gl_api.Histogram(target, width, internalformat, sink);
+}
+void glHistogramEXT(GLsizei width, GLenum internalformat, GLboolean sink) {
+	/*noop*/
 }
 void glIndexd(GLdouble c) {
 	__gl_api.Indexd(c);
@@ -1077,6 +1233,9 @@ void glIndexMask(GLuint mask) {
 void glIndexPointer(GLenum type, GLsizei stride, const void * pointer) {
 	__gl_api.IndexPointer(type, stride, pointer);
 }
+void glIndexPointerEXT(GLenum type, GLsizei stride, GLsizei count, const void * pointer) {
+	/*noop*/
+}
 void glIndexs(GLshort c) {
 	__gl_api.Indexs(c);
 }
@@ -1092,6 +1251,9 @@ void glIndexubv(const GLubyte * c) {
 void glInitNames(void) {
 	__gl_api.InitNames();
 }
+void glInstrumentsBufferSGIX(GLsizei size, GLint * buffer) {
+	/*noop*/
+}
 void glInterleavedArrays(GLenum format, GLsizei stride, const void * pointer) {
 	__gl_api.InterleavedArrays(format, stride, pointer);
 }
@@ -1104,6 +1266,9 @@ GLboolean glIsBufferARB(GLuint buffer) {
 GLboolean glIsEnabled(GLenum cap) {
 	return __gl_api.IsEnabled(cap);
 }
+GLboolean glIsFenceNV(GLuint fence) {
+	return 0; /*noop*/
+}
 GLboolean glIsFramebufferEXT(GLuint framebuffer) {
 	return __gl_api.IsFramebufferEXT(framebuffer);
 }
@@ -1115,6 +1280,9 @@ GLboolean glIsProgram(GLuint program) {
 }
 GLboolean glIsProgramARB(GLuint program) {
 	return __gl_api.IsProgramARB(program);
+}
+GLboolean glIsProgramNV(GLuint id) {
+	return 0; /*noop*/
 }
 GLboolean glIsQuery(GLuint id) {
 	return __gl_api.IsQuery(id);
@@ -1136,6 +1304,9 @@ GLboolean glIsTextureEXT(GLuint texture) {
 }
 GLboolean glIsVertexArrayAPPLE(GLuint array) {
 	return __gl_api.IsVertexArrayAPPLE(array);
+}
+void glLightEnviSGIX(GLint param) {
+	/*noop*/
 }
 void glLightf(GLenum light, GLenum pname, GLfloat param) {
 	__gl_api.Lightf(light, pname, param);
@@ -1187,6 +1358,9 @@ void glLoadMatrixf(const GLfloat * m) {
 }
 void glLoadName(GLuint name) {
 	__gl_api.LoadName(name);
+}
+void glLoadProgramNV(GLuint id, GLsizei len, const GLubyte * program) {
+	/*noop*/
 }
 void glLoadTransposeMatrixd(const GLdouble * m) {
 	__gl_api.LoadTransposeMatrixd(m);
@@ -1253,6 +1427,9 @@ void glMatrixMode(GLenum mode) {
 }
 void glMinmax(GLenum target, GLenum internalformat, GLboolean sink) {
 	__gl_api.Minmax(target, internalformat, sink);
+}
+void glMinmaxEXT(GLenum internalformat, GLboolean sink) {
+	/*noop*/
 }
 void glMultiDrawArrays(GLenum mode, const GLint * first, const GLsizei * count, GLsizei primcount) {
 	__gl_api.MultiDrawArrays(mode, first, count, primcount);
@@ -1518,6 +1695,9 @@ void glNormal3sv(const GLshort * v) {
 void glNormalPointer(GLenum type, GLsizei stride, const void * pointer) {
 	__gl_api.NormalPointer(type, stride, pointer);
 }
+void glNormalPointerEXT(GLenum type, GLsizei stride, GLsizei count, const void * pointer) {
+	/*noop*/
+}
 void glOrtho(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar) {
 	__gl_api.Ortho(left, right, bottom, top, zNear, zFar);
 }
@@ -1568,6 +1748,9 @@ void glPointParameteriv(GLenum pname, const GLint * params) {
 }
 void glPointSize(GLfloat size) {
 	__gl_api.PointSize(size);
+}
+GLint glPollInstrumentsSGIX(GLint * marker_p) {
+	return 0; /*noop*/
 }
 void glPolygonMode(GLenum face, GLenum mode) {
 	__gl_api.PolygonMode(face, mode);
@@ -1626,8 +1809,26 @@ void glProgramLocalParameter4fvARB(GLenum target, GLuint index, const GLfloat * 
 void glProgramLocalParameters4fvEXT(GLenum target, GLuint index, GLsizei count, const GLfloat * params) {
 	__gl_api.ProgramLocalParameters4fvEXT(target, index, count, params);
 }
+void glProgramParameter4dNV(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
+	/*noop*/
+}
+void glProgramParameter4dvNV(GLuint index, const GLdouble * v) {
+	/*noop*/
+}
+void glProgramParameter4fNV(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+	/*noop*/
+}
+void glProgramParameter4fvNV(GLuint index, const GLfloat * v) {
+	/*noop*/
+}
 void glProgramParameteriEXT(GLuint program, GLenum pname, GLint value) {
 	__gl_api.ProgramParameteriEXT(program, pname, value);
+}
+void glProgramParameters4dvNV(GLuint index, GLuint count, const GLdouble * v) {
+	/*noop*/
+}
+void glProgramParameters4fvNV(GLuint index, GLuint count, const GLfloat * v) {
+	/*noop*/
 }
 void glProgramStringARB(GLenum target, GLenum format, GLsizei len, const void * string) {
 	__gl_api.ProgramStringARB(target, format, len, string);
@@ -1719,6 +1920,9 @@ void glRasterPos4sv(const GLshort * v) {
 void glReadBuffer(GLenum mode) {
 	__gl_api.ReadBuffer(mode);
 }
+void glReadInstrumentsSGIX(GLint marker) {
+	/*noop*/
+}
 void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void * pixels) {
 	__gl_api.ReadPixels(x, y, width, height, format, type, pixels);
 }
@@ -1755,11 +1959,20 @@ void glRenderbufferStorageMultisampleEXT(GLenum target, GLsizei samples, GLenum 
 GLint glRenderMode(GLenum mode) {
 	return __gl_api.RenderMode(mode);
 }
+void glRequestResidentProgramsNV(GLsizei n, const GLuint * programs) {
+	/*noop*/
+}
 void glResetHistogram(GLenum target) {
 	__gl_api.ResetHistogram(target);
 }
+void glResetHistogramEXT(void) {
+	/*noop*/
+}
 void glResetMinmax(GLenum target) {
 	__gl_api.ResetMinmax(target);
+}
+void glResetMinmaxEXT(void) {
+	/*noop*/
 }
 void glRotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.Rotated(angle, x, y, z);
@@ -1772,6 +1985,18 @@ void glSampleCoverage(GLclampf value, GLboolean invert) {
 }
 void glSampleCoverageARB(GLclampf value, GLboolean invert) {
 	__gl_api.SampleCoverageARB(value, invert);
+}
+void glSampleMaskEXT(GLclampf value, GLboolean invert) {
+	/*noop*/
+}
+void glSampleMaskSGIS(GLclampf value, GLboolean invert) {
+	/*noop*/
+}
+void glSamplePatternEXT(void) {
+	/*noop*/
+}
+void glSamplePatternSGIS(void) {
+	/*noop*/
 }
 void glScaled(GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.Scaled(x, y, z);
@@ -1893,6 +2118,9 @@ void glSeparableFilter2D(GLenum target, GLenum internalformat, GLsizei width, GL
 void glSeparableFilter2DEXT(GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * row, const void * column) {
 	/*noop*/
 }
+void glSetFenceNV(GLuint fence) {
+	/*noop*/
+}
 void glShadeModel(GLenum mode) {
 	__gl_api.ShadeModel(mode);
 }
@@ -1901,6 +2129,9 @@ void glShaderSource(GLuint shader, GLsizei count, const GLchar * * string, const
 }
 void glShaderSourceARB(GLhandleARB shaderObj, GLsizei count, const GLcharARB * * string, const GLint * length) {
 	__gl_api.ShaderSourceARB(shaderObj, count, string, length);
+}
+void glStartInstrumentsSGIX(void) {
+	/*noop*/
 }
 void glStencilFunc(GLenum func, GLint ref, GLuint mask) {
 	__gl_api.StencilFunc(func, ref, mask);
@@ -1919,6 +2150,12 @@ void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) {
 }
 void glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass) {
 	__gl_api.StencilOpSeparate(face, sfail, dpfail, dppass);
+}
+void glStopInstrumentsSGIX(GLint marker) {
+	/*noop*/
+}
+GLboolean glTestFenceNV(GLuint fence) {
+	return 0; /*noop*/
 }
 void glTexCoord1d(GLdouble s) {
 	__gl_api.TexCoord1d(s);
@@ -2019,6 +2256,9 @@ void glTexCoord4sv(const GLshort * v) {
 void glTexCoordPointer(GLint size, GLenum type, GLsizei stride, const void * pointer) {
 	__gl_api.TexCoordPointer(size, type, stride, pointer);
 }
+void glTexCoordPointerEXT(GLint size, GLenum type, GLsizei stride, GLsizei count, const void * pointer) {
+	/*noop*/
+}
 void glTexEnvf(GLenum target, GLenum pname, GLfloat param) {
 	__gl_api.TexEnvf(target, pname, param);
 }
@@ -2078,6 +2318,9 @@ void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, G
 }
 void glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * pixels) {
 	__gl_api.TexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+}
+void glTrackMatrixNV(GLuint address) {
+	/*noop*/
 }
 void glTranslated(GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.Translated(x, y, z);
@@ -2316,11 +2559,17 @@ void glVertexAttrib1d(GLuint index, GLdouble x) {
 void glVertexAttrib1dARB(GLuint index, GLdouble x) {
 	__gl_api.VertexAttrib1dARB(index, x);
 }
+void glVertexAttrib1dNV(GLuint index, GLdouble x) {
+	/*noop*/
+}
 void glVertexAttrib1dv(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib1dv(index, v);
 }
 void glVertexAttrib1dvARB(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib1dvARB(index, v);
+}
+void glVertexAttrib1dvNV(GLuint index, const GLdouble * v) {
+	/*noop*/
 }
 void glVertexAttrib1f(GLuint index, GLfloat x) {
 	__gl_api.VertexAttrib1f(index, x);
@@ -2328,11 +2577,17 @@ void glVertexAttrib1f(GLuint index, GLfloat x) {
 void glVertexAttrib1fARB(GLuint index, GLfloat x) {
 	__gl_api.VertexAttrib1fARB(index, x);
 }
+void glVertexAttrib1fNV(GLuint index, GLfloat x) {
+	/*noop*/
+}
 void glVertexAttrib1fv(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib1fv(index, v);
 }
 void glVertexAttrib1fvARB(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib1fvARB(index, v);
+}
+void glVertexAttrib1fvNV(GLuint index, const GLfloat * v) {
+	/*noop*/
 }
 void glVertexAttrib1s(GLuint index, GLshort x) {
 	__gl_api.VertexAttrib1s(index, x);
@@ -2340,11 +2595,17 @@ void glVertexAttrib1s(GLuint index, GLshort x) {
 void glVertexAttrib1sARB(GLuint index, GLshort x) {
 	__gl_api.VertexAttrib1sARB(index, x);
 }
+void glVertexAttrib1sNV(GLuint index, GLshort x) {
+	/*noop*/
+}
 void glVertexAttrib1sv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib1sv(index, v);
 }
 void glVertexAttrib1svARB(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib1svARB(index, v);
+}
+void glVertexAttrib1svNV(GLuint index, const GLshort * v) {
+	/*noop*/
 }
 void glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y) {
 	__gl_api.VertexAttrib2d(index, x, y);
@@ -2352,11 +2613,17 @@ void glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y) {
 void glVertexAttrib2dARB(GLuint index, GLdouble x, GLdouble y) {
 	__gl_api.VertexAttrib2dARB(index, x, y);
 }
+void glVertexAttrib2dNV(GLuint index, GLdouble x, GLdouble y) {
+	/*noop*/
+}
 void glVertexAttrib2dv(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib2dv(index, v);
 }
 void glVertexAttrib2dvARB(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib2dvARB(index, v);
+}
+void glVertexAttrib2dvNV(GLuint index, const GLdouble * v) {
+	/*noop*/
 }
 void glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y) {
 	__gl_api.VertexAttrib2f(index, x, y);
@@ -2364,11 +2631,17 @@ void glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y) {
 void glVertexAttrib2fARB(GLuint index, GLfloat x, GLfloat y) {
 	__gl_api.VertexAttrib2fARB(index, x, y);
 }
+void glVertexAttrib2fNV(GLuint index, GLfloat x, GLfloat y) {
+	/*noop*/
+}
 void glVertexAttrib2fv(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib2fv(index, v);
 }
 void glVertexAttrib2fvARB(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib2fvARB(index, v);
+}
+void glVertexAttrib2fvNV(GLuint index, const GLfloat * v) {
+	/*noop*/
 }
 void glVertexAttrib2s(GLuint index, GLshort x, GLshort y) {
 	__gl_api.VertexAttrib2s(index, x, y);
@@ -2376,11 +2649,17 @@ void glVertexAttrib2s(GLuint index, GLshort x, GLshort y) {
 void glVertexAttrib2sARB(GLuint index, GLshort x, GLshort y) {
 	__gl_api.VertexAttrib2sARB(index, x, y);
 }
+void glVertexAttrib2sNV(GLuint index, GLshort x, GLshort y) {
+	/*noop*/
+}
 void glVertexAttrib2sv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib2sv(index, v);
 }
 void glVertexAttrib2svARB(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib2svARB(index, v);
+}
+void glVertexAttrib2svNV(GLuint index, const GLshort * v) {
+	/*noop*/
 }
 void glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.VertexAttrib3d(index, x, y, z);
@@ -2388,11 +2667,17 @@ void glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdouble z) {
 void glVertexAttrib3dARB(GLuint index, GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.VertexAttrib3dARB(index, x, y, z);
 }
+void glVertexAttrib3dNV(GLuint index, GLdouble x, GLdouble y, GLdouble z) {
+	/*noop*/
+}
 void glVertexAttrib3dv(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib3dv(index, v);
 }
 void glVertexAttrib3dvARB(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib3dvARB(index, v);
+}
+void glVertexAttrib3dvNV(GLuint index, const GLdouble * v) {
+	/*noop*/
 }
 void glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z) {
 	__gl_api.VertexAttrib3f(index, x, y, z);
@@ -2400,11 +2685,17 @@ void glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z) {
 void glVertexAttrib3fARB(GLuint index, GLfloat x, GLfloat y, GLfloat z) {
 	__gl_api.VertexAttrib3fARB(index, x, y, z);
 }
+void glVertexAttrib3fNV(GLuint index, GLfloat x, GLfloat y, GLfloat z) {
+	/*noop*/
+}
 void glVertexAttrib3fv(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib3fv(index, v);
 }
 void glVertexAttrib3fvARB(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib3fvARB(index, v);
+}
+void glVertexAttrib3fvNV(GLuint index, const GLfloat * v) {
+	/*noop*/
 }
 void glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort z) {
 	__gl_api.VertexAttrib3s(index, x, y, z);
@@ -2412,11 +2703,17 @@ void glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort z) {
 void glVertexAttrib3sARB(GLuint index, GLshort x, GLshort y, GLshort z) {
 	__gl_api.VertexAttrib3sARB(index, x, y, z);
 }
+void glVertexAttrib3sNV(GLuint index, GLshort x, GLshort y, GLshort z) {
+	/*noop*/
+}
 void glVertexAttrib3sv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib3sv(index, v);
 }
 void glVertexAttrib3svARB(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib3svARB(index, v);
+}
+void glVertexAttrib3svNV(GLuint index, const GLshort * v) {
+	/*noop*/
 }
 void glVertexAttrib4bv(GLuint index, const GLbyte * v) {
 	__gl_api.VertexAttrib4bv(index, v);
@@ -2430,11 +2727,17 @@ void glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble
 void glVertexAttrib4dARB(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
 	__gl_api.VertexAttrib4dARB(index, x, y, z, w);
 }
+void glVertexAttrib4dNV(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
+	/*noop*/
+}
 void glVertexAttrib4dv(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib4dv(index, v);
 }
 void glVertexAttrib4dvARB(GLuint index, const GLdouble * v) {
 	__gl_api.VertexAttrib4dvARB(index, v);
+}
+void glVertexAttrib4dvNV(GLuint index, const GLdouble * v) {
+	/*noop*/
 }
 void glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
 	__gl_api.VertexAttrib4f(index, x, y, z, w);
@@ -2442,11 +2745,17 @@ void glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) 
 void glVertexAttrib4fARB(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
 	__gl_api.VertexAttrib4fARB(index, x, y, z, w);
 }
+void glVertexAttrib4fNV(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+	/*noop*/
+}
 void glVertexAttrib4fv(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib4fv(index, v);
 }
 void glVertexAttrib4fvARB(GLuint index, const GLfloat * v) {
 	__gl_api.VertexAttrib4fvARB(index, v);
+}
+void glVertexAttrib4fvNV(GLuint index, const GLfloat * v) {
+	/*noop*/
 }
 void glVertexAttrib4iv(GLuint index, const GLint * v) {
 	__gl_api.VertexAttrib4iv(index, v);
@@ -2502,17 +2811,29 @@ void glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) 
 void glVertexAttrib4sARB(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) {
 	__gl_api.VertexAttrib4sARB(index, x, y, z, w);
 }
+void glVertexAttrib4sNV(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w) {
+	/*noop*/
+}
 void glVertexAttrib4sv(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib4sv(index, v);
 }
 void glVertexAttrib4svARB(GLuint index, const GLshort * v) {
 	__gl_api.VertexAttrib4svARB(index, v);
 }
+void glVertexAttrib4svNV(GLuint index, const GLshort * v) {
+	/*noop*/
+}
+void glVertexAttrib4ubNV(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w) {
+	/*noop*/
+}
 void glVertexAttrib4ubv(GLuint index, const GLubyte * v) {
 	__gl_api.VertexAttrib4ubv(index, v);
 }
 void glVertexAttrib4ubvARB(GLuint index, const GLubyte * v) {
 	__gl_api.VertexAttrib4ubvARB(index, v);
+}
+void glVertexAttrib4ubvNV(GLuint index, const GLubyte * v) {
+	/*noop*/
 }
 void glVertexAttrib4uiv(GLuint index, const GLuint * v) {
 	__gl_api.VertexAttrib4uiv(index, v);
@@ -2532,11 +2853,56 @@ void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean norm
 void glVertexAttribPointerARB(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void * pointer) {
 	__gl_api.VertexAttribPointerARB(index, size, type, normalized, stride, pointer);
 }
+void glVertexAttribPointerNV(GLuint index, GLint fsize, GLsizei stride, const void * pointer) {
+	/*noop*/
+}
+void glVertexAttribs1dvNV(GLuint index, GLsizei count, const GLdouble * v) {
+	/*noop*/
+}
+void glVertexAttribs1fvNV(GLuint index, GLsizei count, const GLfloat * v) {
+	/*noop*/
+}
+void glVertexAttribs1svNV(GLuint index, GLsizei count, const GLshort * v) {
+	/*noop*/
+}
+void glVertexAttribs2dvNV(GLuint index, GLsizei count, const GLdouble * v) {
+	/*noop*/
+}
+void glVertexAttribs2fvNV(GLuint index, GLsizei count, const GLfloat * v) {
+	/*noop*/
+}
+void glVertexAttribs2svNV(GLuint index, GLsizei count, const GLshort * v) {
+	/*noop*/
+}
+void glVertexAttribs3dvNV(GLuint index, GLsizei count, const GLdouble * v) {
+	/*noop*/
+}
+void glVertexAttribs3fvNV(GLuint index, GLsizei count, const GLfloat * v) {
+	/*noop*/
+}
+void glVertexAttribs3svNV(GLuint index, GLsizei count, const GLshort * v) {
+	/*noop*/
+}
+void glVertexAttribs4dvNV(GLuint index, GLsizei count, const GLdouble * v) {
+	/*noop*/
+}
+void glVertexAttribs4fvNV(GLuint index, GLsizei count, const GLfloat * v) {
+	/*noop*/
+}
+void glVertexAttribs4svNV(GLuint index, GLsizei count, const GLshort * v) {
+	/*noop*/
+}
+void glVertexAttribs4ubvNV(GLuint index, GLsizei count, const GLubyte * v) {
+	/*noop*/
+}
 void glVertexBlendARB(GLint count) {
 	__gl_api.VertexBlendARB(count);
 }
 void glVertexPointer(GLint size, GLenum type, GLsizei stride, const void * pointer) {
 	__gl_api.VertexPointer(size, type, stride, pointer);
+}
+void glVertexPointerEXT(GLint size, GLenum type, GLsizei stride, GLsizei count, const void * pointer) {
+	/*noop*/
 }
 void glViewport(GLint x, GLint y, GLsizei width, GLsizei height) {
 	__gl_api.Viewport(x, y, width, height);
