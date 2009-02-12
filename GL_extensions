@@ -90,3 +90,5 @@ extension APPLE_float_pixels
 extension APPLE_pixel_buffer
 extension APPLE_object_purgeable
 
+#The OpenGL framework has moved this to the core OpenGL, and eliminated EXT_convolution listing.
+#extension EXT_convolution

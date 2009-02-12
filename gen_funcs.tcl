@@ -46,10 +46,17 @@ proc alias {from to} {
     set aliases($from) $to
 }
 
+proc promoted name {
+    global promoted
+
+    set promoted($name) 1
+}
+
 set dir [file dirname [info script]]
 
 source [file join $dir GL_extensions]
 source [file join $dir GL_aliases]
+source [file join $dir GL_promoted]
 
 proc is-extension-supported? name {
     global extensions
@@ -349,13 +356,72 @@ proc is-valid-category? c {
     return $result
 }
 
+proc translate-parameters {func parameters} {
+    global typemap
+
+    set newparams [list]
+
+    foreach p $parameters {
+	set var [lindex $p 0]
+	
+	set ptype [lindex $p 1]
+	
+	if {![info exists typemap($ptype)]} {
+	    set missingTypes($ptype) $func
+	    continue
+	}
+	
+	set type $typemap($ptype)
+	
+	#In the gl.spec file is MultiDrawArrays first and count
+	#are really 'in' so we make them const.
+	#The gl.spec notes this problem.
+	if {("MultiDrawArrays" eq $func || "MultiDrawArraysEXT" eq $func) 
+	    && ("first" eq $var)} {
+	    set final_type "const $type *"
+	} elseif {("MultiDrawArrays" eq $func 
+		   || "MultiDrawArraysEXT" eq $func) && "count" eq $var} {
+	    set final_type "const $type *"
+	} elseif {"array" eq [lindex $p 3]} {
+	    if {"in" eq [lindex $p 2]} {
+		set final_type "const $type *"
+	    } else {
+		set final_type "$type *"
+	    }
+	} else {
+	    set final_type $type
+	}
+	    
+	lappend newparams [list $final_type $var]
+    }
+ 
+    return $newparams
+}
+
+proc api-new-entry {info func} {
+    global typemap
+
+    set master [dict create]
+    set rettype [dict get $info return]
+    
+    if {![info exists typemap($rettype)]} {
+	set ::missingTypes($rettype) $func
+    } else {
+	dict set master return $typemap($rettype)
+    }
+    
+    dict set master parameters [translate-parameters $func \
+				    [dict get $info parameters]]
+
+    return $master
+}
+
 proc main {argc argv} {
-    global extensions typemap aliases
+    global extensions typemap aliases promoted
 
     set fd [open [lindex $argv 0] r]
     set data [read $fd]
     close $fd
-
   
     array set ar {}
     
@@ -370,8 +436,6 @@ proc main {argc argv} {
 	set category [dict get $value category]
 	
 	#Invalidate any of the extensions and things not in the spec we support.
-	set valid 0
-
 	set valid [is-valid-category? $category]
 	puts VALID:$valid
 	
@@ -393,61 +457,35 @@ proc main {argc argv} {
 	    }
 	}
 
-	set master [dict create]
-	set rettype [dict get $value return]
-	
-	if {![info exists typemap($rettype)]} {
-	    set missingTypes($rettype) $key
-	} else {
-	    dict set master return $typemap($rettype)
-	}
-
-	set newparams [list]
-
-
-	foreach p [dict get $value parameters] {
-	    set var [lindex $p 0]
-
-	    set ptype [lindex $p 1]
-	    
-	    if {![info exists typemap($ptype)]} {
-		set missingTypes($ptype) $key
-		continue
-	    }
-    
-	    set type $typemap($ptype)
-
-	    #In the gl.spec file is MultiDrawArrays first and count
-	    #are really 'in' so we make them const.
-	    #The gl.spec notes this problem.
-	    if {("MultiDrawArrays" eq $key || "MultiDrawArraysEXT" eq $key) 
-		&& ("first" eq $var)} {
-		set final_type "const $type *"
-	    } elseif {("MultiDrawArrays" eq $key 
-		       || "MultiDrawArraysEXT" eq $key) && "count" eq $var} {
-		set final_type "const $type *"
-	    } elseif {"array" eq [lindex $p 3]} {
-		if {"in" eq [lindex $p 2]} {
-		    set final_type "const $type *"
-		} else {
-		    set final_type "$type *"
-		}
-	    } else {
-		set final_type $type
-	    }
-	    
-	    lappend newparams [list $final_type $var]
-	}
-
-	dict set master parameters $newparams
-
-	set newapi($key) $master
+	set newapi($key) [api-new-entry $value $key]
     }
+
+    #Now iterate and support as many aliases as we can, based on if
+    #the newapi contains the function.
+    foreach {func value} [array get ar] {
+	if {![info exists promoted([dict get $value category])]} {
+	    continue
+	}
+
+	if {[dict exists $value alias]} {
+	    #We have an alias.  Let's see if we have the implementation.
+	    set alias [dict get $value alias]
+
+	    if {[info exists newapi($alias)] && ![info exists newapi($func)]} {
+		#We have an implementing function available.
+		puts "HAVE:$key ALIAS:$alias"
+
+		set master [api-new-entry $value $func]
+		dict set master alias_for $alias
+		set newapi($func) $master		
+	    }
+	}
+    } 
 
     parray newapi
 
-    if {[array size missingTypes]} {
-	parray missingTypes
+    if {[array size ::missingTypes]} {
+	parray ::missingTypes
 	return 1
     }
 

@@ -157,14 +157,12 @@ proc main {argc argv} {
 	    set return "return "
 	}
 
-	set impfunc $f
-
 	if {[dict exists $attr alias_for]} {
-	    set impfunc [dict get $attr alias_for]
+	    set alias [dict get $attr alias_for]
+	    set body "[set return] gl[set alias]([set callvars]);"
+	} else {
+	    set body "[set return]__gl_api.[set f]([set callvars]);"
 	}
-	
-
-	set body "[set return]__gl_api.[set impfunc]([set callvars]);"
 
         puts $fd "[dict get $attr return] gl[set f]([set pstr]) \{\n\t$body\n\}"
     }
@@ -180,6 +178,9 @@ proc main {argc argv} {
     
     foreach f $sorted {
 	set attr $api($f)
+
+	puts $attr
+	puts $f
 
 	if {[dict exists $attr alias_for]} {
 	    #Function f is an alias_for another, so we shouldn't try

@@ -55,7 +55,7 @@ GLboolean glAreTexturesResident(GLsizei n, const GLuint * textures, GLboolean * 
 	return __gl_api.AreTexturesResident(n, textures, residences);
 }
 GLboolean glAreTexturesResidentEXT(GLsizei n, const GLuint * textures, GLboolean * residences) {
-	return __gl_api.AreTexturesResident(n, textures, residences);
+	return  glAreTexturesResident(n, textures, residences);
 }
 void glArrayElement(GLint i) {
 	__gl_api.ArrayElement(i);
@@ -100,7 +100,7 @@ void glBindTexture(GLenum target, GLuint texture) {
 	__gl_api.BindTexture(target, texture);
 }
 void glBindTextureEXT(GLenum target, GLuint texture) {
-	__gl_api.BindTexture(target, texture);
+	 glBindTexture(target, texture);
 }
 void glBindVertexArrayAPPLE(GLuint array) {
 	__gl_api.BindVertexArrayAPPLE(array);
@@ -448,7 +448,7 @@ void glDeleteTextures(GLsizei n, const GLuint * textures) {
 	__gl_api.DeleteTextures(n, textures);
 }
 void glDeleteTexturesEXT(GLsizei n, const GLuint * textures) {
-	__gl_api.DeleteTextures(n, textures);
+	 glDeleteTextures(n, textures);
 }
 void glDeleteVertexArraysAPPLE(GLsizei n, const GLuint * arrays) {
 	__gl_api.DeleteVertexArraysAPPLE(n, arrays);
@@ -676,7 +676,7 @@ void glGenTextures(GLsizei n, GLuint * textures) {
 	__gl_api.GenTextures(n, textures);
 }
 void glGenTexturesExt(GLsizei n, GLuint * textures) {
-	__gl_api.GenTextures(n, textures);
+	 glGenTextures(n, textures);
 }
 void glGenVertexArraysAPPLE(GLsizei n, GLuint * arrays) {
 	__gl_api.GenVertexArraysAPPLE(n, arrays);
@@ -1054,7 +1054,7 @@ GLboolean glIsTexture(GLuint texture) {
 	return __gl_api.IsTexture(texture);
 }
 GLboolean glIsTextureEXT(GLuint texture) {
-	return __gl_api.IsTexture(texture);
+	return  glIsTexture(texture);
 }
 GLboolean glIsVertexArrayAPPLE(GLuint array) {
 	return __gl_api.IsVertexArrayAPPLE(array);
@@ -1516,7 +1516,7 @@ void glPrioritizeTextures(GLsizei n, const GLuint * textures, const GLclampf * p
 	__gl_api.PrioritizeTextures(n, textures, priorities);
 }
 void glPrioritizeTexturesEXT(GLsizei n, const GLuint * textures, const GLclampf * priorities) {
-	__gl_api.PrioritizeTextures(n, textures, priorities);
+	 glPrioritizeTextures(n, textures, priorities);
 }
 void glProgramEnvParameter4dARB(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w) {
 	__gl_api.ProgramEnvParameter4dARB(target, index, x, y, z, w);
@@ -2493,11 +2493,17 @@ void glWindowPos2d(GLdouble x, GLdouble y) {
 void glWindowPos2dARB(GLdouble x, GLdouble y) {
 	__gl_api.WindowPos2dARB(x, y);
 }
+void glWindowPos2dMESA(GLdouble x, GLdouble y) {
+	 glWindowPos2dARB(x, y);
+}
 void glWindowPos2dv(const GLdouble * v) {
 	__gl_api.WindowPos2dv(v);
 }
 void glWindowPos2dvARB(const GLdouble * v) {
 	__gl_api.WindowPos2dvARB(v);
+}
+void glWindowPos2dvMESA(const GLdouble * v) {
+	 glWindowPos2dvARB(v);
 }
 void glWindowPos2f(GLfloat x, GLfloat y) {
 	__gl_api.WindowPos2f(x, y);
@@ -2505,11 +2511,17 @@ void glWindowPos2f(GLfloat x, GLfloat y) {
 void glWindowPos2fARB(GLfloat x, GLfloat y) {
 	__gl_api.WindowPos2fARB(x, y);
 }
+void glWindowPos2fMESA(GLfloat x, GLfloat y) {
+	 glWindowPos2fARB(x, y);
+}
 void glWindowPos2fv(const GLfloat * v) {
 	__gl_api.WindowPos2fv(v);
 }
 void glWindowPos2fvARB(const GLfloat * v) {
 	__gl_api.WindowPos2fvARB(v);
+}
+void glWindowPos2fvMESA(const GLfloat * v) {
+	 glWindowPos2fvARB(v);
 }
 void glWindowPos2i(GLint x, GLint y) {
 	__gl_api.WindowPos2i(x, y);
@@ -2517,11 +2529,17 @@ void glWindowPos2i(GLint x, GLint y) {
 void glWindowPos2iARB(GLint x, GLint y) {
 	__gl_api.WindowPos2iARB(x, y);
 }
+void glWindowPos2iMESA(GLint x, GLint y) {
+	 glWindowPos2iARB(x, y);
+}
 void glWindowPos2iv(const GLint * v) {
 	__gl_api.WindowPos2iv(v);
 }
 void glWindowPos2ivARB(const GLint * v) {
 	__gl_api.WindowPos2ivARB(v);
+}
+void glWindowPos2ivMESA(const GLint * v) {
+	 glWindowPos2ivARB(v);
 }
 void glWindowPos2s(GLshort x, GLshort y) {
 	__gl_api.WindowPos2s(x, y);
@@ -2529,11 +2547,17 @@ void glWindowPos2s(GLshort x, GLshort y) {
 void glWindowPos2sARB(GLshort x, GLshort y) {
 	__gl_api.WindowPos2sARB(x, y);
 }
+void glWindowPos2sMESA(GLshort x, GLshort y) {
+	 glWindowPos2sARB(x, y);
+}
 void glWindowPos2sv(const GLshort * v) {
 	__gl_api.WindowPos2sv(v);
 }
 void glWindowPos2svARB(const GLshort * v) {
 	__gl_api.WindowPos2svARB(v);
+}
+void glWindowPos2svMESA(const GLshort * v) {
+	 glWindowPos2svARB(v);
 }
 void glWindowPos3d(GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.WindowPos3d(x, y, z);
@@ -2541,11 +2565,17 @@ void glWindowPos3d(GLdouble x, GLdouble y, GLdouble z) {
 void glWindowPos3dARB(GLdouble x, GLdouble y, GLdouble z) {
 	__gl_api.WindowPos3dARB(x, y, z);
 }
+void glWindowPos3dMESA(GLdouble x, GLdouble y, GLdouble z) {
+	 glWindowPos3dARB(x, y, z);
+}
 void glWindowPos3dv(const GLdouble * v) {
 	__gl_api.WindowPos3dv(v);
 }
 void glWindowPos3dvARB(const GLdouble * v) {
 	__gl_api.WindowPos3dvARB(v);
+}
+void glWindowPos3dvMESA(const GLdouble * v) {
+	 glWindowPos3dvARB(v);
 }
 void glWindowPos3f(GLfloat x, GLfloat y, GLfloat z) {
 	__gl_api.WindowPos3f(x, y, z);
@@ -2553,11 +2583,17 @@ void glWindowPos3f(GLfloat x, GLfloat y, GLfloat z) {
 void glWindowPos3fARB(GLfloat x, GLfloat y, GLfloat z) {
 	__gl_api.WindowPos3fARB(x, y, z);
 }
+void glWindowPos3fMESA(GLfloat x, GLfloat y, GLfloat z) {
+	 glWindowPos3fARB(x, y, z);
+}
 void glWindowPos3fv(const GLfloat * v) {
 	__gl_api.WindowPos3fv(v);
 }
 void glWindowPos3fvARB(const GLfloat * v) {
 	__gl_api.WindowPos3fvARB(v);
+}
+void glWindowPos3fvMESA(const GLfloat * v) {
+	 glWindowPos3fvARB(v);
 }
 void glWindowPos3i(GLint x, GLint y, GLint z) {
 	__gl_api.WindowPos3i(x, y, z);
@@ -2565,11 +2601,17 @@ void glWindowPos3i(GLint x, GLint y, GLint z) {
 void glWindowPos3iARB(GLint x, GLint y, GLint z) {
 	__gl_api.WindowPos3iARB(x, y, z);
 }
+void glWindowPos3iMESA(GLint x, GLint y, GLint z) {
+	 glWindowPos3iARB(x, y, z);
+}
 void glWindowPos3iv(const GLint * v) {
 	__gl_api.WindowPos3iv(v);
 }
 void glWindowPos3ivARB(const GLint * v) {
 	__gl_api.WindowPos3ivARB(v);
+}
+void glWindowPos3ivMESA(const GLint * v) {
+	 glWindowPos3ivARB(v);
 }
 void glWindowPos3s(GLshort x, GLshort y, GLshort z) {
 	__gl_api.WindowPos3s(x, y, z);
@@ -2577,11 +2619,17 @@ void glWindowPos3s(GLshort x, GLshort y, GLshort z) {
 void glWindowPos3sARB(GLshort x, GLshort y, GLshort z) {
 	__gl_api.WindowPos3sARB(x, y, z);
 }
+void glWindowPos3sMESA(GLshort x, GLshort y, GLshort z) {
+	 glWindowPos3sARB(x, y, z);
+}
 void glWindowPos3sv(const GLshort * v) {
 	__gl_api.WindowPos3sv(v);
 }
 void glWindowPos3svARB(const GLshort * v) {
 	__gl_api.WindowPos3svARB(v);
+}
+void glWindowPos3svMESA(const GLshort * v) {
+	 glWindowPos3svARB(v);
 }
 #include "apple_xgl_api_stereo.c"
 

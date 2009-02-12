@@ -3,7 +3,7 @@ package require Tcl 8.5
 
 set license {
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -61,6 +61,11 @@ proc main {argc argv} {
     foreach f $sorted {
 	set attr $api($f)
 	set pstr ""
+
+	if {[dict exists $attr alias_for]} {
+	    #Skip this function.
+	    continue
+	}
 
 	foreach p [dict get $attr parameters] {
 	    append pstr "[lindex $p 0] [lindex $p 1], "
