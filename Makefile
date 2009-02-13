@@ -2,16 +2,16 @@ INSTALL_DIR = /usr/X11
 X11_DIR = $(INSTALL_DIR)
 
 CC=gcc
-CFLAGS=-Wall -ggdb3 -Os -DPTHREADS -D_REENTRANT -DPUBLIC="" $(RC_CFLAGS)
-LDFLAGS=-L$(X11_DIR)/lib
+GL_CFLAGS=-Wall -ggdb3 -Os -DPTHREADS -D_REENTRANT -DPUBLIC="" $(RC_CFLAGS) $(CFLAGS)
+GL_LDFLAGS=-L$(X11_DIR)/lib $(LDFLAGS)
 
 MKDIR=mkdir
 INSTALL=install
 LN=ln
 RM=rm
 
-INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -Igl
-COMPILE=$(CC) $(CFLAGS) $(INCLUDE) -c
+INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -Igl -F/System/Library/Frameworks/OpenGL.framework -I$(INSTALL_DIR)/include
+COMPILE=$(CC) $(GL_CFLAGS) $(INCLUDE) -c
 
 TEST_BUILD_DIR=builds
 
@@ -33,7 +33,7 @@ libGL.dylib: $(OBJECTS)
 	$(CC) -o libGL.dylib -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 libGL.1.2.dylib: $(OBJECTS)
-	$(CC) $(CFLAGS) -o libGL.1.2.dylib -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
+	$(CC) $(GL_CFLAGS) -o libGL.1.2.dylib -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(GL_LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c
 	$(COMPILE) apple_glx_drawable.c
@@ -69,25 +69,25 @@ glxhash.o: glxhash.h glxhash.c
 	$(COMPILE) glxhash.c
 
 appledri.o: appledri.h appledristr.h appledri.c
-	$(COMPILE) -I$(X11_DIR)/include/X11 appledri.c
+	$(COMPILE) appledri.c
 
 apple_glx_context.o: apple_glx_context.c apple_glx_context.h apple_glx_context.h
-	$(COMPILE) apple_glx_context.c -F/System/Library/Frameworks/OpenGL.framework
+	$(COMPILE) apple_glx_context.c
 
 apple_glx.o: apple_glx.h apple_glx.c
-	$(COMPILE) -Iinclude apple_glx.c -F/System/Library/Frameworks/OpenGL.framework
+	$(COMPILE) apple_glx.c
 
 apple_visual.o: apple_visual.h apple_visual.c
-	$(COMPILE) -Iinclude apple_visual.c -F/System/Library/Frameworks/OpenGL.framework
+	$(COMPILE) apple_visual.c
 
 #apple_api.o: apple_api.h apple_api.c
-#	$(COMPILE) -Iinclude apple_api.c -F/System/Library/Frameworks/OpenGL.framework
+#	$(COMPILE) apple_api.c
 
 apple_cgl.o: apple_cgl.h apple_cgl.c
-	$(COMPILE) -Iinclude apple_cgl.c 
+	$(COMPILE) apple_cgl.c 
 
 apple_glx_pbuffer.o: apple_glx_pbuffer.h apple_glx_pbuffer.c
-	$(COMPILE) -Iinclude apple_glx_pbuffer.c
+	$(COMPILE) apple_glx_pbuffer.c
 
 xfont.o: xfont.c glxclient.h
 	$(COMPILE) xfont.c

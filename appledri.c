@@ -40,10 +40,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define NEED_EVENTS
 #define NEED_REPLIES
-#include <Xlibint.h>
+#include <X11/Xlibint.h>
 #include "appledristr.h"
-#include <extensions/Xext.h>
-#include <extensions/extutil.h>
+#include <X11/extensions/Xext.h>
+#include <X11/extensions/extutil.h>
 #include <stdio.h>
 
 static XExtensionInfo _appledri_info_data;
