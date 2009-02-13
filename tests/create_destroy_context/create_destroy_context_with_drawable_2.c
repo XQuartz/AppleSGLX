@@ -69,13 +69,14 @@ int main() {
 	}
 	
 	glXMakeCurrent(dpy, win, ctx);
-
-	/* We can't destroy a context if it's still current according to the
-	 * documentation.
+    	glXDestroyContext(dpy, ctx);
+	/*
+	 * This should free the memory associated with the context,
+	 * because a current context can't be freed.  Thus, the
+	 * glXDestroyContext sets a flag to indicate it should be destroyed,
+	 * and the next time the current context changes, we destroy it.
 	 */
 	glXMakeCurrent(dpy, None, NULL);
-
-    	glXDestroyContext(dpy, ctx);
 
 	sleep(1);
     }
