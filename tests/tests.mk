@@ -22,5 +22,5 @@ tests: $(TEST_BUILD_DIR)/simple $(TEST_BUILD_DIR)/fbconfigs $(TEST_BUILD_DIR)/tr
   $(TEST_BUILD_DIR)/glxpixmap \
   $(TEST_BUILD_DIR)/triangle_glx_single \
   $(TEST_BUILD_DIR)/create_destroy_context_alone \
-  $(TEST_BUILD_DIR)/create_destroy_context_with_drawable
-
+  $(TEST_BUILD_DIR)/create_destroy_context_with_drawable \
+  $(TEST_BUILD_DIR)/create_destroy_context_with_drawable_2
