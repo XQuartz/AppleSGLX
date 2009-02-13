@@ -331,6 +331,7 @@ GLXContext AllocateGLXContext( Display *dpy )
     gc->maxSmallRenderCommandSize = bufSize;
 
     gc->apple = NULL;
+    gc->do_destroy = False;
 
     return gc;
 }
@@ -451,7 +452,11 @@ DestroyContext(Display *dpy, GLXContext gc)
     __glXLock();
 
     if (gc->currentDpy) {
-	/* Have to free later cuz it's in use now */
+	/* 
+	 * Set the Bool that indicates that we should destroy this GLX context
+	 * when the context is no longer current.
+	 */
+	gc->do_destroy = True;
 	__glXUnlock();
     } else {
 	/* Destroy the handle if not current to anybody */

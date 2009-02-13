@@ -136,15 +136,16 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
 			       Bool pre13)
 {
     const GLXContext oldGC = __glXGetCurrentContext();
-
+     
     if(gc) {
 	if(apple_glx_make_current_context(dpy, oldGC ? oldGC->apple : NULL, 
 					  gc ? gc->apple : NULL,
 					  draw))
 	    return GL_FALSE;
     }
-
+    
     __glXLock();
+   
     if (gc == oldGC) {
 	/* Even though the contexts are the same the drawable might have
 	 * changed.  Note that gc cannot be the dummy, and that oldGC
@@ -154,12 +155,21 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
 	gc->currentDrawable = draw;
 	gc->currentReadable = read;
     } else {
+	
 	if (oldGC != &dummyContext) {
 	    /* Old current context is no longer current to anybody */
 	    oldGC->currentDpy = 0;
 	    oldGC->currentDrawable = None;
 	    oldGC->currentReadable = None;
 	    oldGC->currentContextTag = 0;
+	    
+	    /*
+	     * At this point we should check if the context has been
+	     * through glXDestroyContext, and redestroy it if so.
+	     */
+	    if(oldGC->do_destroy) {
+		glXDestroyContext(dpy, oldGC);
+	    }
 	}
 	
 	if (gc) {

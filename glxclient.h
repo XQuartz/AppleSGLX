@@ -407,6 +407,7 @@ struct __GLXcontextRec {
    char gl_extension_bits[ __GL_EXT_BYTES ];
 
    void *apple;
+   Bool do_destroy;
 };
 
 #define __glXSetError(gc,code) \
