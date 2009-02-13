@@ -223,6 +223,13 @@ void apple_glx_destroy_context(void **ptr, Display *dpy) {
      */
     if(ac->drawable) {
 	Drawable drawable = ac->drawable->drawable;
+
+	/* 
+	 * Release the drawable, so that the ->destroy may actually destroy
+	 * the drawable, and we don't leak memory.  If the destroy returns
+	 * false, then another context has a reference to the drawable.
+	 */
+	ac->drawable->release(ac->drawable);
 	
 	if(ac->drawable->destroy(ac->drawable)) {
 	    /* 
@@ -234,10 +241,12 @@ void apple_glx_destroy_context(void **ptr, Display *dpy) {
     }
 
     if(apple_cgl.destroy_pixel_format(ac->pixel_format_obj)) {
+	fprintf(stderr, "error: destroying pixel format in %s\n", __func__);
 	abort();
     }
 
     if(apple_cgl.destroy_context(ac->context_obj)) {
+	fprintf(stderr, "error: destroying context_obj in %s\n", __func__);
 	abort();
     }
     
