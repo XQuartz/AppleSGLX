@@ -425,8 +425,11 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	    i = count;
 	    break;
 	  default:
-	    fprintf(stderr, "WARNING: unknown GLX tag from server: %ld\n",
-		      (long int)*bp);
+	      if(getenv("LIBGL_DIAGNOSTIC")) {
+		  long int tag = *bp;
+		  fprintf(stderr, "WARNING: unknown GLX tag from server: %ld\n",
+			  tag);
+	      }
 	    break;
 	}
     }
