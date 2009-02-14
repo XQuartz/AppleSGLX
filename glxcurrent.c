@@ -168,7 +168,10 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
 	     * through glXDestroyContext, and redestroy it if so.
 	     */
 	    if(oldGC->do_destroy) {
+		__glXUnlock();
+		/* glXDestroyContext uses the same global lock. */
 		glXDestroyContext(dpy, oldGC);
+		__glXLock();
 	    }
 	}
 	
