@@ -313,9 +313,9 @@ void apple_glx_garbage_collect_drawables(Display *dpy) {
     if(NULL == drawables)
 	return;
 
-    XSync(dpy, False);
-
     old_handler = XSetErrorHandler(error_handler);
+
+    XSync(dpy, False);
 
     lock_drawables_list();
 
