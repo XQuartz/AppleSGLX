@@ -9,7 +9,6 @@
 
 
 #include <GL/gl.h>
-#define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -98,6 +97,7 @@ static GLXPixmap make_pixmap( Display *dpy, Window win,
 
    XGetWindowAttributes( dpy, win, &attr );
 
+   printf("pm %lx\n", pm);
    /*
     * IMPORTANT:
     *   Use the glXCreateGLXPixmapMESA funtion when using Mesa because
@@ -180,8 +180,12 @@ int main( int argc, char *argv[] )
 
    printf("glxpm 0x%lx\n", glxpm);
 
-   glXMakeCurrent( dpy, glxpm, ctx );
-   printf("GL_RENDERER = %s\n", (char *) glGetString(GL_RENDERER));
+   if(!glXMakeCurrent(dpy, glxpm, ctx)) {
+       fprintf(stderr, "glXMakeCurrent failed!\n");
+       return EXIT_FAILURE;
+   }
+
+   printf("GL_RENDERER: %s\n", (char *) glGetString(GL_RENDERER));
 
    /* Render an image into the pixmap */
    glShadeModel( GL_FLAT );
