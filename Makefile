@@ -90,7 +90,7 @@ apple_cgl.o: apple_cgl.h apple_cgl.c
 apple_glx_pbuffer.o: apple_glx_pbuffer.h apple_glx_pbuffer.c
 	$(COMPILE) apple_glx_pbuffer.c
 
-apple_glx_pixmap.o: apple_glx_pixmap.h apple_glx_pixmap.c
+apple_glx_pixmap.o: apple_glx_pixmap.h apple_glx_pixmap.c appledri.h
 	$(COMPILE) apple_glx_pixmap.c
 
 xfont.o: xfont.c glxclient.h
