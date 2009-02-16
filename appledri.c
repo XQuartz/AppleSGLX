@@ -417,3 +417,6 @@ Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
     return True;
 }
 		   
+void XAppleDRIDestroyPixmap(Display *dpy, Pixmap pixmap) {
+    
+}

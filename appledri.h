@@ -116,6 +116,8 @@ Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
 			   int *width, int *height, size_t *size,
 			   char *bufname, size_t bufnamesize);
 
+void XAppleDRIDestroyPixmap(Display *dpy, Pixmap pixmap);
+
 _XFUNCPROTOEND
 
 #endif /* _APPLEDRI_SERVER_ */
