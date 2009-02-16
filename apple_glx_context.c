@@ -425,25 +425,20 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 	break;
 
     case APPLE_GLX_DRAWABLE_PIXMAP: {
-	int width, height;
+	int width, height, pitch, bpp;
 	void *ptr;
 
 	
 	apple_cgl.clear_drawable(ac->context_obj);
 
 	if(false == apple_glx_pixmap_data(dpy, ac->drawable->drawable,
-					  &width, &height,
+					  &width, &height, &pitch, &bpp,
 					  &ptr)) {
-
-	    
-	    fprintf(stderr, "invalid GLXPixmap: 0x%lx\n", ac->drawable->drawable);
 	    return true;
 	}
 	
-	printf("%s ptr %p\n", __func__, ptr);
-
 	cglerr = apple_cgl.set_off_screen(ac->context_obj, width, height,
-					  width * /*FIXME?*/ 4, ptr);
+					  pitch, ptr);
 
 	if(kCGLNoError != cglerr) {
 	    fprintf(stderr, "set off screen: %s\n",
