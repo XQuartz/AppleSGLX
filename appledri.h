@@ -3,7 +3,7 @@
 
 Copyright 1998-1999 Precision Insight, Inc., Cedar Park, Texas.
 Copyright 2000 VA Linux Systems, Inc.
-Copyright (c) 2002, 2008 Apple Computer, Inc.
+Copyright (c) 2002, 2008, 2009 Apple Computer, Inc.
 All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a
@@ -49,6 +49,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define X_AppleDRIAuthConnection                4
 #define X_AppleDRICreateSharedBuffer            5
 #define X_AppleDRISwapBuffers                   6
+#define X_AppleDRICreatePixmap                  7
+
 
 /* Requests up to and including 18 were used in a previous version */
 
@@ -109,6 +111,10 @@ Bool XAppleDRICreateSharedBuffer(Display *dpy, int screen, Drawable drawable,
 				 int *width, int *height);
 
 Bool XAppleDRISwapBuffers(Display *dpy, int screen, Drawable drawable);
+
+Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
+			   int *width, int *height, size_t *size,
+			   char *bufname, size_t bufnamesize);
 
 _XFUNCPROTOEND
 

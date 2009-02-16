@@ -368,3 +368,51 @@ Bool XAppleDRISwapBuffers(Display *dpy, int screen, Drawable drawable)
 
     return True;
 }
+
+Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
+			   int *width, int *height, size_t *size,
+			   char *bufname, size_t bufnamesize) {
+    XExtDisplayInfo *info = find_display(dpy);
+    xAppleDRICreatePixmapReq *req;
+    xAppleDRICreatePixmapReply rep;
+    
+    AppleDRICheckExtension(dpy, info, False);
+
+    LockDisplay(dpy);
+    GetReq(AppleDRICreatePixmap, req);
+    req->reqType = info->codes->major_opcode;
+    req->driReqType = X_AppleDRICreatePixmap;
+    req->screen = screen;
+    req->drawable = drawable;
+
+     
+    if(!_XReply(dpy, (xReply *)&rep, 0, xFalse)) {
+	puts("REPLY ERROR");
+
+	UnlockDisplay(dpy);
+	SyncHandle();
+	return False;
+    }
+
+    printf("rep.stringLength %d\n", (int) rep.stringLength);
+
+    if(rep.stringLength > 0 && rep.stringLength <= bufnamesize) {
+	_XReadPad(dpy, bufname, rep.stringLength);
+
+	printf("path: %s\n", bufname);
+
+	*width = rep.width;
+	*height = rep.height;
+	*size = rep.size;
+
+	UnlockDisplay(dpy);
+	SyncHandle();
+	return True;
+    }
+
+    UnlockDisplay(dpy);
+    SyncHandle();
+
+    return True;
+}
+		   

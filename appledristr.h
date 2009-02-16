@@ -2,7 +2,7 @@
 
 Copyright 1998-1999 Precision Insight, Inc., Cedar Park, Texas.
 Copyright 2000 VA Linux Systems, Inc.
-Copyright (c) 2002, 2008 Apple Computer, Inc.
+Copyright (c) 2002, 2008, 2009 Apple Computer, Inc.
 All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a
@@ -197,6 +197,29 @@ typedef struct {
 } xAppleDRISwapBuffersReq;
 
 #define sz_xAppleDRISwapBuffersReq 12
+
+typedef struct {
+    CARD8 reqType; /*1*/
+    CARD8 driReqType; /*2*/
+    CARD16 length B16; /*4*/
+    CARD32 screen B32; /*8*/
+    CARD32 drawable B32; /*12*/
+} xAppleDRICreatePixmapReq;
+
+#define sz_xAppleDRICreatePixmapReq 12
+
+typedef struct {
+    BYTE type; /*1*/
+    BOOL pad1; /*2*/
+    CARD16 sequenceNumber B16; /*4*/
+    CARD32 length B32; /*8*/
+    CARD32 width B32; /*12*/
+    CARD32 height B32; /*16*/
+    CARD32 size B32; /*20*/
+    CARD32 stringLength B32; /*24*/
+} xAppleDRICreatePixmapReply;
+
+#define sz_xAppleDRICreatePixmapReply 24;
 
 #ifdef _APPLEDRI_SERVER_
 
