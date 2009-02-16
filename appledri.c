@@ -385,7 +385,6 @@ Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
     req->screen = screen;
     req->drawable = drawable;
 
-     
     if(!_XReply(dpy, (xReply *)&rep, 0, xFalse)) {
 	puts("REPLY ERROR");
 
@@ -408,6 +407,8 @@ Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
 	UnlockDisplay(dpy);
 	SyncHandle();
 	return True;
+    } else if (rep.stringLength > 0) {
+	_XEatData(dpy, rep.stringLength);
     }
 
     UnlockDisplay(dpy);
