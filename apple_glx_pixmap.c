@@ -183,7 +183,7 @@ bool apple_glx_is_pixmap(Display *dpy, GLXDrawable drawable) {
 }
 
 bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
-			   int *height, void **ptr) {
+			   int *height, int *pitch, int *bpp, void **ptr) {
     struct apple_glx_pixmap *p;
     bool result = false;
 
@@ -192,6 +192,8 @@ bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
     if(find_pixmap(pixmap, &p)) {
 	*width = p->width;
 	*height = p->height;
+	*pitch = p->pitch;
+	*bpp = p->bpp;
 	*ptr = p->buffer;
 	result = true;
     }
@@ -200,4 +202,3 @@ bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
 
     return result;    
 }
-
