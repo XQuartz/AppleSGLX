@@ -717,6 +717,9 @@ PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis,
 */
 PUBLIC void glXDestroyGLXPixmap(Display *dpy, GLXPixmap glxpixmap)
 {
+    apple_glx_pixmap_destroy(dpy, glxpixmap);
+
+#if 0
     xGLXDestroyGLXPixmapReq *req;
     CARD8 opcode;
 
@@ -733,6 +736,7 @@ PUBLIC void glXDestroyGLXPixmap(Display *dpy, GLXPixmap glxpixmap)
     req->glxpixmap = glxpixmap;
     UnlockDisplay(dpy);
     SyncHandle();
+#endif
 }
 
 PUBLIC void glXSwapBuffers(Display *dpy, GLXDrawable drawable) {
