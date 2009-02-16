@@ -1,5 +1,11 @@
 -- Feb 16, 2009
 
+Verify the XError behavior of GLXPixmap support functions.
+
+Test GLXPixmap support with various pixmap depths.
+
+Test GLXPixmap support with invalid pixmaps (to stress the protocol code).
+
 Make apple_visual_create_pfobj not use OffScreen always.
 I suspect we can add a bool that indicates whether or not to create such
 an object.  We can also recreate the context, or possibly reconfigure it.
