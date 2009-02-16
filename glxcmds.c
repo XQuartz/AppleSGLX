@@ -682,6 +682,12 @@ PUBLIC Bool glXIsDirect(Display *dpy, GLXContext gc)
 PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis, 
 				    Pixmap pixmap)
 {
+    if(apple_glx_pixmap_create(dpy, vis->screen, pixmap))
+	return None;
+
+    return pixmap;
+
+#if 0
     xGLXCreateGLXPixmapReq *req;
     GLXPixmap xid;
     CARD8 opcode;
@@ -703,6 +709,7 @@ PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis,
     UnlockDisplay(dpy);
     SyncHandle();
     return xid;
+#endif
 }
 
 /*
