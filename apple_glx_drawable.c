@@ -180,12 +180,8 @@ static bool destroy_drawable(struct apple_glx_drawable *agd) {
     if(agd->next)
 	agd->next->previous = agd->previous;
 
-    /*
-     * Only destroy the surface if it wasn't a pbuffer. 
-     *
-     * The pbuffer should be cleaned up explicitly with glXDestroyPbuffer.
-     */
-    if(!agd->pbuffer_obj) {
+    
+    if(APPLE_GLX_DRAWABLE_SURFACE == agd->type) {
 	error = xp_destroy_surface(agd->surface_id);
 	
 	if(error) {
@@ -216,15 +212,19 @@ static bool destroy_drawable_callback(struct apple_glx_drawable *agd) {
 }
 
 static bool is_pbuffer(struct apple_glx_drawable *agd) {
-    return agd->pbuffer_obj ? true : false;
+    return APPLE_GLX_DRAWABLE_PBUFFER == agd->type;
+}
+
+static bool is_pixmap(struct apple_glx_drawable *agd) {
+    return APPLE_GLX_DRAWABLE_PIXMAP == agd->type;
 }
 
 bool apple_glx_create_drawable(Display *dpy,
 			       struct apple_glx_context *ac,
 			       GLXDrawable drawable, 
-			       CGLPBufferObj pbuf,
 			       struct apple_glx_drawable **agdResult) {
     struct apple_glx_drawable *agd;
+    CGLPBufferObj pbufobj;
     int err;
     
     *agdResult = NULL;
@@ -241,7 +241,14 @@ bool apple_glx_create_drawable(Display *dpy,
     agd->drawable = drawable;
     agd->surface_id = 0;
     agd->uid = 0;
-    agd->pbuffer_obj = pbuf;
+
+    agd->type = APPLE_GLX_DRAWABLE_SURFACE;
+
+    if(apple_glx_pbuffer_get(drawable, &pbufobj))
+	agd->type = APPLE_GLX_DRAWABLE_PBUFFER;
+
+    if(apple_glx_is_pixmap(dpy, drawable))
+	agd->type = APPLE_GLX_DRAWABLE_PIXMAP;
 
     err = pthread_mutex_init(&agd->mutex, NULL);
     
@@ -259,6 +266,7 @@ bool apple_glx_create_drawable(Display *dpy,
     agd->destroy = destroy_drawable_callback;
 
     agd->is_pbuffer = is_pbuffer;
+    agd->is_pixmap = is_pixmap;
 
     agd->width = -1;
     agd->height = -1;
@@ -270,7 +278,8 @@ bool apple_glx_create_drawable(Display *dpy,
     
     agd->previous = NULL;
 
-    if(!agd->pbuffer_obj && create_surface(dpy, ac, agd)) {
+    if(APPLE_GLX_DRAWABLE_SURFACE == agd->type 
+       && create_surface(dpy, ac, agd)) {
 	free(agd);
 	return true;
     }

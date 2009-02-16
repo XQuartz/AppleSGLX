@@ -37,6 +37,13 @@
 #define XP_NO_X_HEADERS
 #include <Xplugin.h>
 #undef XP_NO_X_HEADERS
+#include "apple_glx_pixmap.h"
+
+enum {
+    APPLE_GLX_DRAWABLE_SURFACE = 1,
+    APPLE_GLX_DRAWABLE_PBUFFER,
+    APPLE_GLX_DRAWABLE_PIXMAP
+};
 
 struct apple_glx_drawable {
     Display *display;
@@ -44,7 +51,7 @@ struct apple_glx_drawable {
     GLXDrawable drawable;
     xp_surface_id surface_id;
     unsigned int uid;
-    CGLPBufferObj pbuffer_obj;
+    int type; /* APPLE_GLX_DRAWABLE_* */
 
     /* 
      * This mutex protects the reference count and any other drawable data.
@@ -60,6 +67,8 @@ struct apple_glx_drawable {
     bool (*destroy)(struct apple_glx_drawable *agd);
 
     bool (*is_pbuffer)(struct apple_glx_drawable *agd);
+
+    bool (*is_pixmap)(struct apple_glx_drawable *agd);
 
 /*BEGIN These are used for the mixed mode drawing... */
     int width, height;
@@ -83,7 +92,6 @@ struct apple_glx_drawable *apple_glx_find_drawable(Display *dpy,
 bool apple_glx_create_drawable(Display *dpy, 
 			       struct apple_glx_context *ac,
 			       GLXDrawable drawable,
-			       CGLPBufferObj pbuf,
 			       struct apple_glx_drawable **agd);
 
 void apple_glx_garbage_collect_drawables(Display *dpy);

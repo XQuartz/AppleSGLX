@@ -351,15 +351,7 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     }
     
     if(NULL == newagd) {
-	CGLPBufferObj pbufobj;
-	bool is_pbuffer = false;
-
-	/* First check if it's a pbuffer. */
-	if(apple_glx_pbuffer_get(drawable, &pbufobj))
-	    is_pbuffer = true;
-	
-	if(apple_glx_create_drawable(dpy, ac, drawable,
-				     is_pbuffer ? pbufobj : NULL, &newagd))
+	if(apple_glx_create_drawable(dpy, ac, drawable, &newagd))
 	    return true;
     
 	/* Save the new drawable with the context structure. */
@@ -388,23 +380,31 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     ac->is_current = true;
 
     assert(NULL != ac->context_obj);
-  
     assert(NULL != ac->drawable);
 
-    if(ac->drawable->is_pbuffer(ac->drawable)) {
-	
-	assert(NULL != ac->drawable->pbuffer_obj);
+    switch(ac->drawable->type) {
+    case APPLE_GLX_DRAWABLE_PBUFFER: {
+	CGLPBufferObj pbufobj;
 
+	if(false == apple_glx_pbuffer_get(ac->drawable->drawable, &pbufobj)) {
+	    fprintf(stderr, "internal error: drawable is a pbuffer, "
+		    "but the pbuffer layer was unable to retrieve "
+		    "the CGLPBufferObj!\n");
+	    return true;
+	}
+		
 	cglerr = apple_cgl.set_pbuffer(ac->context_obj, 
-				       ac->drawable->pbuffer_obj,
+				       pbufobj,
 				       0, 0, 0);
-
+	    
 	if(kCGLNoError != cglerr) {
 	    fprintf(stderr, "set_pbuffer: %s\n", apple_cgl.error_string(cglerr));
 	    return true;
 	}
-	    
-    } else {
+    }
+	break;
+	
+    case APPLE_GLX_DRAWABLE_SURFACE:
 	error = xp_attach_gl_context(ac->context_obj, ac->drawable->surface_id);
 
 	if(error) {
@@ -419,10 +419,42 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 	     * The first time a new context is made current the glViewport
 	     * and glScissor should be updated.
 	     */
-	    update_viewport_and_scissor(dpy, drawable);
+	    update_viewport_and_scissor(dpy, ac->drawable->drawable);
 	    ac->made_current = true;
 	}
+	break;
+
+    case APPLE_GLX_DRAWABLE_PIXMAP: {
+	int width, height;
+	void *ptr;
+
+	
+	apple_cgl.clear_drawable(ac->context_obj);
+
+	if(false == apple_glx_pixmap_data(dpy, ac->drawable->drawable,
+					  &width, &height,
+					  &ptr)) {
+
+	    
+	    fprintf(stderr, "invalid GLXPixmap: 0x%lx\n", ac->drawable->drawable);
+	    return true;
+	}
+	
+	printf("%s ptr %p\n", __func__, ptr);
+
+	cglerr = apple_cgl.set_off_screen(ac->context_obj, width, height,
+					  width * /*FIXME?*/ 4, ptr);
+
+	if(kCGLNoError != cglerr) {
+	    fprintf(stderr, "set off screen: %s\n",
+		    apple_cgl.error_string(cglerr));
+	    
+	    return true;
+	}
     }
+	break;
+    }
+    
 
     ac->thread_id = pthread_self();
 
