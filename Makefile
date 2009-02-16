@@ -22,7 +22,8 @@ include tests/tests.mk
 OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.o \
     appledri.o apple_glx_context.o apple_glx.o pixel.o \
     compsize.o apple_visual.o apple_cgl.o glxreply.o glcontextmodes.o \
-    apple_xgl_api.o apple_glx_drawable.o xfont.o apple_glx_pbuffer.o
+    apple_xgl_api.o apple_glx_drawable.o xfont.o apple_glx_pbuffer.o \
+    apple_glx_pixmap.o
 
 #This target is used for the tests.
 
@@ -35,7 +36,7 @@ libGL.dylib: $(OBJECTS)
 libGL.1.2.dylib: $(OBJECTS)
 	$(CC) $(GL_CFLAGS) -o libGL.1.2.dylib -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(GL_LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
-apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c
+apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c apple_glx_pixmap.h apple_glx_pbuffer.h
 	$(COMPILE) apple_glx_drawable.c
 
 apple_xgl_api.o: apple_xgl_api.h apple_xgl_api.c
@@ -88,6 +89,9 @@ apple_cgl.o: apple_cgl.h apple_cgl.c
 
 apple_glx_pbuffer.o: apple_glx_pbuffer.h apple_glx_pbuffer.c
 	$(COMPILE) apple_glx_pbuffer.c
+
+apple_glx_pixmap.o: apple_glx_pixmap.h apple_glx_pixmap.c
+	$(COMPILE) apple_glx_pixmap.c
 
 xfont.o: xfont.c glxclient.h
 	$(COMPILE) xfont.c
