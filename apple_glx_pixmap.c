@@ -40,7 +40,7 @@
 struct apple_glx_pixmap {
     GLXPixmap xpixmap;
     void *buffer;
-    int width, height;
+    int width, height, pitch, /*bytes per pixel*/ bpp;
     size_t size;
     char path[PATH_MAX];
     int fd;
@@ -98,8 +98,8 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap) {
     p->buffer = NULL;
 
     if(!XAppleDRICreatePixmap(dpy, screen, pixmap,
-			      &p->width, &p->height, &p->size, 
-			      p->path, PATH_MAX)) {
+			      &p->width, &p->height, &p->pitch, &p->bpp,
+			      &p->size, p->path, PATH_MAX)) {
 	free(p);
 	return true;
     }

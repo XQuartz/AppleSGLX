@@ -113,8 +113,8 @@ Bool XAppleDRICreateSharedBuffer(Display *dpy, int screen, Drawable drawable,
 Bool XAppleDRISwapBuffers(Display *dpy, int screen, Drawable drawable);
 
 Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
-			   int *width, int *height, size_t *size,
-			   char *bufname, size_t bufnamesize);
+			   int *width, int *height, int *pitch, int *bpp,
+			   size_t *size, char *bufname, size_t bufnamesize);
 
 Bool XAppleDRIDestroyPixmap(Display *dpy, Pixmap pixmap);
 

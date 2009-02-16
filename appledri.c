@@ -370,8 +370,8 @@ Bool XAppleDRISwapBuffers(Display *dpy, int screen, Drawable drawable)
 }
 
 Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
-			   int *width, int *height, size_t *size,
-			   char *bufname, size_t bufnamesize) {
+			   int *width, int *height, int *pitch, int *bpp,
+			   size_t *size, char *bufname, size_t bufnamesize) {
     XExtDisplayInfo *info = find_display(dpy);
     xAppleDRICreatePixmapReq *req;
     xAppleDRICreatePixmapReply rep;
@@ -402,6 +402,8 @@ Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
 
 	*width = rep.width;
 	*height = rep.height;
+	*pitch = rep.pitch;
+	*bpp = rep.bpp;
 	*size = rep.size;
 
 	UnlockDisplay(dpy);

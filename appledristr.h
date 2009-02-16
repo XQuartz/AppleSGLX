@@ -215,10 +215,10 @@ typedef struct {
     CARD32 length B32; /*8*/
     CARD32 width B32; /*12*/
     CARD32 height B32; /*16*/
-    CARD32 size B32; /*20*/
-    CARD32 stringLength B32; /*24*/
-    CARD32 pad2; /*28*/
-    CARD32 pad3; /*32*/
+    CARD32 pitch B32; /*20*/
+    CARD32 bpp B32; /*24*/
+    CARD32 size B32; /*28*/
+    CARD32 stringLength B32; /*32*/
 } xAppleDRICreatePixmapReply;
 
 #define sz_xAppleDRICreatePixmapReply 32
