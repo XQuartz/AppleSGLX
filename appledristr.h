@@ -223,6 +223,15 @@ typedef struct {
 
 #define sz_xAppleDRICreatePixmapReply 32
 
+typedef struct {
+    CARD8 reqType; /*1*/
+    CARD8 driReqType; /*2*/
+    CARD16 length; /*4*/
+    CARD32 drawable B32; /*8*/
+} xAppleDRIDestroyPixmapReq;
+
+#define sz_xAppleDRIDestroyPixmapReq 8
+
 #ifdef _APPLEDRI_SERVER_
 
 void AppleDRISendEvent (

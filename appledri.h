@@ -50,7 +50,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define X_AppleDRICreateSharedBuffer            5
 #define X_AppleDRISwapBuffers                   6
 #define X_AppleDRICreatePixmap                  7
-
+#define X_AppleDRIDestroyPixmap                 8
 
 /* Requests up to and including 18 were used in a previous version */
 
@@ -116,7 +116,7 @@ Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
 			   int *width, int *height, size_t *size,
 			   char *bufname, size_t bufnamesize);
 
-void XAppleDRIDestroyPixmap(Display *dpy, Pixmap pixmap);
+Bool XAppleDRIDestroyPixmap(Display *dpy, Pixmap pixmap);
 
 _XFUNCPROTOEND
 

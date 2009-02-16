@@ -386,14 +386,14 @@ Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
     req->drawable = drawable;
 
     if(!_XReply(dpy, (xReply *)&rep, 0, xFalse)) {
-	puts("REPLY ERROR");
-
 	UnlockDisplay(dpy);
 	SyncHandle();
 	return False;
     }
 
+    /*
     printf("rep.stringLength %d\n", (int) rep.stringLength);
+    */
 
     if(rep.stringLength > 0 && rep.stringLength <= bufnamesize) {
 	_XReadPad(dpy, bufname, rep.stringLength);
@@ -417,6 +417,23 @@ Bool XAppleDRICreatePixmap(Display *dpy, int screen, Drawable drawable,
     return True;
 }
 		   
-void XAppleDRIDestroyPixmap(Display *dpy, Pixmap pixmap) {
+/* 
+ * Call it a drawable, because we really don't know what it is
+ * until it reaches the server, and we should keep that in mind.
+ */
+Bool XAppleDRIDestroyPixmap(Display *dpy, Pixmap drawable) {
+    XExtDisplayInfo *info = find_display(dpy);
+    xAppleDRIDestroyPixmapReq *req;
     
+    AppleDRICheckExtension(dpy, info, False);
+
+    LockDisplay(dpy);
+    GetReq(AppleDRIDestroyPixmap, req);
+    req->reqType = info->codes->major_opcode;
+    req->driReqType = X_AppleDRIDestroyPixmap;
+    req->drawable = drawable;
+    UnlockDisplay(dpy);
+    SyncHandle();
+
+    return True;
 }
