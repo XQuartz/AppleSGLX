@@ -1,3 +1,15 @@
+-- Feb 16, 2009
+
+Make apple_visual_create_pfobj not use OffScreen always.
+I suspect we can add a bool that indicates whether or not to create such
+an object.  We can also recreate the context, or possibly reconfigure it.
+
+Finish glXDestroyGLXPixmap().
+
+Test glXDestroyGLXPixmap().
+
+Add support for the newer GLX glXCreatePixmap.
+
 -- Feb 10, 2009
 
 Test glXCopyContext.
