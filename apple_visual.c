@@ -45,13 +45,13 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
     GLint vsref = 0;
     CGLError error = 0;
 
-#if 0
-    /*TODO make this be based on the preferences.*/
+#if 1
+    /*TODO we only need this sometimes -- for GLXPixmaps!*/
     attr[numattr++] = kCGLPFAOffScreen;
     
     attr[numattr++] = kCGLPFAColorSize;
     attr[numattr++] = 32;
-#else
+#endif
 
     if(c->stereoMode) 
 	attr[numattr++] = kCGLPFAStereo;
@@ -90,7 +90,6 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
 	attr[numattr++] = kCGLPFASamples;
 	attr[numattr++] = c->samples;
     }
-#endif
     
     attr[numattr++] = 0;
 
