@@ -1,5 +1,17 @@
 -- Feb 16, 2009
 
+glXMakeContextCurrent's readable drawable needs to be set as the current 
+surface/pbuffer/pixmap if it's different than the normal drawable in the 
+following routines:
+glReadPixels, glCopyPixels, glCopyColorTable
+
+The old surface/pbuffer/pixmap needs to be restored after that.
+
+glXGetCurrentReadDrawable should also report the read drawable.  It appears correct.
+
+Test glXGetCurrentDisplay().  It appears correct.
+--
+
 Improve the glX symbol compatibility with the old libGL.
 
 Work out something for the GLXFBConfig optimal width/height.  These types
