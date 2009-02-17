@@ -1,5 +1,10 @@
 -- Feb 16, 2009
 
+Improve the glX symbol compatibility with the old libGL.
+
+Work out something for the GLXFBConfig optimal width/height.  These types
+of things aren't really exposed AFAIK by CGL.
+
 Verify the XError behavior of GLXPixmap support functions.
 
 Test GLXPixmap support with various pixmap depths.
@@ -9,12 +14,14 @@ Test GLXPixmap support with invalid pixmaps (to stress the protocol code).
 Make apple_visual_create_pfobj not use OffScreen always.
 I suspect we can add a bool that indicates whether or not to create such
 an object.  We can also recreate the context, or possibly reconfigure it.
+Perhaps we could store the CGL attributes used for the pixel format object, and
+append the OFfScreen attribute when using GLXPixmaps.
 
-Finish glXDestroyGLXPixmap().
+DONE Finish glXDestroyGLXPixmap().
 
 Test glXDestroyGLXPixmap().
 
-Add support for the newer GLX glXCreatePixmap.
+Add support for the newer glXCreatePixmap (from 1.4).  We have glXCreateGLXPixmap working.
 
 -- Feb 10, 2009
 
