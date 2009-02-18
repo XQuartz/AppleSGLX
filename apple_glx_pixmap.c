@@ -174,6 +174,10 @@ void apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
     lock_pixmap_list();
 
     if(find_pixmap(pixmap, &p)) {
+	if(p->context_obj == apple_cgl.get_current_context()) {
+	    apple_cgl.set_current_context(NULL);
+	}
+
 	(void)apple_cgl.destroy_pixel_format(p->pixel_format_obj);
 	(void)apple_cgl.destroy_context(p->context_obj);
 	XAppleDRIDestroyPixmap(dpy, pixmap);
