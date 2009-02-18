@@ -11,7 +11,7 @@ LN=ln
 RM=rm
 
 INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -Igl -F/System/Library/Frameworks/OpenGL.framework -I$(INSTALL_DIR)/include
-COMPILE=$(CC) $(GL_CFLAGS) $(INCLUDE) -c
+COMPILE=$(CC) $(INCLUDE) $(GL_CFLAGS) -c
 
 TEST_BUILD_DIR=builds
 
