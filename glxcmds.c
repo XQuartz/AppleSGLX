@@ -682,7 +682,13 @@ PUBLIC Bool glXIsDirect(Display *dpy, GLXContext gc)
 PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis, 
 				    Pixmap pixmap)
 {
-    if(apple_glx_pixmap_create(dpy, vis->screen, pixmap))
+    int screen = vis->screen;
+    __GLXscreenConfigs *const psc = GetGLXScreenConfigs(dpy, screen);
+    const __GLcontextModes *mode;
+    
+    mode = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
+
+    if(apple_glx_pixmap_create(dpy, vis->screen, pixmap, mode))
 	return None;
 
     return pixmap;

@@ -33,8 +33,10 @@
 #include <limits.h>
 #include "GL/glx.h"
 
+/* mode is a __GLcontextModes * */
 /* Returns true if an error occurred. */
-bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap);
+bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
+			     const void *mode);
 
 void apple_glx_pixmap_destroy(Display *dpy, Pixmap pixmap);
 
@@ -42,6 +44,7 @@ bool apple_glx_is_pixmap(Display *dpy, GLXDrawable drawable);
 
 /* Returns true if the pixmap is valid, and there is data for it. */
 bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
-			   int *height, int *pitch, int *bpp, void **ptr);
+			   int *height, int *pitch, int *bpp, void **ptr,
+			   void **contextptr, bool mark_current);
 
 #endif

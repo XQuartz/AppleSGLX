@@ -35,24 +35,24 @@
 #include <OpenGL/CGLContext.h>
 #include "glcontextmodes.h" 
 #include "apple_cgl.h"
+#include "apple_visual.h"
 
 /*mode is a __GlcontextModes*/
 void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
-			       bool *double_buffered) {
+			       bool *double_buffered, bool offscreen) {
     CGLPixelFormatAttribute attr[60];
     const __GLcontextModes *c = mode;
     int numattr = 0;
     GLint vsref = 0;
     CGLError error = 0;
 
-#if 1
-    /*TODO we only need this sometimes -- for GLXPixmaps!*/
-    attr[numattr++] = kCGLPFAOffScreen;
+    if(offscreen) {
+	attr[numattr++] = kCGLPFAOffScreen;
+	
+	attr[numattr++] = kCGLPFAColorSize;
+	attr[numattr++] = 32;
+    }
     
-    attr[numattr++] = kCGLPFAColorSize;
-    attr[numattr++] = 32;
-#endif
-
     if(c->stereoMode) 
 	attr[numattr++] = kCGLPFAStereo;
     

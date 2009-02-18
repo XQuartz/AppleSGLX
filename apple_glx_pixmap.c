@@ -34,6 +34,8 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include "apple_cgl.h"
+#include "apple_visual.h"
 #include "apple_glx_pixmap.h"
 #include "appledri.h"
 
@@ -44,6 +46,9 @@ struct apple_glx_pixmap {
     size_t size;
     char path[PATH_MAX];
     int fd;
+    CGLPixelFormatObj pixel_format_obj;
+    CGLContextObj context_obj;
+    bool is_current;
     struct apple_glx_pixmap *next, *previous;
 };
 
@@ -89,9 +94,12 @@ static bool find_pixmap(GLXPixmap pix, struct apple_glx_pixmap **result) {
 
 
 /* Return true if an error occurred. */
-bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap) {
+bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap, 
+			     const void *mode) {
     struct apple_glx_pixmap *p;
-
+    bool double_buffered;
+    CGLError error;
+    
     p = malloc(sizeof(*p));
 
     p->xpixmap = pixmap;
@@ -127,6 +135,23 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap) {
 	return true;
     }
 
+    apple_visual_create_pfobj(&p->pixel_format_obj, mode, &double_buffered,
+			      /*offscreen*/ true);
+
+    error = apple_cgl.create_context(p->pixel_format_obj, NULL,
+				     &p->context_obj);
+
+    if(kCGLNoError != error) {
+	(void)apple_cgl.destroy_pixel_format(p->pixel_format_obj); 
+	munmap(p->buffer, p->size);
+	XAppleDRIDestroyPixmap(dpy, pixmap);
+	shm_unlink(p->path);
+	free(p);
+	return true;
+    }
+
+    p->is_current = false;
+
     lock_pixmap_list();
     
     p->previous = NULL;
@@ -149,11 +174,12 @@ void apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
     lock_pixmap_list();
 
     if(find_pixmap(pixmap, &p)) {
+	(void)apple_cgl.destroy_pixel_format(p->pixel_format_obj);
+	(void)apple_cgl.destroy_context(p->context_obj);
 	XAppleDRIDestroyPixmap(dpy, pixmap);
 	munmap(p->buffer, p->size);
 	close(p->fd);
         shm_unlink(p->path);
-	free(p);
 
 	if(p->previous) {
 	    p->previous->next = p->next;
@@ -163,6 +189,8 @@ void apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
 
 	if(p->next)
 	    p->next->previous = p->previous;
+
+	free(p);
     }
 
     unlock_pixmap_list();
@@ -183,7 +211,8 @@ bool apple_glx_is_pixmap(Display *dpy, GLXDrawable drawable) {
 }
 
 bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
-			   int *height, int *pitch, int *bpp, void **ptr) {
+			   int *height, int *pitch, int *bpp, void **ptr,
+			   void **contextptr, bool mark_current) {
     struct apple_glx_pixmap *p;
     bool result = false;
 
@@ -195,6 +224,10 @@ bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
 	*pitch = p->pitch;
 	*bpp = p->bpp;
 	*ptr = p->buffer;
+	*contextptr = p->context_obj;
+	
+	p->is_current = mark_current;
+
 	result = true;
     }
 

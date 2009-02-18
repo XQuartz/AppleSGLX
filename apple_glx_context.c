@@ -141,7 +141,7 @@ bool apple_glx_create_context(void **ptr, Display *dpy, int screen,
     ac->made_current = false;
     
     apple_visual_create_pfobj(&ac->pixel_format_obj, mode, 
-			      &ac->double_buffered);
+			      &ac->double_buffered, /*offscreen*/ false);
     
     error = apple_cgl.create_context(ac->pixel_format_obj, 
 				     sharedac ? sharedac->context_obj : NULL,
@@ -427,17 +427,30 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     case APPLE_GLX_DRAWABLE_PIXMAP: {
 	int width, height, pitch, bpp;
 	void *ptr;
-
+	CGLContextObj ctxobj;
+	void *ctxobjptr;
 	
 	apple_cgl.clear_drawable(ac->context_obj);
 
 	if(false == apple_glx_pixmap_data(dpy, ac->drawable->drawable,
 					  &width, &height, &pitch, &bpp,
-					  &ptr)) {
+					  &ptr, &ctxobjptr,
+					  /*mark current*/ true)) {
 	    return true;
 	}
+
+	ctxobj = ctxobjptr;
 	
-	cglerr = apple_cgl.set_off_screen(ac->context_obj, width, height,
+	cglerr = apple_cgl.set_current_context(ctxobj);
+
+	if(kCGLNoError != cglerr) {
+	    fprintf(stderr, "set current context: %s\n",
+		    apple_cgl.error_string(cglerr));
+	    
+	    return true;
+	}
+
+	cglerr = apple_cgl.set_off_screen(ctxobj, width, height,
 					  pitch, ptr);
 
 	if(kCGLNoError != cglerr) {

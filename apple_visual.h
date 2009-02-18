@@ -30,10 +30,11 @@
 #ifndef APPLE_VISUAL_H
 #define APPLE_VISUAL_H
 
+#include <stdbool.h>
 #include <OpenGL/CGLTypes.h>
 
 /* mode is expected to be of type __GLcontextModes. */
 void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
-			       bool *double_buffered);
+			       bool *double_buffered, bool offscreen);
 
 #endif
