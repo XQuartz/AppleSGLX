@@ -45,6 +45,9 @@ bool apple_glx_is_pixmap(Display *dpy, GLXDrawable drawable);
 /* Returns true if the pixmap is valid, and there is data for it. */
 bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
 			   int *height, int *pitch, int *bpp, void **ptr,
-			   void **contextptr, bool mark_current);
+			   void **contextptr);
+
+bool apple_glx_pixmap_query(GLXPixmap pixmap, int attribute,
+			    unsigned int *value);
 
 #endif

@@ -434,8 +434,7 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 
 	if(false == apple_glx_pixmap_data(dpy, ac->drawable->drawable,
 					  &width, &height, &pitch, &bpp,
-					  &ptr, &ctxobjptr,
-					  /*mark current*/ true)) {
+					  &ptr, &ctxobjptr)) {
 	    return true;
 	}
 

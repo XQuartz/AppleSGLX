@@ -38,6 +38,7 @@
 #include "apple_visual.h"
 #include "apple_glx_pixmap.h"
 #include "appledri.h"
+#include "glcontextmodes.h"
 
 struct apple_glx_pixmap {
     GLXPixmap xpixmap;
@@ -48,8 +49,9 @@ struct apple_glx_pixmap {
     int fd;
     CGLPixelFormatObj pixel_format_obj;
     CGLContextObj context_obj;
-    bool is_current;
-    struct apple_glx_pixmap *next, *previous;
+    GLint fbconfigID;
+    
+    struct apple_glx_pixmap *next, *previous;    
 };
 
 static pthread_mutex_t pixmap_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -99,6 +101,7 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
     struct apple_glx_pixmap *p;
     bool double_buffered;
     CGLError error;
+    const __GLcontextModes *cmodes = mode;
     
     p = malloc(sizeof(*p));
 
@@ -149,8 +152,8 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
 	free(p);
 	return true;
     }
-
-    p->is_current = false;
+    
+    p->fbconfigID = cmodes->fbconfigID;
 
     lock_pixmap_list();
     
@@ -224,7 +227,7 @@ bool apple_glx_is_pixmap(Display *dpy, GLXDrawable drawable) {
 
 bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
 			   int *height, int *pitch, int *bpp, void **ptr,
-			   void **contextptr, bool mark_current) {
+			   void **contextptr) {
     struct apple_glx_pixmap *p;
     bool result = false;
 
@@ -237,13 +240,42 @@ bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
 	*bpp = p->bpp;
 	*ptr = p->buffer;
 	*contextptr = p->context_obj;
-	
-	p->is_current = mark_current;
-
+		
 	result = true;
     }
 
     unlock_pixmap_list();
 
     return result;    
+}
+
+
+bool apple_glx_pixmap_query(GLXPixmap pixmap, int attr, unsigned int *value) {
+    bool result = false;
+    struct apple_glx_pixmap *p;
+
+    lock_pixmap_list();
+
+    if(find_pixmap(pixmap, &p)) {
+	switch(attr) {
+	case GLX_WIDTH:
+	    *value = p->width;
+	    result = true;
+	    break;
+
+	case GLX_HEIGHT:
+	    *value = p->height;
+	    result = true;
+	    break;
+	    
+	case GLX_FBCONFIG_ID:
+	    *value = p->fbconfigID;
+	    result = true;
+	    break;
+	}
+    }
+
+    unlock_pixmap_list();
+
+    return result;
 }

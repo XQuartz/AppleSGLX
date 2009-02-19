@@ -42,6 +42,7 @@
 //#include "glheader.h"
 
 #include "apple_glx_pbuffer.h"
+#include "apple_glx_pixmap.h"
 
 /**
  * Change a drawable's attribute.
@@ -649,6 +650,10 @@ glXQueryDrawable(Display *dpy, GLXDrawable drawable,
 		 int attribute, unsigned int *value) {
     GLXContext gc = __glXGetCurrentContext();
     xError error;
+
+
+    if(apple_glx_pixmap_query(drawable, attribute, value))
+	return; /*done*/
 
     switch(attribute) {
     case GLX_WIDTH: {
