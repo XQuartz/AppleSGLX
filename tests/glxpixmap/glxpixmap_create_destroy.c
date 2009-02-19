@@ -13,10 +13,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 static GLXContext ctx;
 static XVisualInfo *visinfo;
 static GC gc;
+static GC rectgc;
 
 static Window make_rgb_window( Display *dpy,
 				  unsigned int width, unsigned int height )
@@ -158,6 +160,8 @@ int main( int argc, char *argv[] )
    Pixmap pm;
    GLXPixmap glxpm;
    int eventbase, errorbase;
+   double rcolor, gcolor, bcolor;
+   XGCValues gcval;
 
    dpy = XOpenDisplay(NULL);
 
@@ -175,6 +179,10 @@ int main( int argc, char *argv[] )
    win = make_rgb_window( dpy, 300, 300 );
    
    XMapWindow(dpy, win);
+
+   rcolor = 0.0;
+   gcolor = 0.0;
+   bcolor = 0.0;
 
    while(1) {
        glxpm = make_pixmap( dpy, win, 300, 300, &pm );
@@ -194,15 +202,46 @@ int main( int argc, char *argv[] )
        glClear( GL_COLOR_BUFFER_BIT );
        glViewport( 0, 0, 300, 300 );
        glOrtho( -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 );
-       glColor3f( 0.0, 0.0, 1.0 );
+       glColor3f( rcolor, gcolor, bcolor);
        glRectf( -0.75, -0.75, 0.75, 0.75 );
        glFlush();
        
        glFinish();
 
+       gcval.foreground = WhitePixel(dpy, DefaultScreen(dpy));
+       
+       rectgc = XCreateGC(dpy, pm, GCForeground, &gcval);
+
+       XFillRectangle(dpy, pm, rectgc, 130, 130, 40, 40);
+       
+       XCopyArea( dpy, pm, win,
+		  gc, 0, 0, 300, 300,          /* gc, src pos, size */
+		  0, 0 );
+
+       glXWaitX();
+
+       XFreeGC(dpy, rectgc);
+ 
        glXMakeCurrent(dpy, None, ctx);
 
        glXDestroyGLXPixmap(dpy, glxpm);
+
+       XFreePixmap(dpy, pm);
+
+       rcolor += 0.01;
+       gcolor += 0.02;
+       bcolor += 0.03;
+
+       if(rcolor >= 1.0)
+	   rcolor = 0.0;
+
+       if(gcolor >= 1.0)
+	   gcolor = 0.0;
+
+       if(bcolor >= 1.0)
+	   bcolor = 0.0;
+       
+       usleep(5000);
    }
 
    /* NOT REACHED */
