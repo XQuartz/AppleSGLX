@@ -39,7 +39,7 @@
 #include "appledri.h"
 
 static pthread_mutex_t drawables_lock = PTHREAD_MUTEX_INITIALIZER;
-static struct apple_glx_drawable *drawables = NULL;
+static struct apple_glx_drawable *drawables_list = NULL;
 
 static void lock_drawables_list(void) {
     int err;
@@ -75,7 +75,7 @@ struct apple_glx_drawable *apple_glx_find_drawable(Display *dpy,
      * Pixmaps aren't required to have a globally unique ID from what I recall.
      * so we use the display connection with the drawable lookup.
      */
-    for(i = drawables; i; i = i->next) {
+    for(i = drawables_list; i; i = i->next) {
 	if(i->drawable == drawable) {
 	    agd = i;
 	    break;
@@ -174,7 +174,7 @@ static bool destroy_drawable(struct apple_glx_drawable *agd) {
 	 * The item must be at the head of the list, if it
 	 * has no previous pointer. 
 	 */
-	drawables = agd->next;
+	drawables_list = agd->next;
     }
 
     if(agd->next)
@@ -287,12 +287,12 @@ bool apple_glx_create_drawable(Display *dpy,
     lock_drawables_list();
        
     /* Link the new drawable into the global list. */
-    agd->next = drawables;
+    agd->next = drawables_list;
 
-    if(drawables)
-	drawables->previous = agd;
+    if(drawables_list)
+	drawables_list->previous = agd;
 
-    drawables = agd;
+    drawables_list = agd;
 
     unlock_drawables_list();
 
@@ -319,7 +319,7 @@ void apple_glx_garbage_collect_drawables(Display *dpy) {
     int (*old_handler)(Display *, XErrorEvent *);
     
 
-    if(NULL == drawables)
+    if(NULL == drawables_list)
 	return;
 
     old_handler = XSetErrorHandler(error_handler);
@@ -328,7 +328,7 @@ void apple_glx_garbage_collect_drawables(Display *dpy) {
 
     lock_drawables_list();
 
-    for(d = drawables; d;) {
+    for(d = drawables_list; d;) {
 	dnext = d->next;
 
 	d->lock(d);
@@ -371,4 +371,18 @@ void apple_glx_garbage_collect_drawables(Display *dpy) {
     XSetErrorHandler(old_handler);
 
     unlock_drawables_list();
+}
+
+unsigned int apple_glx_get_drawable_count(void) {
+    unsigned int result = 0;
+    struct apple_glx_drawable *d;
+
+    lock_drawables_list();
+
+    for(d = drawables_list; d; d = d->next)
+	++result;
+    
+    unlock_drawables_list();
+
+    return result;
 }
