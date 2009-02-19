@@ -124,8 +124,11 @@ proc main {argc argv} {
     set sorted [lsort -dictionary [array names api]]
     
     set exclude [list DrawBuffer DrawBuffers DrawBuffersARB]
-    
 
+    #These are special to glXMakeContextCurrent.
+    #See also: apple_xgl_api_read.c.    
+    lappend exclude ReadPixels CopyPixels CopyColorTable
+    
     foreach f $sorted {
 	if {$f in $exclude} {
 	    continue
