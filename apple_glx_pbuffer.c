@@ -36,7 +36,7 @@
 struct apple_glx_pbuffer {
     GLXPbuffer xid; /* our pixmap */
     int width, height;
-    XID fbconfig_id;
+    GLint fbconfigID;
     CGLPBufferObj buffer_obj;
     struct apple_glx_pbuffer *previous, *next;
 };
@@ -95,7 +95,7 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     struct apple_glx_pbuffer *pbuf;
     Window root;
     int screen;
-    __GLcontextModes *mode = (__GLcontextModes *)config;
+    __GLcontextModes *modes = (__GLcontextModes *)config;
 
     pbuf = malloc(sizeof(*pbuf));
 
@@ -109,9 +109,9 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     pbuf->previous = NULL;
     pbuf->next = NULL;
 
-    /*TODO perhaps use GL_RGB if the config specifies a 0 alpha. */
     err = apple_cgl.create_pbuffer(width, height, GL_TEXTURE_RECTANGLE_EXT,
-		     GL_RGBA, 0, &pbuf->buffer_obj);
+				   (modes->alphaBits > 0) ? GL_RGBA : GL_RGB,
+				   0, &pbuf->buffer_obj);
 
     if(kCGLNoError != err) {
 	free(pbuf);
@@ -138,8 +138,7 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
 	return true;
     } 
 
-    printf("mode->fbconfigID %d\n", mode->fbconfigID);
-    pbuf->fbconfig_id = mode->fbconfigID;
+    pbuf->fbconfigID = modes->fbconfigID;
 
     *result = pbuf->xid;
 
@@ -204,41 +203,8 @@ bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result) {
     return false;
 }
 
-bool apple_glx_pbuffer_get_width(GLXDrawable d, int *width) {
-    struct apple_glx_pbuffer *pbuf;
-
-    if(find_pbuffer(d, &pbuf)) {
-	*width = pbuf->width;
-	return true;
-    }
-
-    return false;
-}
-
-bool apple_glx_pbuffer_get_height(GLXDrawable d, int *height) {
-    struct apple_glx_pbuffer *pbuf;
-
-    if(find_pbuffer(d, &pbuf)) {
-	*height = pbuf->height;
-	return true;
-    }
-    
-    return false;
-}
-
-bool apple_glx_pbuffer_get_fbconfig_id(GLXDrawable d, XID *id) {
-    struct apple_glx_pbuffer *pbuf;
-
-    if(find_pbuffer(d, &pbuf)) {
-	*id = pbuf->fbconfig_id;
-	return true;
-    }
-
-    return false;
-}
-
 /* Return true if an error occurred. */
-bool apple_glx_pbuffer_get_max_size(int *widthresult, int *heightresult) {
+static bool get_max_size(int *widthresult, int *heightresult) {
     CGLContextObj oldcontext;
     GLint ar[2];
    
@@ -299,6 +265,8 @@ bool apple_glx_pbuffer_get_max_size(int *widthresult, int *heightresult) {
 	apple_cgl.destroy_context(newcontext);
 	apple_cgl.destroy_pixel_format(pfobj);	
     } else {
+	/* We have a valid context. */
+
 	glGetIntegerv(GL_MAX_VIEWPORT_DIMS, ar);
     }
 
@@ -306,4 +274,47 @@ bool apple_glx_pbuffer_get_max_size(int *widthresult, int *heightresult) {
     *heightresult = ar[1];
         
     return false;
+}
+
+bool apple_glx_pbuffer_query(GLXPbuffer p, int attr, unsigned int *value) {
+    bool result = false;
+    struct apple_glx_pbuffer *pbuf;
+    
+    if(find_pbuffer(p, &pbuf)) {
+	switch(attr) {
+	case GLX_WIDTH:
+	    *value = pbuf->width;
+	    result = true;
+	    break;
+	    
+	case GLX_HEIGHT:
+	    *value = pbuf->height;
+	    result = true;
+	    break;
+
+	case GLX_PRESERVED_CONTENTS:
+	    *value = true;
+	    result = true;
+	    break;
+	    
+	case GLX_LARGEST_PBUFFER: {
+	    int width, height;
+	    if(get_max_size(&width, &height)) {
+		fprintf(stderr, "internal error: "
+			"unable to find the largest pbuffer!\n");
+	    } else {
+		*value = width;
+		result = true;
+	    }
+	}
+	    break;
+
+	case GLX_FBCONFIG_ID:
+	    *value = pbuf->fbconfigID;
+	    result = true;
+	    break;
+	}
+    }
+
+    return result;
 }

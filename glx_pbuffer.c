@@ -649,54 +649,31 @@ PUBLIC void
 glXQueryDrawable(Display *dpy, GLXDrawable drawable,
 		 int attribute, unsigned int *value) {
     GLXContext gc = __glXGetCurrentContext();
+    Window root;
+    int x, y;
+    unsigned int width, height, bd, depth;
     xError error;
 
 
     if(apple_glx_pixmap_query(drawable, attribute, value))
 	return; /*done*/
 
-    switch(attribute) {
-    case GLX_WIDTH: {
-	int width;
+    if(apple_glx_pbuffer_query(drawable, attribute, value))
+	return; /*done*/
 
-	if(apple_glx_pbuffer_get_width(drawable, &width)) {
-	    *value = (unsigned int)width;
+    if(XGetGeometry(dpy, drawable, &root, &x, &y, &width, &height, &bd, &depth)) {
+	switch(attribute) {
+	case GLX_WIDTH:
+	    *value = width;
 	    return;
-	} 
-    }
-	break;
 
-    case GLX_HEIGHT: {
-	int height;
-
-	if(apple_glx_pbuffer_get_height(drawable, &height)) {
-	    *value = (unsigned int)height;
+	case GLX_HEIGHT:
+	    *value = height;
 	    return;
 	}
+	/*FALL THROUGH*/
     }
-	break;
-
-    case GLX_PRESERVED_CONTENTS:
-	*value = true;
-	return;
-	break;
-
-    case GLX_FBCONFIG_ID: {
-	XID id;
-
-	if(apple_glx_pbuffer_get_fbconfig_id(drawable, &id)) {
-	    *value = id;
-	    return;
-	}
-    }
-	break;
-
-    default:
-	fprintf(stderr, "%s invalid attribute: %d\n", __func__, attribute);
-	abort();
-    }
-
-    
+   
     LockDisplay(dpy);
     
     error.errorCode = GLXBadDrawable;

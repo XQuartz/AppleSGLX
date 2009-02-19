@@ -42,6 +42,10 @@ void apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer pbuf);
 /* Returns true if the drawable has a valid pbuffer object result. */
 bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result); 
 
+/* Returns true if the pbuffer was valid and the attribute. */
+bool apple_glx_pbuffer_query(GLXDrawable d, int attribute, 
+			      unsigned int *value);
+
 /* These return true if the drawable is a valid Pbuffer: */
 bool apple_glx_pbuffer_get_width(GLXDrawable d, int *width);
 bool apple_glx_pbuffer_get_height(GLXDrawable d, int *height);
