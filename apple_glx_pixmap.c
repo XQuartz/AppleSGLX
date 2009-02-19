@@ -170,7 +170,7 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
 
 void apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
     struct apple_glx_pixmap *p;
-
+    
     lock_pixmap_list();
 
     if(find_pixmap(pixmap, &p)) {
@@ -181,10 +181,18 @@ void apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
 	(void)apple_cgl.destroy_pixel_format(p->pixel_format_obj);
 	(void)apple_cgl.destroy_context(p->context_obj);
 	XAppleDRIDestroyPixmap(dpy, pixmap);
-	munmap(p->buffer, p->size);
-	close(p->fd);
-        shm_unlink(p->path);
 
+	if(munmap(p->buffer, p->size))
+	    perror("munmap");
+
+	if(-1 == close(p->fd))
+	    perror("close");
+
+        if(shm_unlink(p->path))
+	    perror("shm_unlink");
+
+	/* Delink the pixmap from the pixmap_list. */
+	
 	if(p->previous) {
 	    p->previous->next = p->next;
 	} else {
