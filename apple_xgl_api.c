@@ -408,9 +408,6 @@ void glConvolutionParameterivEXT(const GLint * params) {
 void glCopyColorSubTable(GLenum target, GLsizei start, GLint x, GLint y, GLsizei width) {
 	__gl_api.CopyColorSubTable(target, start, x, y, width);
 }
-void glCopyColorTable(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width) {
-	__gl_api.CopyColorTable(target, internalformat, x, y, width);
-}
 void glCopyColorTableSGI(GLenum internalformat, GLint x, GLint y, GLsizei width) {
 	/*noop*/
 }
@@ -425,9 +422,6 @@ void glCopyConvolutionFilter2D(GLenum target, GLenum internalformat, GLint x, GL
 }
 void glCopyConvolutionFilter2DEXT(GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height) {
 	/*noop*/
-}
-void glCopyPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type) {
-	__gl_api.CopyPixels(x, y, width, height, type);
 }
 void glCopyTexImage1D(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border) {
 	__gl_api.CopyTexImage1D(target, level, internalformat, x, y, width, border);
@@ -1922,9 +1916,6 @@ void glReadBuffer(GLenum mode) {
 }
 void glReadInstrumentsSGIX(GLint marker) {
 	/*noop*/
-}
-void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void * pixels) {
-	__gl_api.ReadPixels(x, y, width, height, format, type, pixels);
 }
 void glRectd(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2) {
 	__gl_api.Rectd(x1, y1, x2, y2);
