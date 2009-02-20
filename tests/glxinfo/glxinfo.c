@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 1999-2006  Brian Paul   All Rights Reserved.
- * 
+ * Copyright (C) 2009  Apple Inc.  All Rights Reserved.
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -192,8 +193,11 @@ print_program_limits(GLenum target)
       { GL_MAX_PROGRAM_NATIVE_TEX_INDIRECTIONS_ARB, "GL_MAX_PROGRAM_NATIVE_TEX_INDIRECTIONS_ARB" },
       { (GLenum) 0, NULL }
    };
-   PFNGLGETPROGRAMIVARBPROC GetProgramivARB_func = (PFNGLGETPROGRAMIVARBPROC)
-      glXGetProcAddressARB((GLubyte *) "glGetProgramivARB");
+
+   void (*GetProgramivARB_func)(GLenum, GLenum, GLvoid *);
+
+   GetProgramivARB_func = (void (*)(GLenum, GLenum, GLvoid *))
+       glXGetProcAddressARB((GLubyte *) "glGetProgramivARB");
    GLint max[1];
    int i;
 
