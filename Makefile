@@ -39,7 +39,7 @@ libGL.1.2.dylib: $(OBJECTS)
 apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c apple_glx_pixmap.h apple_glx_pbuffer.h
 	$(COMPILE) apple_glx_drawable.c
 
-apple_xgl_api.o: apple_xgl_api.h apple_xgl_api.c
+apple_xgl_api.o: apple_xgl_api.h apple_xgl_api.c apple_xgl_api_stereo.c
 	$(COMPILE) apple_xgl_api.c
 
 apple_xgl_api_read.o: apple_xgl_api_read.h apple_xgl_api_read.c apple_xgl_api.h

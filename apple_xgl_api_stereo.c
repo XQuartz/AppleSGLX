@@ -20,18 +20,22 @@ void glDrawBuffer(GLenum mode) {
 
 	 
 void glDrawBuffers(GLsizei n, const GLenum *bufs) {
-    GLenum newbuf[n + 1];
+    GLenum newbuf[n + 2];
     GLsizei i, outi = 0;
-    bool back_handled = false;
+    bool have_back = false;
     
     for(i = 0; i < n; ++i) {
-	if(!back_handled && GL_BACK == bufs[i]) {
-	    newbuf[outi++] = GL_BACK_LEFT;
-	    newbuf[outi++] = GL_BACK_RIGHT;
-	    back_handled = true;
+	if(GL_BACK == bufs[i]) {
+	    have_back = true;
+	    continue;
 	} else {
 	    newbuf[outi++] = bufs[i];
 	}
+    }
+
+    if(have_back) {
+	newbuf[outi++] = GL_BACK_LEFT;
+	newbuf[outi++] = GL_BACK_RIGHT;
     }
     
     __gl_api.DrawBuffers(outi, newbuf);
