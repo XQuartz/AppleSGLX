@@ -390,6 +390,7 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	  case GLX_MAX_PBUFFER_PIXELS:
 	    config->maxPbufferPixels = *bp++;
 	    break;
+#if 0
 	  case GLX_OPTIMAL_PBUFFER_WIDTH_SGIX:
 	    config->optimalPbufferWidth = *bp++;
 	    break;
@@ -408,6 +409,7 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	  case GLX_SAMPLES_SGIS:
 	    config->samples = *bp++;
 	    break;
+#endif
 	case GLX_BIND_TO_TEXTURE_RGB_EXT:
 	    config->bindToTextureRgb = *bp++;
 	    break;
@@ -423,15 +425,15 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	case GLX_Y_INVERTED_EXT:
 	    config->yInverted = *bp++;
 	    break;
-	  case None:
+	case None:
 	    i = count;
 	    break;
-	  default:
-	      if(getenv("LIBGL_DIAGNOSTIC")) {
-		  long int tag = *bp;
-		  fprintf(stderr, "WARNING: unknown GLX tag from server: %ld\n",
-			  tag);
-	      }
+	default:
+	    if(getenv("LIBGL_DIAGNOSTIC")) {
+		long int tag = *bp;
+		fprintf(stderr, "WARNING: unknown GLX tag from server: %ld\n",
+			tag);
+	    }
 	    break;
 	}
     }

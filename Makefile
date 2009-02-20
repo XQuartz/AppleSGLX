@@ -23,7 +23,7 @@ OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.
     appledri.o apple_glx_context.o apple_glx.o pixel.o \
     compsize.o apple_visual.o apple_cgl.o glxreply.o glcontextmodes.o \
     apple_xgl_api.o apple_glx_drawable.o xfont.o apple_glx_pbuffer.o \
-    apple_glx_pixmap.o apple_xgl_api_read.o
+    apple_glx_pixmap.o apple_xgl_api_read.o glx_empty.o
 
 #This target is used for the tests.
 
@@ -110,6 +110,9 @@ singlepix.o: singlepix.c
 
 pixel.o: pixel.c
 	$(COMPILE) $?
+
+glx_empty.o: glx_empty.c
+	$(COMPILE) glx_empty.c
 
 install: libGL.1.2.dylib
 	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/lib
