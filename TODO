@@ -78,20 +78,20 @@ DONE test glXQueryServerString, glXGetClientString, and glXGetProcAddress.
 
 Use CGLGetVersion to assert ABI major version compatibility with the OpenGL framework.
 
-Work out the include/GL/gl.h problems (with the ARB functions).
+DONE Work out the include/GL/gl.h problems (with the ARB functions).
 
-Install the new headers with the install target.
+DONE Install the new headers with the install target.
 
 -- Dec 28, 2008
 
-Fix the missing #define for glxinfo IIRC or one of the glx-based programs from Mesa.  We need to define the necessary functions and features for the relevant GL and GLX extensions.  I also need to find a good indication of what extensions to enable on the server side for telling clients what we support.
+DONE Fix the missing #define for glxinfo IIRC or one of the glx-based programs from Mesa.  We need to define the necessary functions and features for the relevant GL and GLX extensions.  I also need to find a good indication of what extensions to enable on the server side for telling clients what we support.
 
 
 -- Dec 12 2008
  
 Generate include/GL/gl.h as needed.
 
-TEST Shared contexts may work now, test them.
+DONE TEST Shared contexts may work now, test them.
 
 DONE DestroyContext needs some work perhaps for the drawable destruction.
 
