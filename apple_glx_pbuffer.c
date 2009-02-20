@@ -38,6 +38,7 @@ struct apple_glx_pbuffer {
     int width, height;
     GLint fbconfigID;
     CGLPBufferObj buffer_obj;
+    unsigned long event_mask;    
     struct apple_glx_pbuffer *previous, *next;
 };
 
@@ -139,6 +140,8 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
     } 
 
     pbuf->fbconfigID = modes->fbconfigID;
+
+    pbuf->event_mask = 0;
 
     *result = pbuf->xid;
 
@@ -317,4 +320,26 @@ bool apple_glx_pbuffer_query(GLXPbuffer p, int attr, unsigned int *value) {
     }
 
     return result;
+}
+
+bool apple_glx_pbuffer_set_event_mask(GLXDrawable d, unsigned long mask) {
+    struct apple_glx_pbuffer *pbuf;
+
+    if(find_pbuffer(d, &pbuf)) {
+	pbuf->event_mask = mask;
+	return true;
+    }
+
+    return false;
+}
+
+bool apple_glx_pbuffer_get_event_mask(GLXDrawable d, unsigned long *mask) {
+    struct apple_glx_pbuffer *pbuf;
+
+    if(find_pbuffer(d, &pbuf)) {
+	*mask = pbuf->event_mask;
+	return true;
+    }
+    
+    return false;
 }
