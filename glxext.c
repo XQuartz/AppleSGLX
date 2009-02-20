@@ -1,6 +1,7 @@
 /*
  * SGI FREE SOFTWARE LICENSE B (Version 2.0, Sept. 18, 2008)
  * Copyright (C) 1991-2000 Silicon Graphics, Inc. All Rights Reserved.
+ * Copyright (C) 2009 Apple Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -240,7 +241,8 @@ static Bool QueryVersion(Display *dpy, int opcode, int *major, int *minor)
 	return GL_FALSE;
     }
     *major = reply.majorVersion;
-    *minor = min(reply.minorVersion, GLX_MINOR_VERSION);
+    *minor = GLX_MINOR_VERSION;
+    // *minor = min(reply.minorVersion, GLX_MINOR_VERSION);
     return GL_TRUE;
 }
 
