@@ -152,8 +152,10 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
 	 * cannot be NULL, therefore if they are the same, gc is not
 	 * NULL and not the dummy.
 	 */
-	gc->currentDrawable = draw;
-	gc->currentReadable = read;
+	if(gc) {
+	    gc->currentDrawable = draw;
+	    gc->currentReadable = read;
+	}
     } else {
 	
 	if (oldGC != &dummyContext) {
