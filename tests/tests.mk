@@ -15,6 +15,7 @@ include tests/texenv/texenv.mk
 include tests/engine/engine.mk
 include tests/glxpixmap/glxpixmap.mk
 include tests/triangle_glx_single/triangle_glx.mk
+include tests/shared/shared.mk
 
 
 tests: $(TEST_BUILD_DIR)/simple $(TEST_BUILD_DIR)/fbconfigs $(TEST_BUILD_DIR)/triangle_glx \
@@ -26,4 +27,5 @@ tests: $(TEST_BUILD_DIR)/simple $(TEST_BUILD_DIR)/fbconfigs $(TEST_BUILD_DIR)/tr
   $(TEST_BUILD_DIR)/create_destroy_context_with_drawable \
   $(TEST_BUILD_DIR)/create_destroy_context_with_drawable_2 \
   $(TEST_BUILD_DIR)/render_types \
-  $(TEST_BUILD_DIR)/glxpixmap_create_destroy
+  $(TEST_BUILD_DIR)/glxpixmap_create_destroy \
+  $(TEST_BUILD_DIR)/sharedtex
