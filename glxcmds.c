@@ -378,8 +378,10 @@ CreateContext(Display *dpy, XVisualInfo *vis,
     LockDisplay(dpy);
     mode = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
     
-    if (NULL == mode) {
+    if(NULL == mode) {
 	xError error;
+	
+	LockDisplay(dpy);
 	
 	error.errorCode = BadValue;
 	error.resourceID = vis->visualid;
@@ -416,6 +418,10 @@ CreateContext(Display *dpy, XVisualInfo *vis,
 	return NULL;
     }
     
+    gc->currentContextTag = -1;
+    gc->mode = mode;
+    gc->isDirect = allowDirect;
+
     UnlockDisplay(dpy);
        
     return gc;
@@ -564,10 +570,7 @@ PUBLIC void glXUseXFont(Font font, int first, int count, int listBase)
 PUBLIC void glXCopyContext(Display *dpy, GLXContext source,
 			   GLXContext dest, unsigned long mask)
 {
-    xGLXCopyContextReq *req;
     GLXContext gc = __glXGetCurrentContext();
-    GLXContextTag tag;
-    CARD8 opcode;
     int errorcode;
 
     if(apple_glx_copy_context(gc->apple, source->apple, dest->apple,
@@ -588,77 +591,6 @@ PUBLIC void glXCopyContext(Display *dpy, GLXContext source,
 	
 	return;
     }
-
-    return;
-
-    opcode = __glXSetupForCommand(dpy);
-    if (!opcode) {
-	return;
-    }
-
-#ifdef GLX_DIRECT_RENDERING
-    if (gc->driContext) {
-	/* NOT_DONE: This does not work yet */
-    }
-#endif
-
-    /*
-    ** If the source is the current context, send its tag so that the context
-    ** can be flushed before the copy.
-    */
-    if (source == gc && dpy == gc->currentDpy) {
-	tag = gc->currentContextTag;
-    } else {
-	tag = 0;
-    }
-
-    /* Send the glXCopyContext request */
-    LockDisplay(dpy);
-    GetReq(GLXCopyContext,req);
-    req->reqType = opcode;
-    req->glxCode = X_GLXCopyContext;
-    req->source = source ? source->xid : None;
-    req->dest = dest ? dest->xid : None;
-    req->mask = mask;
-    req->contextTag = tag;
-    UnlockDisplay(dpy);
-    SyncHandle();
-}
-
-
-/**
- * Determine if a context uses direct rendering.
- *
- * \param dpy        Display where the context was created.
- * \param contextID  ID of the context to be tested.
- *
- * \returns \c GL_TRUE if the context is direct rendering or not.
- */
-static Bool __glXIsDirect(Display *dpy, GLXContextID contextID)
-{
-    xGLXIsDirectReq *req;
-    xGLXIsDirectReply reply;
-    CARD8 opcode;
-
-    /* AppleSGLX is always direct. */
-    return GL_TRUE;
-
-    opcode = __glXSetupForCommand(dpy);
-    if (!opcode) {
-	return GL_FALSE;
-    }
-
-    /* Send the glXIsDirect request */
-    LockDisplay(dpy);
-    GetReq(GLXIsDirect,req);
-    req->reqType = opcode;
-    req->glxCode = X_GLXIsDirect;
-    req->context = contextID;
-    _XReply(dpy, (xReply*) &reply, 0, False);
-    UnlockDisplay(dpy);
-    SyncHandle();
-
-    return reply.isDirect;
 }
 
 /**
@@ -669,14 +601,25 @@ static Bool __glXIsDirect(Display *dpy, GLXContextID contextID)
  */
 PUBLIC Bool glXIsDirect(Display *dpy, GLXContext gc)
 {
-    if (!gc) {
-	return GL_FALSE;
-    } else {
-	/* AppleSGLX is always direct. */
-	return GL_TRUE;
+    xError error;
+
+    if(NULL == gc) {
+	LockDisplay(dpy);
+	
+	error.errorCode = GLXBadContext;
+	error.resourceID = 0;
+	error.sequenceNumber = dpy->request;
+	error.type = X_Error;
+	error.majorCode = gc->majorOpcode;
+	error.minorCode = X_GLXIsDirect;
+	_XError(dpy, &error);
+	
+	UnlockDisplay(dpy);
+	
+	return False;
     }
 
-    //return __glXIsDirect(dpy, gc->xid);
+    return gc->isDirect;
 }
 
 PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis, 
@@ -1424,6 +1367,7 @@ PUBLIC GLXContextID glXGetContextIDEXT(const GLXContext ctx)
 
 PUBLIC GLXContext glXImportContextEXT(Display *dpy, GLXContextID contextID)
 {
+#if 0
     GLXContext ctx;
 
     if (contextID == None) {
@@ -1440,6 +1384,8 @@ PUBLIC GLXContext glXImportContextEXT(Display *dpy, GLXContextID contextID)
 	}
     }
     return ctx;
+#endif
+    return NULL;
 }
 
 PUBLIC void glXFreeContextEXT(Display *dpy, GLXContext ctx)
