@@ -21,12 +21,9 @@ TEST_BUILD_DIR=testbuilds
 
 PROGRAMS=$(BUILD_DIR)/glxinfo $(BUILD_DIR)/glxgears
 
-#The final resulting library to be created upon install.
-DEST_LIBGL=$(DESTDIR)$(INSTALL_DIR)/lib/libGL.1.2.dylib
-
-all: $(TEST_BUILD_DIR) Makefile $(BUILD_DIR)/libGL.1.2.dylib libGL.dylib tests
-
 include tests/tests.mk
+
+all: $(PROGRAMS) tests
 
 OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.o \
     appledri.o apple_glx_context.o apple_glx.o pixel.o \
@@ -43,8 +40,8 @@ $(BUILD_DIR):
 
 #This is used for building the tests.
 #The tests don't require installation.
-libGL.dylib: $(OBJECTS)
-	$(CC) -o libGL.dylib -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
+$(TEST_BUILD_DIR)/libGL.dylib: $(OBJECTS)
+	$(CC) -o $(TEST_BUILD_DIR)/libGL.dylib -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 $(BUILD_DIR)/libGL.1.2.dylib: $(BUILD_DIR) $(OBJECTS)
 	$(CC) $(GL_CFLAGS) -o $(BUILD_DIR)/libGL.1.2.dylib -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(GL_LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
@@ -124,19 +121,15 @@ pixel.o: pixel.c
 glx_empty.o: glx_empty.c
 	$(COMPILE) glx_empty.c
 
-$(BUILD_DIR)/glxinfo: tests/glxinfo/glxinfo.c $(DEST_LIBGL)
-	$(CC) tests/glxinfo/glxinfo.c -I$(DESTDIR)$(INSTALL_DIR)/include -L$(DESTDIR)$(INSTALL_DIR)/lib -lX11 -lGL \
-   -o $(BUILD_DIR)/glxinfo
+$(BUILD_DIR)/glxinfo: tests/glxinfo/glxinfo.c $(BUILD_DIR)/libGL.1.2.dylib
+	$(CC) tests/glxinfo/glxinfo.c -I$(DESTDIR)$(INSTALL_DIR)/include -L$(BUILD_DIR) -L$(X11_DIR)/lib -lX11 -lGL -o $(BUILD_DIR)/glxinfo
 
-$(BUILD_DIR)/glxgears: tests/glxgears/glxgears.c $(DEST_LIBGL)
-	$(CC) tests/glxgears/glxgears.c -I$(DESTDIR)$(INSTALL_DIR)/include -L$(DESTDIR)$(INSTALL_DIR)/lib -lX11 -lGL \
-   -o $(BUILD_DIR)/glxgears
+$(BUILD_DIR)/glxgears: tests/glxgears/glxgears.c $(BUILD_DIR)/libGL.1.2.dylib
+	$(CC) tests/glxgears/glxgears.c -I$(DESTDIR)$(INSTALL_DIR)/include -L$(BUILD_DIR) -L$(X11_DIR)/lib -lX11 -lGL -o $(BUILD_DIR)/glxgears
 
 install_headers:
 	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/include/GL
-	$(INSTALL) -m 444 include/GL/gl.h include/GL/glext.h $(DESTDIR)$(INSTALL_DIR)/include/GL
-	$(INSTALL) -m 444 include/GL/glx.h include/GL/glxext.h include/GL/glxint.h include/GL/glxmd.h \
-   include/GL/glxproto.h $(DESTDIR)$(INSTALL_DIR)/include/GL
+	$(INSTALL) -m 444 include/GL/glx.h include/GL/glxext.h include/GL/glxint.h include/GL/glxmd.h include/GL/glxproto.h $(DESTDIR)$(INSTALL_DIR)/include/GL
 
 install_programs: $(PROGRAMS)
 	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/bin

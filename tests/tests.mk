@@ -1,6 +1,6 @@
 .PHONY : tests
 
-LIBGL=./libGL.dylib
+LIBGL=$(TEST_BUILD_DIR)/libGL.dylib
 LINK_TEST=-L/usr/X11/lib ./libGL.dylib -lX11 -lXext -lXplugin -lpthread
 
 include tests/triangle/triangle.mk
@@ -17,8 +17,7 @@ include tests/glxpixmap/glxpixmap.mk
 include tests/triangle_glx_single/triangle_glx.mk
 include tests/shared/shared.mk
 
-
-tests: $(TEST_BUILD_DIR)/simple $(TEST_BUILD_DIR)/fbconfigs $(TEST_BUILD_DIR)/triangle_glx \
+tests: $(TEST_BUILD_DIR)/libGL.dylib $(TEST_BUILD_DIR) $(TEST_BUILD_DIR)/simple $(TEST_BUILD_DIR)/fbconfigs $(TEST_BUILD_DIR)/triangle_glx \
   $(TEST_BUILD_DIR)/create_destroy_context $(TEST_BUILD_DIR)/glxgears $(TEST_BUILD_DIR)/glxinfo \
   $(TEST_BUILD_DIR)/pbuffer $(TEST_BUILD_DIR)/pbuffer_destroy \
   $(TEST_BUILD_DIR)/glxpixmap \
