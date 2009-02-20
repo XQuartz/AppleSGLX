@@ -33,7 +33,7 @@ DONE Finish glXDestroyGLXPixmap().
 
 DONE Test glXDestroyGLXPixmap().
 
-Add support for the newer glXCreatePixmap (from 1.4).  We have glXCreateGLXPixmap working.
+DONE Add support for the newer glXCreatePixmap (from 1.4).  We have glXCreateGLXPixmap working.
 
 -- Feb 10, 2009
 
