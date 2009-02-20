@@ -41,10 +41,13 @@ int main(int argc, char *argv[]) {
     for(i = 0; i < numfbconfigs; ++i) {
 	int r, value;
 	
-	r = glXGetFBConfigAttrib(dpy, fbconfigs[i], GLX_RENDER_TYPE, &value);
+	r = glXGetFBConfigAttrib(dpy, fbconfigs[i], GLX_DRAWABLE_TYPE, &value);
 	
-	printf("fbconfigs[%d] GLX_RENDER_TYPE is %x supporting %s\n",
-		i, value, (value == GLX_RGBA_BIT) ? "GLX_RGBA" : "GLX_COLOR_INDEX_BIT");
+	printf("fbconfigs[%d] GLX_DRAWABLE_TYPE is %x supporting: %s %s %s\n",
+	       i, value,
+	       (value & GLX_WINDOW_BIT) ? "GLX_WINDOW_BIT" : "",
+	       (value & GLX_PIXMAP_BIT) ? "GLX_PIXMAP_BIT" : "",
+	       (value & GLX_PBUFFER_BIT) ? "GLX_PBUFFER_BIT" : "");
     }
 
     return EXIT_SUCCESS;
