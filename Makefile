@@ -13,9 +13,18 @@ RM=rm
 INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -F/System/Library/Frameworks/OpenGL.framework -I$(INSTALL_DIR)/include
 COMPILE=$(CC) $(INCLUDE) $(GL_CFLAGS) -c
 
-TEST_BUILD_DIR=builds
+#The directory with the final binaries.
+BUILD_DIR=builds
 
-all: $(TEST_BUILD_DIR) Makefile libGL.1.2.dylib libGL.dylib tests
+#The directory with binaries that can tested without an install.
+TEST_BUILD_DIR=testbuilds
+
+PROGRAMS=$(BUILD_DIR)/glxinfo $(BUILD_DIR)/glxgears
+
+#The final resulting library to be created upon install.
+DEST_LIBGL=$(DESTDIR)$(INSTALL_DIR)/lib/libGL.1.2.dylib
+
+all: $(TEST_BUILD_DIR) Makefile $(BUILD_DIR)/libGL.1.2.dylib libGL.dylib tests
 
 include tests/tests.mk
 
@@ -26,15 +35,19 @@ OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.
     apple_glx_pixmap.o apple_xgl_api_read.o glx_empty.o
 
 #This target is used for the tests.
-
 $(TEST_BUILD_DIR):
 	$(MKDIR) $(TEST_BUILD_DIR)
 
+$(BUILD_DIR):
+	$(MKDIR) $(BUILD_DIR)
+
+#This is used for building the tests.
+#The tests don't require installation.
 libGL.dylib: $(OBJECTS)
 	$(CC) -o libGL.dylib -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
-libGL.1.2.dylib: $(OBJECTS)
-	$(CC) $(GL_CFLAGS) -o libGL.1.2.dylib -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(GL_LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
+$(BUILD_DIR)/libGL.1.2.dylib: $(BUILD_DIR) $(OBJECTS)
+	$(CC) $(GL_CFLAGS) -o $(BUILD_DIR)/libGL.1.2.dylib -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(GL_LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c apple_glx_pixmap.h apple_glx_pbuffer.h
 	$(COMPILE) apple_glx_drawable.c
@@ -84,9 +97,6 @@ apple_glx.o: apple_glx.h apple_glx.c
 apple_visual.o: apple_visual.h apple_visual.c
 	$(COMPILE) apple_visual.c
 
-#apple_api.o: apple_api.h apple_api.c
-#	$(COMPILE) apple_api.c
-
 apple_cgl.o: apple_cgl.h apple_cgl.c
 	$(COMPILE) apple_cgl.c 
 
@@ -114,15 +124,36 @@ pixel.o: pixel.c
 glx_empty.o: glx_empty.c
 	$(COMPILE) glx_empty.c
 
-install: libGL.1.2.dylib
+$(BUILD_DIR)/glxinfo: tests/glxinfo/glxinfo.c $(DEST_LIBGL)
+	$(CC) tests/glxinfo/glxinfo.c -I$(DESTDIR)$(INSTALL_DIR)/include -L$(DESTDIR)$(INSTALL_DIR)/lib -lX11 -lGL \
+   -o $(BUILD_DIR)/glxinfo
+
+$(BUILD_DIR)/glxgears: tests/glxgears/glxgears.c $(DEST_LIBGL)
+	$(CC) tests/glxgears/glxgears.c -I$(DESTDIR)$(INSTALL_DIR)/include -L$(DESTDIR)$(INSTALL_DIR)/lib -lX11 -lGL \
+   -o $(BUILD_DIR)/glxgears
+
+install_headers:
+	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/include/GL
+	$(INSTALL) -m 444 include/GL/gl.h include/GL/glext.h $(DESTDIR)$(INSTALL_DIR)/include/GL
+	$(INSTALL) -m 444 include/GL/glx.h include/GL/glxext.h include/GL/glxint.h include/GL/glxmd.h \
+   include/GL/glxproto.h $(DESTDIR)$(INSTALL_DIR)/include/GL
+
+install_programs: $(PROGRAMS)
+	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/bin
+	$(INSTALL) -m 555 $(PROGRAMS) $(DESTDIR)$(INSTALL_DIR)/bin
+
+install_libraries: $(BUILD_DIR)/libGL.1.2.dylib
 	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/lib
-	$(INSTALL) -m 755 libGL.1.2.dylib $(DESTDIR)$(INSTALL_DIR)/lib
+	$(INSTALL) -m 755 $(BUILD_DIR)/libGL.1.2.dylib $(DESTDIR)$(INSTALL_DIR)/lib
 	$(RM) -f $(DESTDIR)$(INSTALL_DIR)/lib/libGL.dylib
 	$(LN) -s libGL.1.2.dylib $(DESTDIR)$(INSTALL_DIR)/lib/libGL.dylib
 	$(RM) -f $(DESTDIR)$(INSTALL_DIR)/lib/libGL.1.dylib
 	$(LN) -s libGL.1.2.dylib $(DESTDIR)$(INSTALL_DIR)/lib/libGL.1.dylib
 
+install: install_headers install_libraries install_programs
+
 clean:
+	rm -rf $(BUILD_DIR)
 	rm -rf $(TEST_BUILD_DIR)
 	rm -f *.o *.a
 	rm -f *.c~ *.h~
