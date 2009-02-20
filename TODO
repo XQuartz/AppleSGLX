@@ -1,3 +1,7 @@
+-- Feb 20, 2009
+
+Fix glXCreateWindow and glXDestroyWindow.
+
 -- Feb 16, 2009
 
 DONE glXMakeContextCurrent's readable drawable needs to be set as the current 
