@@ -44,6 +44,7 @@
 #include "apple_glx_pbuffer.h"
 #include "apple_glx_pixmap.h"
 
+#if 0
 /**
  * Change a drawable's attribute.
  *
@@ -107,7 +108,7 @@ ChangeDrawableAttribute( Display * dpy, GLXDrawable drawable,
 
    return;
 }
-
+#endif
 
 #if 0
 /**
@@ -707,15 +708,33 @@ glXQueryGLXPbufferSGIX(Display *dpy, GLXPbufferSGIX drawable,
 PUBLIC void
 glXSelectEvent(Display *dpy, GLXDrawable drawable, unsigned long mask)
 {
+    GLXContext gc = __glXGetCurrentContext();
+    xError error;
+    XWindowAttributes xwattr;
     
-#if 0
-   CARD32 attribs[2];
+    if(apple_glx_pbuffer_set_event_mask(drawable, mask))
+	return; /*done*/
 
-   attribs[0] = (CARD32) GLX_EVENT_MASK;
-   attribs[1] = (CARD32) mask;
+    /* 
+     * The spec allows a window, but currently there are no valid
+     * events for a window, so do nothing.
+     */
+    if(XGetWindowAttributes(dpy, drawable, &xwattr))
+	return; /*done*/
 
-   ChangeDrawableAttribute( dpy, drawable, attribs, 1 );
-#endif
+    /* The drawable seems to be invalid.  Report an error. */
+
+    LockDisplay(dpy);
+    
+    error.errorCode = GLXBadDrawable;
+    error.resourceID = 0;
+    error.sequenceNumber = dpy->request;
+    error.type = X_Error;
+    error.majorCode = (gc) ? gc->majorOpcode : 0;
+    error.minorCode = X_GLXChangeDrawableAttributes;
+    _XError(dpy, &error);
+        
+    UnlockDisplay(dpy);
 }
 
 
@@ -725,22 +744,36 @@ glXSelectEvent(Display *dpy, GLXDrawable drawable, unsigned long mask)
 PUBLIC void
 glXGetSelectedEvent(Display *dpy, GLXDrawable drawable, unsigned long *mask)
 {
-   unsigned int value;
+    GLXContext gc = __glXGetCurrentContext();
+    xError error;
+    XWindowAttributes xwattr;
+    
+    if(apple_glx_pbuffer_get_event_mask(drawable, mask))
+	return; /*done*/
 
-   *mask = 0;
-   /*
-    * This is a no-op with Apple CGL pbuffers.
-    * We could perhaps match the glXSelectEvent input.
-    */
-   return;
+    /* 
+     * The spec allows a window, but currently there are no valid
+     * events for a window, so do nothing, but set the mask to 0.
+     */
+    if(XGetWindowAttributes(dpy, drawable, &xwattr)) {
+	/* The window is valid, so set the mask to 0.*/
+	*mask = 0;
+	return; /*done*/
+    }
 
-   /* The non-sense with value is required because on LP64 platforms
-    * sizeof(unsigned int) != sizeof(unsigned long).  On little-endian
-    * we could just type-cast the pointer, but why?
-    */
+    /* The drawable seems to be invalid.  Report an error. */
 
-   GetDrawableAttribute( dpy, drawable, GLX_EVENT_MASK_SGIX, & value );
-   *mask = value;
+    LockDisplay(dpy);
+    
+    error.errorCode = GLXBadDrawable;
+    error.resourceID = 0;
+    error.sequenceNumber = dpy->request;
+    error.type = X_Error;
+    error.majorCode = (gc) ? gc->majorOpcode : 0;
+    error.minorCode = X_GLXChangeDrawableAttributes;
+    _XError(dpy, &error);
+        
+    UnlockDisplay(dpy);
 }
 
 
