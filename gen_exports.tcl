@@ -84,7 +84,10 @@ proc main {argc argv} {
 	glXWaitForMscOML glXWaitForSbcOML \
 	glXAllocateMemoryMESA glXFreeMemoryMESA \
 	glXGetMemoryOffsetMESA glXReleaseBuffersMESA \
-	glXCreateGLXPixmapMESA glXCopySubBufferMESA
+	glXCreateGLXPixmapMESA glXCopySubBufferMESA \
+	glXQueryGLXPbufferSGIX glXCreateGLXPbufferSGIX \
+	glXDestroyGLXPbufferSGIX glXSelectEventSGIX \
+	glXGetSelectedEventSGIX 
     
 
     set fd [open [lindex $argv 1] w]

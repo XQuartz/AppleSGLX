@@ -255,3 +255,40 @@ void glXCopySubBufferMESA(Display *dpy, GLXDrawable drawable,
     (void) width;
     (void) height;
 }
+
+
+PUBLIC int glXQueryGLXPbufferSGIX(Display *dpy, GLXDrawable drawable,
+		       int attribute, unsigned int *value)
+{
+    (void) dpy;
+    (void) drawable;
+    (void) attribute;
+    (void) value;
+    return 0;
+}
+
+PUBLIC GLXDrawable glXCreateGLXPbufferSGIX(Display *dpy, GLXFBConfig config,
+			unsigned int width, unsigned int height,
+			int *attrib_list) {
+    (void) dpy;
+    (void) config;
+    (void) width;
+    (void) height;
+    (void) attrib_list;
+    return None;
+}
+
+PUBLIC GLX_ALIAS_VOID(glXDestroyGLXPbufferSGIX,
+		      (Display *dpy, GLXDrawable pbuf),
+		      (dpy, pbuf),
+		      glXDestroyPbuffer)
+    
+PUBLIC GLX_ALIAS_VOID(glXSelectEventSGIX,
+		      (Display *dpy, GLXDrawable drawable, unsigned long mask),
+		      (dpy, drawable, mask),
+		      glXSelectEvent)
+
+PUBLIC GLX_ALIAS_VOID(glXGetSelectedEventSGIX,
+		      (Display *dpy, GLXDrawable drawable, unsigned long *mask),
+		      (dpy, drawable, mask),
+		      glXGetSelectedEvent)
