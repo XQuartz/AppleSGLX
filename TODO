@@ -2,6 +2,9 @@
 
 Fix glXCreateWindow and glXDestroyWindow.
 
+Add API major version testing to the apple_cgl layer.  This way we can avoid
+future API fiascos.  Jordan suggested this a while ago.
+
 -- Feb 16, 2009
 
 DONE glXMakeContextCurrent's readable drawable needs to be set as the current 
