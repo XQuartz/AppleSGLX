@@ -1,5 +1,5 @@
 if 0 { 
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -71,6 +71,21 @@ proc main {argc argv} {
 
     #Extensions
     lappend glxlist glXGetProcAddressARB
+
+    #Old extensions we don't support and never really have, but need for
+    #symbol compatibility.  See also: glx_empty.c
+    lappend glxlist glXSwapIntervalSGI glXSwapIntervalMESA \
+	glXGetSwapIntervalMESA glXBeginFrameTrackingMESA \
+	glXEndFrameTrackingMESA glXGetFrameUsageMESA \
+	glXQueryFrameTrackingMESA glXGetVideoSyncSGI \
+	glXWaitVideoSyncSGI glXJoinSwapGroupSGIX \
+	glXBindSwapBarrierSGIX glXQueryMaxSwapBarriersSGIX \
+	glXGetSyncValuesOML glXSwapBuffersMscOML \
+	glXWaitForMscOML glXWaitForSbcOML \
+	glXAllocateMemoryMESA glXFreeMemoryMESA \
+	glXGetMemoryOffsetMESA glXReleaseBuffersMESA \
+	glXCreateGLXPixmapMESA glXCopySubBufferMESA
+    
 
     set fd [open [lindex $argv 1] w]
     
