@@ -707,12 +707,15 @@ glXQueryGLXPbufferSGIX(Display *dpy, GLXPbufferSGIX drawable,
 PUBLIC void
 glXSelectEvent(Display *dpy, GLXDrawable drawable, unsigned long mask)
 {
+    
+#if 0
    CARD32 attribs[2];
 
    attribs[0] = (CARD32) GLX_EVENT_MASK;
    attribs[1] = (CARD32) mask;
 
    ChangeDrawableAttribute( dpy, drawable, attribs, 1 );
+#endif
 }
 
 
