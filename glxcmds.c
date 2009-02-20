@@ -684,38 +684,14 @@ PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis,
 {
     int screen = vis->screen;
     __GLXscreenConfigs *const psc = GetGLXScreenConfigs(dpy, screen);
-    const __GLcontextModes *mode;
+    const __GLcontextModes *modes;
     
-    mode = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
+    modes = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
 
-    if(apple_glx_pixmap_create(dpy, vis->screen, pixmap, mode))
+    if(apple_glx_pixmap_create(dpy, vis->screen, pixmap, modes))
 	return None;
 
     return pixmap;
-
-#if 0
-    xGLXCreateGLXPixmapReq *req;
-    GLXPixmap xid;
-    CARD8 opcode;
-
-    opcode = __glXSetupForCommand(dpy);
-    if (!opcode) {
-	return None;
-    }
-
-    /* Send the glXCreateGLXPixmap request */
-    LockDisplay(dpy);
-    GetReq(GLXCreateGLXPixmap,req);
-    req->reqType = opcode;
-    req->glxCode = X_GLXCreateGLXPixmap;
-    req->screen = vis->screen;
-    req->visual = vis->visualid;
-    req->pixmap = pixmap;
-    req->glxpixmap = xid = XAllocID(dpy);
-    UnlockDisplay(dpy);
-    SyncHandle();
-    return xid;
-#endif
 }
 
 /*
@@ -724,25 +700,6 @@ PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis,
 PUBLIC void glXDestroyGLXPixmap(Display *dpy, GLXPixmap glxpixmap)
 {
     apple_glx_pixmap_destroy(dpy, glxpixmap);
-
-#if 0
-    xGLXDestroyGLXPixmapReq *req;
-    CARD8 opcode;
-
-    opcode = __glXSetupForCommand(dpy);
-    if (!opcode) {
-	return;
-    }
-    
-    /* Send the glXDestroyGLXPixmap request */
-    LockDisplay(dpy);
-    GetReq(GLXDestroyGLXPixmap,req);
-    req->reqType = opcode;
-    req->glxCode = X_GLXDestroyGLXPixmap;
-    req->glxpixmap = glxpixmap;
-    UnlockDisplay(dpy);
-    SyncHandle();
-#endif
 }
 
 PUBLIC void glXSwapBuffers(Display *dpy, GLXDrawable drawable) {
