@@ -28,5 +28,6 @@ tests: $(TEST_BUILD_DIR)/libGL.dylib $(TEST_BUILD_DIR) $(TEST_BUILD_DIR)/simple 
   $(TEST_BUILD_DIR)/render_types \
   $(TEST_BUILD_DIR)/glxpixmap_create_destroy \
   $(TEST_BUILD_DIR)/sharedtex \
-  $(TEST_BUILD_DIR)/drawable_types
+  $(TEST_BUILD_DIR)/drawable_types \
+  $(TEST_BUILD_DIR)/glxpixmap_destroy_invalid
 
