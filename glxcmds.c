@@ -493,6 +493,7 @@ PUBLIC Bool glXQueryVersion(Display *dpy, int *major, int *minor)
 
     if (major) *major = priv->majorVersion;
     if (minor) *minor = priv->minorVersion;
+
     return GL_TRUE;
 }
 
@@ -1097,6 +1098,11 @@ PUBLIC XVisualInfo *glXChooseVisual(Display *dpy, int screen, int *attribList)
 
 PUBLIC const char *glXQueryExtensionsString( Display *dpy, int screen )
 {
+    static const char extstr[] = "GLX_ARB_get_proc_address ";
+
+    return extstr;
+    
+#if 0
     __GLXscreenConfigs *psc;
     __GLXdisplayPrivate *priv;
 
@@ -1121,6 +1127,7 @@ PUBLIC const char *glXQueryExtensionsString( Display *dpy, int screen )
     }
 
     return psc->effectiveGLXexts;
+#endif
 }
 
 PUBLIC const char *glXGetClientString( Display *dpy, int name )
