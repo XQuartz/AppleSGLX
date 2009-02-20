@@ -280,6 +280,9 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	config->numAuxBuffers = *bp++;
 	config->level = *bp++;
 
+	/* AppleSGLX supports pixmap and pbuffers with all config. */
+	config->drawableType = GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;
+
 	count -= __GLX_MIN_CONFIG_PROPS;
     }
 
@@ -371,6 +374,10 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	    break;
 	  case GLX_DRAWABLE_TYPE:
 	    config->drawableType = *bp++;
+
+	    /* AppleSGLX supports pixmap and pbuffers with all config. */
+	    config->drawableType |= GLX_WINDOW_BIT | GLX_PIXMAP_BIT 
+		| GLX_PBUFFER_BIT;
 	    break;
 	  case GLX_RENDER_TYPE:
 	    config->renderType = *bp++;
@@ -481,8 +488,16 @@ createConfigsFromProperties(Display *dpy, int nvisuals, int nprops,
     m = modes;
     for (i = 0; i < nvisuals; i++) {
 	_XRead(dpy, (char *)props, prop_size);
-	/* Older X servers don't send this so we default it here. */
-	m->drawableType = GLX_WINDOW_BIT;
+	
+	/* 
+	 * The XQuartz 2.3.2.1 X server doesn't set this properly, so
+	 * set the proper bits here.
+	 * AppleSGLX supports windows, pixmaps, and pbuffers with all config.
+	 * The xorg-server-1.6-apple branch supports pixmaps, but we those
+	 * will fail at runtime with XQuartz 2.3.2.1.
+	 */
+	m->drawableType = GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;
+
 	__glXInitializeVisualConfigFromTags(m, nprops, props,
 					    tagged_only, GL_TRUE);
 	m->screen = screen;
