@@ -1,7 +1,7 @@
 .PHONY : tests
 
 LIBGL=$(TEST_BUILD_DIR)/libGL.dylib
-LINK_TEST=-L/usr/X11/lib ./libGL.dylib -lX11 -lXext -lXplugin -lpthread
+LINK_TEST=-L/usr/X11/lib $(LIBGL) -lX11 -lXext -lXplugin -lpthread
 
 include tests/triangle/triangle.mk
 include tests/simple/simple.mk

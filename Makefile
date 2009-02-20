@@ -21,9 +21,9 @@ TEST_BUILD_DIR=testbuilds
 
 PROGRAMS=$(BUILD_DIR)/glxinfo $(BUILD_DIR)/glxgears
 
-include tests/tests.mk
-
 all: $(PROGRAMS) tests
+
+include tests/tests.mk
 
 OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.o \
     appledri.o apple_glx_context.o apple_glx.o pixel.o \
@@ -40,7 +40,7 @@ $(BUILD_DIR):
 
 #This is used for building the tests.
 #The tests don't require installation.
-$(TEST_BUILD_DIR)/libGL.dylib: $(OBJECTS)
+$(TEST_BUILD_DIR)/libGL.dylib: $(TEST_BUILD_DIR) $(OBJECTS)
 	$(CC) -o $(TEST_BUILD_DIR)/libGL.dylib -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 $(BUILD_DIR)/libGL.1.2.dylib: $(BUILD_DIR) $(OBJECTS)
