@@ -1,13 +1,13 @@
 -- Feb 16, 2009
 
-glXMakeContextCurrent's readable drawable needs to be set as the current 
+DONE glXMakeContextCurrent's readable drawable needs to be set as the current 
 surface/pbuffer/pixmap if it's different than the normal drawable in the 
 following routines:
 glReadPixels, glCopyPixels, glCopyColorTable
 
-The old surface/pbuffer/pixmap needs to be restored after that.
+DONE The old surface/pbuffer/pixmap needs to be restored after that.
 
-glXGetCurrentReadDrawable should also report the read drawable.  It appears correct.
+DONE glXGetCurrentReadDrawable should also report the read drawable.  It appears correct.
 
 Test glXGetCurrentDisplay().  It appears correct.
 --
@@ -20,10 +20,10 @@ of things aren't really exposed AFAIK by CGL.
 Verify the XError behavior of GLXPixmap support functions.
 
 Test GLXPixmap support with various pixmap depths.
-
+ 
 Test GLXPixmap support with invalid pixmaps (to stress the protocol code).
 
-Make apple_visual_create_pfobj not use OffScreen always.
+DONE Make apple_visual_create_pfobj not use OffScreen always.
 I suspect we can add a bool that indicates whether or not to create such
 an object.  We can also recreate the context, or possibly reconfigure it.
 Perhaps we could store the CGL attributes used for the pixel format object, and
@@ -31,7 +31,7 @@ append the OFfScreen attribute when using GLXPixmaps.
 
 DONE Finish glXDestroyGLXPixmap().
 
-Test glXDestroyGLXPixmap().
+DONE Test glXDestroyGLXPixmap().
 
 Add support for the newer glXCreatePixmap (from 1.4).  We have glXCreateGLXPixmap working.
 
@@ -39,11 +39,11 @@ Add support for the newer glXCreatePixmap (from 1.4).  We have glXCreateGLXPixma
 
 Test glXCopyContext.
 
-Add the PBUFFER_BIT to the fbconfigs/visualconfigs in the X server.
+Add the PBUFFER_BIT to the fbconfigs/visualconfigs in the X server.  This is actually unclear.  We should perhaps set that bit in the libGL instead.
 
 DONE Test the pbuffer by using glReadPixels to verify it's being written to.
 
-PLAN Handle GLX_LARGEST_PBUFFER (it's unclear how to handle this so far).
+DONE PLAN Handle GLX_LARGEST_PBUFFER (it's unclear how to handle this so far).
 
 DONE glXQueryDrawable support for Pbuffer drawables.
 
