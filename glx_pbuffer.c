@@ -724,7 +724,11 @@ glXGetSelectedEvent(Display *dpy, GLXDrawable drawable, unsigned long *mask)
 {
    unsigned int value;
 
-   /*This is a no-op with Apple CGL pbuffers.*/
+   *mask = 0;
+   /*
+    * This is a no-op with Apple CGL pbuffers.
+    * We could perhaps match the glXSelectEvent input.
+    */
    return;
 
    /* The non-sense with value is required because on LP64 platforms
@@ -741,9 +745,12 @@ PUBLIC GLXPixmap
 glXCreatePixmap( Display *dpy, GLXFBConfig config, Pixmap pixmap,
 		 const int *attrib_list )
 {
-   return CreateDrawable( dpy, (__GLcontextModes *) config,
-			  (Drawable) pixmap, attrib_list,
-			  X_GLXCreatePixmap );
+    const __GLcontextModes *modes = (const __GLcontextModes *)config;
+
+    if(apple_glx_pixmap_create(dpy, modes->screen, pixmap, modes))
+	return None;
+
+    return pixmap;
 }
 
 
@@ -760,7 +767,7 @@ glXCreateWindow( Display *dpy, GLXFBConfig config, Window win,
 PUBLIC void
 glXDestroyPixmap(Display *dpy, GLXPixmap pixmap)
 {
-   DestroyDrawable( dpy, (GLXDrawable) pixmap, X_GLXDestroyPixmap );
+    apple_glx_pixmap_destroy(dpy, pixmap);
 }
 
 
