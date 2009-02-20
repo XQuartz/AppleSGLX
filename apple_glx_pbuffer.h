@@ -46,12 +46,10 @@ bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result);
 bool apple_glx_pbuffer_query(GLXDrawable d, int attribute, 
 			      unsigned int *value);
 
-/* These return true if the drawable is a valid Pbuffer: */
-bool apple_glx_pbuffer_get_width(GLXDrawable d, int *width);
-bool apple_glx_pbuffer_get_height(GLXDrawable d, int *height);
-bool apple_glx_pbuffer_get_fbconfig_id(GLXDrawable d, XID *id);
+/* Returns true if the GLXDrawable is a valid GLXPbuffer, and the mask is set. */
+bool apple_glx_pbuffer_set_event_mask(GLXDrawable d, unsigned long mask);
 
-/* Returns true if an error occurred. */
-bool apple_glx_pbuffer_get_max_size(int *widthresult, int *heightresult);
+/* Returns true if the GLXDrawable is a valid GLXPbuffer, and the *mask is set. */
+bool apple_glx_pbuffer_get_event_mask(GLXDrawable d, unsigned long *mask);
 
 #endif
