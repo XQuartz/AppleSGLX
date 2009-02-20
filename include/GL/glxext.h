@@ -46,9 +46,9 @@ extern "C" {
 /*************************************************************/
 
 /* Header file version number, required by OpenGL ABI for Linux */
-/* glxext.h last updated 2008/08/10 */
+/* glxext.h last updated 2008/10/22 */
 /* Current version at http://www.opengl.org/registry/ */
-#define GLX_GLXEXT_VERSION 20
+#define GLX_GLXEXT_VERSION 21
 
 #ifndef GLX_VERSION_1_3
 #define GLX_WINDOW_BIT                     0x00000001
@@ -127,6 +127,14 @@ extern "C" {
 #define GLX_RGBA_FLOAT_BIT_ARB             0x00000004
 #endif
 
+#ifndef GLX_ARB_create_context
+#define GLX_CONTEXT_DEBUG_BIT_ARB          0x00000001
+#define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x00000002
+#define GLX_CONTEXT_MAJOR_VERSION_ARB      0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB      0x2092
+#define GLX_CONTEXT_FLAGS_ARB              0x2094
+#endif
+
 #ifndef GLX_SGIS_multisample
 #define GLX_SAMPLE_BUFFERS_SGIS            100000
 #define GLX_SAMPLES_SGIS                   100001
@@ -151,7 +159,6 @@ extern "C" {
 #define GLX_TRANSPARENT_INDEX_EXT          0x8009
 #endif
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_SGI_swap_control
 #endif
 
@@ -163,7 +170,6 @@ extern "C" {
 
 #ifndef GLX_SGIX_video_source
 #endif
-#endif /*0*/
 
 #ifndef GLX_EXT_visual_rating
 #define GLX_VISUAL_CAVEAT_EXT              0x20
@@ -172,13 +178,11 @@ extern "C" {
 /* reuse GLX_NONE_EXT */
 #endif
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_EXT_import_context
 #define GLX_SHARE_CONTEXT_EXT              0x800A
 #define GLX_VISUAL_ID_EXT                  0x800B
 #define GLX_SCREEN_EXT                     0x800C
 #endif
-#endif /*0*/
 
 #ifndef GLX_SGIX_fbconfig
 #define GLX_WINDOW_BIT_SGIX                0x00000001
@@ -194,7 +198,6 @@ extern "C" {
 /* reuse GLX_SCREEN_EXT */
 #endif
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_SGIX_pbuffer
 #define GLX_PBUFFER_BIT_SGIX               0x00000004
 #define GLX_BUFFER_CLOBBER_MASK_SGIX       0x08000000
@@ -222,7 +225,6 @@ extern "C" {
 #define GLX_WINDOW_SGIX                    0x8022
 #define GLX_PBUFFER_SGIX                   0x8023
 #endif
-#endif /*0*/
 
 #ifndef GLX_SGI_cushion
 #endif
@@ -353,20 +355,20 @@ extern "C" {
 #endif
 
 #ifndef GLX_NV_present_video
-#define GLX_GLX_NUM_VIDEO_SLOTS_NV         0x20F0
+#define GLX_NUM_VIDEO_SLOTS_NV             0x20F0
 #endif
 
 #ifndef GLX_NV_video_out
-#define GLX_GLX_VIDEO_OUT_COLOR_NV         0x20C3
-#define GLX_GLX_VIDEO_OUT_ALPHA_NV         0x20C4
-#define GLX_GLX_VIDEO_OUT_DEPTH_NV         0x20C5
-#define GLX_GLX_VIDEO_OUT_COLOR_AND_ALPHA_NV 0x20C6
-#define GLX_GLX_VIDEO_OUT_COLOR_AND_DEPTH_NV 0x20C7
-#define GLX_GLX_VIDEO_OUT_FRAME_NV         0x20C8
-#define GLX_GLX_VIDEO_OUT_FIELD_1_NV       0x20C9
-#define GLX_GLX_VIDEO_OUT_FIELD_2_NV       0x20CA
-#define GLX_GLX_VIDEO_OUT_STACKED_FIELDS_1_2_NV 0x20CB
-#define GLX_GLX_VIDEO_OUT_STACKED_FIELDS_2_1_NV 0x20CC
+#define GLX_VIDEO_OUT_COLOR_NV             0x20C3
+#define GLX_VIDEO_OUT_ALPHA_NV             0x20C4
+#define GLX_VIDEO_OUT_DEPTH_NV             0x20C5
+#define GLX_VIDEO_OUT_COLOR_AND_ALPHA_NV   0x20C6
+#define GLX_VIDEO_OUT_COLOR_AND_DEPTH_NV   0x20C7
+#define GLX_VIDEO_OUT_FRAME_NV             0x20C8
+#define GLX_VIDEO_OUT_FIELD_1_NV           0x20C9
+#define GLX_VIDEO_OUT_FIELD_2_NV           0x20CA
+#define GLX_VIDEO_OUT_STACKED_FIELDS_1_2_NV 0x20CB
+#define GLX_VIDEO_OUT_STACKED_FIELDS_2_1_NV 0x20CC
 #endif
 
 #ifndef GLX_NV_swap_group
@@ -379,18 +381,15 @@ extern "C" {
 typedef void (*__GLXextFuncPtr)(void);
 #endif
 
-#if 0
 #ifndef GLX_SGIX_video_source
 typedef XID GLXVideoSourceSGIX;
 #endif
-#endif /*0*/
 
 #ifndef GLX_SGIX_fbconfig
 typedef XID GLXFBConfigIDSGIX;
 typedef struct __GLXFBConfigRec *GLXFBConfigSGIX;
 #endif
 
-#if 0
 #ifndef GLX_SGIX_pbuffer
 typedef XID GLXPbufferSGIX;
 typedef struct {
@@ -406,7 +405,6 @@ typedef struct {
     int width, height;
     int count;		  /* if nonzero, at least this many more */
 } GLXBufferClobberEventSGIX;
-#endif
 #endif
 
 #ifndef GLEXT_64_TYPES_DEFINED
@@ -504,13 +502,20 @@ extern __GLXextFuncPtr glXGetProcAddressARB (const GLubyte *);
 typedef __GLXextFuncPtr ( * PFNGLXGETPROCADDRESSARBPROC) (const GLubyte *procName);
 #endif
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_ARB_multisample
 #define GLX_ARB_multisample 1
 #endif
 
 #ifndef GLX_ARB_fbconfig_float
 #define GLX_ARB_fbconfig_float 1
+#endif
+
+#ifndef GLX_ARB_create_context
+#define GLX_ARB_create_context 1
+#ifdef GLX_GLXEXT_PROTOTYPES
+extern GLXContext glXCreateContextAttribsARB (Display *, GLXFBConfig, GLXContext, Bool, const int *);
+#endif /* GLX_GLXEXT_PROTOTYPES */
+typedef GLXContext ( * PFNGLXCREATECONTEXTATTRIBSARBPROC) (Display *dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list);
 #endif
 
 #ifndef GLX_SGIS_multisample
@@ -538,10 +543,7 @@ extern int glXWaitVideoSyncSGI (int, int, unsigned int *);
 typedef int ( * PFNGLXGETVIDEOSYNCSGIPROC) (unsigned int *count);
 typedef int ( * PFNGLXWAITVIDEOSYNCSGIPROC) (int divisor, int remainder, unsigned int *count);
 #endif
-#endif /*0*/
 
-
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_SGI_make_current_read
 #define GLX_SGI_make_current_read 1
 #ifdef GLX_GLXEXT_PROTOTYPES
@@ -551,9 +553,7 @@ extern GLXDrawable glXGetCurrentReadDrawableSGI (void);
 typedef Bool ( * PFNGLXMAKECURRENTREADSGIPROC) (Display *dpy, GLXDrawable draw, GLXDrawable read, GLXContext ctx);
 typedef GLXDrawable ( * PFNGLXGETCURRENTREADDRAWABLESGIPROC) (void);
 #endif
-#endif /*0*/
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_SGIX_video_source
 #define GLX_SGIX_video_source 1
 #ifdef _VL_H
@@ -565,15 +565,11 @@ typedef GLXVideoSourceSGIX ( * PFNGLXCREATEGLXVIDEOSOURCESGIXPROC) (Display *dis
 typedef void ( * PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC) (Display *dpy, GLXVideoSourceSGIX glxvideosource);
 #endif /* _VL_H */
 #endif
-#endif /*0*/
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_EXT_visual_rating
 #define GLX_EXT_visual_rating 1
 #endif
-#endif /*0*/
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_EXT_import_context
 #define GLX_EXT_import_context 1
 #ifdef GLX_GLXEXT_PROTOTYPES
@@ -589,7 +585,6 @@ typedef GLXContextID ( * PFNGLXGETCONTEXTIDEXTPROC) (const GLXContext context);
 typedef GLXContext ( * PFNGLXIMPORTCONTEXTEXTPROC) (Display *dpy, GLXContextID contextID);
 typedef void ( * PFNGLXFREECONTEXTEXTPROC) (Display *dpy, GLXContext context);
 #endif
-#endif /*0*/
 
 #ifndef GLX_SGIX_fbconfig
 #define GLX_SGIX_fbconfig 1
@@ -609,7 +604,6 @@ typedef XVisualInfo * ( * PFNGLXGETVISUALFROMFBCONFIGSGIXPROC) (Display *dpy, GL
 typedef GLXFBConfigSGIX ( * PFNGLXGETFBCONFIGFROMVISUALSGIXPROC) (Display *dpy, XVisualInfo *vis);
 #endif
 
-#if 0 /* disabled in AppleSGLX. */
 #ifndef GLX_SGIX_pbuffer
 #define GLX_SGIX_pbuffer 1
 #ifdef GLX_GLXEXT_PROTOTYPES
@@ -625,9 +619,7 @@ typedef int ( * PFNGLXQUERYGLXPBUFFERSGIXPROC) (Display *dpy, GLXPbufferSGIX pbu
 typedef void ( * PFNGLXSELECTEVENTSGIXPROC) (Display *dpy, GLXDrawable drawable, unsigned long mask);
 typedef void ( * PFNGLXGETSELECTEDEVENTSGIXPROC) (Display *dpy, GLXDrawable drawable, unsigned long *mask);
 #endif
-#endif /*0*/
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_SGI_cushion
 #define GLX_SGI_cushion 1
 #ifdef GLX_GLXEXT_PROTOTYPES
@@ -635,7 +627,6 @@ extern void glXCushionSGI (Display *, Window, float);
 #endif /* GLX_GLXEXT_PROTOTYPES */
 typedef void ( * PFNGLXCUSHIONSGIPROC) (Display *dpy, Window window, float cushion);
 #endif
-#endif /*0*/
 
 #ifndef GLX_SGIX_video_resize
 #define GLX_SGIX_video_resize 1
@@ -689,8 +680,6 @@ extern Status glXGetTransparentIndexSUN (Display *, Window, Window, long *);
 typedef Status ( * PFNGLXGETTRANSPARENTINDEXSUNPROC) (Display *dpy, Window overlay, Window underlay, long *pTransparentIndex);
 #endif
 
-#if 0 /*disabled in AppleSGLX*/
-
 #ifndef GLX_MESA_copy_sub_buffer
 #define GLX_MESA_copy_sub_buffer 1
 #ifdef GLX_GLXEXT_PROTOTYPES
@@ -698,9 +687,7 @@ extern void glXCopySubBufferMESA (Display *, GLXDrawable, int, int, int, int);
 #endif /* GLX_GLXEXT_PROTOTYPES */
 typedef void ( * PFNGLXCOPYSUBBUFFERMESAPROC) (Display *dpy, GLXDrawable drawable, int x, int y, int width, int height);
 #endif
-#endif /*0*/
 
-#if 0 /*disabled in AppleSGLX. */
 #ifndef GLX_MESA_pixmap_colormap
 #define GLX_MESA_pixmap_colormap 1
 #ifdef GLX_GLXEXT_PROTOTYPES
@@ -708,10 +695,6 @@ extern GLXPixmap glXCreateGLXPixmapMESA (Display *, XVisualInfo *, Pixmap, Color
 #endif /* GLX_GLXEXT_PROTOTYPES */
 typedef GLXPixmap ( * PFNGLXCREATEGLXPIXMAPMESAPROC) (Display *dpy, XVisualInfo *visual, Pixmap pixmap, Colormap cmap);
 #endif
-#endif /*0*/
-	
-
-#if 0 /*disabled in AppleSGLX*/
 
 #ifndef GLX_MESA_release_buffers
 #define GLX_MESA_release_buffers 1
@@ -804,9 +787,6 @@ typedef int ( * PFNGLXHYPERPIPEATTRIBSGIXPROC) (Display *dpy, int timeSlice, int
 typedef int ( * PFNGLXQUERYHYPERPIPEATTRIBSGIXPROC) (Display *dpy, int timeSlice, int attrib, int size, void *returnAttribList);
 #endif
 
-#endif /*0*/
-
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_MESA_agp_offset
 #define GLX_MESA_agp_offset 1
 #ifdef GLX_GLXEXT_PROTOTYPES
@@ -822,9 +802,7 @@ typedef unsigned int ( * PFNGLXGETAGPOFFSETMESAPROC) (const void *pointer);
 #ifndef GLX_EXT_framebuffer_sRGB
 #define GLX_EXT_framebuffer_sRGB 1
 #endif
-#endif /*0*/
 
-#if 0 /*disabled in AppleSGLX*/
 #ifndef GLX_EXT_texture_from_pixmap
 #define GLX_EXT_texture_from_pixmap 1
 #ifdef GLX_GLXEXT_PROTOTYPES
@@ -834,9 +812,7 @@ extern void glXReleaseTexImageEXT (Display *, GLXDrawable, int);
 typedef void ( * PFNGLXBINDTEXIMAGEEXTPROC) (Display *dpy, GLXDrawable drawable, int buffer, const int *attrib_list);
 typedef void ( * PFNGLXRELEASETEXIMAGEEXTPROC) (Display *dpy, GLXDrawable drawable, int buffer);
 #endif
-#endif /*0*/
 
-#if 0
 #ifndef GLX_NV_present_video
 #define GLX_NV_present_video 1
 #endif
@@ -848,7 +824,7 @@ typedef void ( * PFNGLXRELEASETEXIMAGEEXTPROC) (Display *dpy, GLXDrawable drawab
 #ifndef GLX_NV_swap_group
 #define GLX_NV_swap_group 1
 #endif
-#endif /*0*/
+
 
 #ifdef __cplusplus
 }
