@@ -19,8 +19,10 @@ BUILD_DIR=builds
 #The directory with binaries that can tested without an install.
 TEST_BUILD_DIR=testbuilds
 
+PROGRAMS=$(BUILD_DIR)/glxinfo $(BUILD_DIR)/glxgears
+
 all: programs tests
-programs: $(BUILD_DIR)/glxinfo $(BUILD_DIR)/glxgears
+programs: $(PROGRAMS)
 
 include tests/tests.mk
 
