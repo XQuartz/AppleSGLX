@@ -605,13 +605,17 @@ PUBLIC Bool glXIsDirect(Display *dpy, GLXContext gc)
     xError error;
 
     if(NULL == gc) {
+	/*
+	 * This isn't an ideal test.  
+	 * glXIsDirect should probably search a list of contexts.
+	 */
 	LockDisplay(dpy);
 	
 	error.errorCode = GLXBadContext;
 	error.resourceID = 0;
 	error.sequenceNumber = dpy->request;
 	error.type = X_Error;
-	error.majorCode = gc->majorOpcode;
+	error.majorCode = 0; //gc->majorOpcode;
 	error.minorCode = X_GLXIsDirect;
 	_XError(dpy, &error);
 	
