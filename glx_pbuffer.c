@@ -253,8 +253,56 @@ PUBLIC GLXWindow
 glXCreateWindow( Display *dpy, GLXFBConfig config, Window win,
 		 const int *attrib_list )
 {
-    fprintf(stderr, "%s FIXME", __func__);
-    abort();
+    XWindowAttributes xwattr;
+    XVisualInfo *visinfo;
+
+    (void)attrib_list; /*unused according to GLX 1.4*/
+    
+    XGetWindowAttributes(dpy, win, &xwattr);
+    
+    visinfo = glXGetVisualFromFBConfig(dpy, config);
+
+    if(NULL == visinfo) {
+	xError error;
+
+	LockDisplay(dpy);
+
+	error.errorCode = GLXBadFBConfig;
+        error.resourceID = 0;
+        error.sequenceNumber = dpy->request;
+        error.type = X_Error;
+        error.majorCode = 0;
+        error.minorCode = X_GLXCreateWindow;
+        _XError(dpy, &error);
+	
+	UnlockDisplay(dpy);
+
+	return None;
+    }
+
+    if(visinfo->visualid != XVisualIDFromVisual(xwattr.visual)) {
+	xError error;
+
+	XFree(visinfo);
+
+	LockDisplay(dpy);
+
+        error.errorCode = BadMatch;
+        error.resourceID = 0;
+        error.sequenceNumber = dpy->request;
+        error.type = X_Error;
+        error.majorCode = 0;
+        error.minorCode = X_GLXCreateWindow;
+        _XError(dpy, &error);
+
+        UnlockDisplay(dpy);
+
+	return None;
+    }
+
+    XFree(visinfo);
+
+    return win;
 }
 
 
@@ -268,7 +316,5 @@ glXDestroyPixmap(Display *dpy, GLXPixmap pixmap)
 PUBLIC void
 glXDestroyWindow(Display *dpy, GLXWindow win)
 {
-    fprintf(stderr, "%s FIXME\n", __func__);
-    abort();
+    /* no-op */
 }
-
