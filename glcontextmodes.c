@@ -314,7 +314,6 @@ _gl_get_context_mode_data(const __GLcontextModes *mode, int attribute,
       case GLX_MAX_PBUFFER_PIXELS:
 	*value_return = mode->maxPbufferPixels;
 	return 0;
-#if 0
       case GLX_OPTIMAL_PBUFFER_WIDTH_SGIX:
 	*value_return = mode->optimalPbufferWidth;
 	return 0;
@@ -351,7 +350,6 @@ _gl_get_context_mode_data(const __GLcontextModes *mode, int attribute,
        * server.
        */
       case GLX_VISUAL_SELECT_GROUP_SGIX:
-#endif
 
       default:
 	return GLX_BAD_ATTRIBUTE;
