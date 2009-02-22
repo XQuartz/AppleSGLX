@@ -66,11 +66,11 @@ struct apple_xgl_api {
 	void (*BlendFuncSeparate)(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
 	void (*BlendFuncSeparateEXT)(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
 	void (*BlitFramebufferEXT)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
-	void (*BufferData)(GLenum target, GLsizeiptrARB size, const const GLvoid * data, GLenum usage);
-	void (*BufferDataARB)(GLenum target, GLsizeiptr size, const const GLvoid * data, GLenum usage);
+	void (*BufferData)(GLenum target, GLsizeiptr size, const const GLvoid * data, GLenum usage);
+	void (*BufferDataARB)(GLenum target, GLsizeiptrARB size, const const GLvoid * data, GLenum usage);
 	void (*BufferParameteriAPPLE)(GLenum target, GLenum pname, GLint param);
-	void (*BufferSubData)(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const const GLvoid * data);
-	void (*BufferSubDataARB)(GLenum target, GLintptr offset, GLsizeiptr size, const const GLvoid * data);
+	void (*BufferSubData)(GLenum target, GLintptr offset, GLsizeiptr size, const const GLvoid * data);
+	void (*BufferSubDataARB)(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const const GLvoid * data);
 	void (*CallList)(GLuint list);
 	void (*CallLists)(GLsizei n, GLenum type, const void * lists);
 	GLenum (*CheckFramebufferStatusEXT)(GLenum target);
@@ -216,7 +216,7 @@ struct apple_xgl_api {
 	void (*FeedbackBuffer)(GLsizei size, GLenum type, GLfloat * buffer);
 	void (*Finish)();
 	void (*Flush)();
-	void (*FlushMappedBufferRangeAPPLE)(GLenum target, GLintptrARB offset, GLsizeiptrARB size);
+	void (*FlushMappedBufferRangeAPPLE)(GLenum target, GLintptr offset, GLsizeiptr size);
 	void (*FogCoordd)(GLdouble coord);
 	void (*FogCoorddEXT)(GLdouble coord);
 	void (*FogCoorddv)(const GLdouble * coord);
@@ -261,8 +261,8 @@ struct apple_xgl_api {
 	void (*GetBufferParameterivARB)(GLenum target, GLenum pname, GLint * params);
 	void (*GetBufferPointerv)(GLenum target, GLenum pname, void * * params);
 	void (*GetBufferPointervARB)(GLenum target, GLenum pname, void * * params);
-	void (*GetBufferSubData)(GLenum target, GLintptrARB offset, GLsizeiptrARB size, void * data);
-	void (*GetBufferSubDataARB)(GLenum target, GLintptr offset, GLsizeiptr size, void * data);
+	void (*GetBufferSubData)(GLenum target, GLintptr offset, GLsizeiptr size, void * data);
+	void (*GetBufferSubDataARB)(GLenum target, GLintptrARB offset, GLsizeiptrARB size, void * data);
 	void (*GetClipPlane)(GLenum plane, GLdouble * equation);
 	void (*GetColorTable)(GLenum target, GLenum format, GLenum type, void * table);
 	void (*GetColorTableParameterfv)(GLenum target, GLenum pname, GLfloat * params);

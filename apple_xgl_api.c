@@ -147,19 +147,19 @@ void glBlendFuncSeparateEXT(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactor
 void glBlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {
 	__gl_api.BlitFramebufferEXT(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
-void glBufferData(GLenum target, GLsizeiptrARB size, const const GLvoid * data, GLenum usage) {
+void glBufferData(GLenum target, GLsizeiptr size, const const GLvoid * data, GLenum usage) {
 	__gl_api.BufferData(target, size, data, usage);
 }
-void glBufferDataARB(GLenum target, GLsizeiptr size, const const GLvoid * data, GLenum usage) {
+void glBufferDataARB(GLenum target, GLsizeiptrARB size, const const GLvoid * data, GLenum usage) {
 	__gl_api.BufferDataARB(target, size, data, usage);
 }
 void glBufferParameteriAPPLE(GLenum target, GLenum pname, GLint param) {
 	__gl_api.BufferParameteriAPPLE(target, pname, param);
 }
-void glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const const GLvoid * data) {
+void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const const GLvoid * data) {
 	__gl_api.BufferSubData(target, offset, size, data);
 }
-void glBufferSubDataARB(GLenum target, GLintptr offset, GLsizeiptr size, const const GLvoid * data) {
+void glBufferSubDataARB(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const const GLvoid * data) {
 	__gl_api.BufferSubDataARB(target, offset, size, data);
 }
 void glCallList(GLuint list) {
@@ -666,7 +666,7 @@ void glFinishFenceNV(GLuint fence) {
 void glFlush(void) {
 	__gl_api.Flush();
 }
-void glFlushMappedBufferRangeAPPLE(GLenum target, GLintptrARB offset, GLsizeiptrARB size) {
+void glFlushMappedBufferRangeAPPLE(GLenum target, GLintptr offset, GLsizeiptr size) {
 	__gl_api.FlushMappedBufferRangeAPPLE(target, offset, size);
 }
 void glFlushRasterSGIX(void) {
@@ -852,10 +852,10 @@ void glGetBufferPointerv(GLenum target, GLenum pname, void * * params) {
 void glGetBufferPointervARB(GLenum target, GLenum pname, void * * params) {
 	__gl_api.GetBufferPointervARB(target, pname, params);
 }
-void glGetBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, void * data) {
+void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, void * data) {
 	__gl_api.GetBufferSubData(target, offset, size, data);
 }
-void glGetBufferSubDataARB(GLenum target, GLintptr offset, GLsizeiptr size, void * data) {
+void glGetBufferSubDataARB(GLenum target, GLintptrARB offset, GLsizeiptrARB size, void * data) {
 	__gl_api.GetBufferSubDataARB(target, offset, size, data);
 }
 void glGetClipPlane(GLenum plane, GLdouble * equation) {
