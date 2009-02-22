@@ -229,7 +229,7 @@ glXGetSelectedEvent(Display *dpy, GLXDrawable drawable, unsigned long *mask)
     error.sequenceNumber = dpy->request;
     error.type = X_Error;
     error.majorCode = (gc) ? gc->majorOpcode : 0;
-    error.minorCode = X_GLXChangeDrawableAttributes;
+    error.minorCode = X_GLXGetDrawableAttributes;
     _XError(dpy, &error);
         
     UnlockDisplay(dpy);
