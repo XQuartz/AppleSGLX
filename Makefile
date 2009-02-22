@@ -95,7 +95,7 @@ install_libraries: $(BUILD_DIR)/libGL.1.2.dylib
 	$(RM) -f $(DESTDIR)$(INSTALL_DIR)/lib/libGL.1.dylib
 	$(LN) -s libGL.1.2.dylib $(DESTDIR)$(INSTALL_DIR)/lib/libGL.1.dylib
 
-install: install_headers install_libraries install_programs
+install: install_headers install_libraries
 
 clean:
 	rm -rf $(BUILD_DIR)
