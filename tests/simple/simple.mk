@@ -10,3 +10,6 @@ $(TEST_BUILD_DIR)/drawable_types: tests/simple/drawable_types.c $(LIBGL)
 $(TEST_BUILD_DIR)/multisample_glx: tests/simple/multisample_glx.c $(LIBGL)
 	$(CC) tests/simple/multisample_glx.c -Iinclude -I/usr/X11/include -o $(TEST_BUILD_DIR)/multisample_glx $(LINK_TEST)
 
+$(TEST_BUILD_DIR)/glthreads: tests/simple/glthreads.c $(LIBGL)
+	$(CC) -DPTHREADS -pthread tests/simple/glthreads.c -Iinclude -I/usr/X11/include -o $(TEST_BUILD_DIR)/glthreads $(LINK_TEST)
+

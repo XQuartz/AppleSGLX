@@ -30,5 +30,6 @@ tests: $(TEST_BUILD_DIR)/simple $(TEST_BUILD_DIR)/fbconfigs $(TEST_BUILD_DIR)/tr
   $(TEST_BUILD_DIR)/sharedtex \
   $(TEST_BUILD_DIR)/drawable_types \
   $(TEST_BUILD_DIR)/glxpixmap_destroy_invalid \
-  $(TEST_BUILD_DIR)/multisample_glx
+  $(TEST_BUILD_DIR)/multisample_glx \
+  $(TEST_BUILD_DIR)/glthreads
 
