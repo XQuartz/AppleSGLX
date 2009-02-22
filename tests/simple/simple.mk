@@ -6,3 +6,7 @@ $(TEST_BUILD_DIR)/render_types: tests/simple/render_types.c $(LIBGL)
 
 $(TEST_BUILD_DIR)/drawable_types: tests/simple/drawable_types.c $(LIBGL)
 	$(CC) tests/simple/drawable_types.c -Iinclude -I/usr/X11/include -o $(TEST_BUILD_DIR)/drawable_types $(LINK_TEST)
+
+$(TEST_BUILD_DIR)/multisample_glx: tests/simple/multisample_glx.c $(LIBGL)
+	$(CC) tests/simple/multisample_glx.c -Iinclude -I/usr/X11/include -o $(TEST_BUILD_DIR)/multisample_glx $(LINK_TEST)
+
