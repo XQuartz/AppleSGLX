@@ -50,7 +50,6 @@
  */
 PUBLIC GLXPbuffer
 glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list) {
-    GLXContext gc = __glXGetCurrentContext();
     int i, width, height;
     GLXPbuffer result;
     int errorcode;
@@ -85,19 +84,11 @@ glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list) {
     
     if(apple_glx_pbuffer_create(dpy, config, width, height, &errorcode, 
 				&result)) {
-	xError error;
-	
-	LockDisplay(dpy);
-	
-	error.errorCode = errorcode;
-	error.resourceID = 0;
-	error.sequenceNumber = dpy->request;
-	error.type = X_Error;
-	error.majorCode = gc->majorOpcode;
-	error.minorCode = X_GLXCreatePbuffer;
-	_XError(dpy, &error);
-	
-	UnlockDisplay(dpy);
+	/* 
+	 * apple_glx_pbuffer_create only sets the errorcode to core X11
+	 * errors. 
+	 */
+	__glXSendError(dpy, errorcode, 0, X_GLXCreatePbuffer, true);
 	
 	return None;
     }
@@ -122,12 +113,9 @@ glXDestroyPbuffer(Display *dpy, GLXPbuffer pbuf)
 PUBLIC void
 glXQueryDrawable(Display *dpy, GLXDrawable drawable,
 		 int attribute, unsigned int *value) {
-    GLXContext gc = __glXGetCurrentContext();
     Window root;
     int x, y;
     unsigned int width, height, bd, depth;
-    xError error;
-
 
     if(apple_glx_pixmap_query(drawable, attribute, value))
 	return; /*done*/
@@ -147,18 +135,10 @@ glXQueryDrawable(Display *dpy, GLXDrawable drawable,
 	}
 	/*FALL THROUGH*/
     }
-   
-    LockDisplay(dpy);
-    
-    error.errorCode = GLXBadDrawable;
-    error.resourceID = 0;
-    error.sequenceNumber = dpy->request;
-    error.type = X_Error;
-    error.majorCode = gc->majorOpcode;
-    error.minorCode = X_GLXGetDrawableAttributes;
-    _XError(dpy, &error);
-	
-    UnlockDisplay(dpy);
+
+
+    __glXSendError(dpy, GLXBadDrawable, drawable, X_GLXGetDrawableAttributes,
+		   false);
 }
 
 
@@ -168,8 +148,6 @@ glXQueryDrawable(Display *dpy, GLXDrawable drawable,
 PUBLIC void
 glXSelectEvent(Display *dpy, GLXDrawable drawable, unsigned long mask)
 {
-    GLXContext gc = __glXGetCurrentContext();
-    xError error;
     XWindowAttributes xwattr;
     
     if(apple_glx_pbuffer_set_event_mask(drawable, mask))
@@ -184,17 +162,8 @@ glXSelectEvent(Display *dpy, GLXDrawable drawable, unsigned long mask)
 
     /* The drawable seems to be invalid.  Report an error. */
 
-    LockDisplay(dpy);
-    
-    error.errorCode = GLXBadDrawable;
-    error.resourceID = 0;
-    error.sequenceNumber = dpy->request;
-    error.type = X_Error;
-    error.majorCode = (gc) ? gc->majorOpcode : 0;
-    error.minorCode = X_GLXChangeDrawableAttributes;
-    _XError(dpy, &error);
-        
-    UnlockDisplay(dpy);
+    __glXSendError(dpy, GLXBadDrawable, drawable, 
+		   X_GLXChangeDrawableAttributes, false);
 }
 
 
@@ -204,8 +173,6 @@ glXSelectEvent(Display *dpy, GLXDrawable drawable, unsigned long mask)
 PUBLIC void
 glXGetSelectedEvent(Display *dpy, GLXDrawable drawable, unsigned long *mask)
 {
-    GLXContext gc = __glXGetCurrentContext();
-    xError error;
     XWindowAttributes xwattr;
     
     if(apple_glx_pbuffer_get_event_mask(drawable, mask))
@@ -223,17 +190,8 @@ glXGetSelectedEvent(Display *dpy, GLXDrawable drawable, unsigned long *mask)
 
     /* The drawable seems to be invalid.  Report an error. */
 
-    LockDisplay(dpy);
-    
-    error.errorCode = GLXBadDrawable;
-    error.resourceID = 0;
-    error.sequenceNumber = dpy->request;
-    error.type = X_Error;
-    error.majorCode = (gc) ? gc->majorOpcode : 0;
-    error.minorCode = X_GLXGetDrawableAttributes;
-    _XError(dpy, &error);
-        
-    UnlockDisplay(dpy);
+    __glXSendError(dpy, GLXBadDrawable, drawable, X_GLXGetDrawableAttributes,
+		   true);
 }
 
 
@@ -264,40 +222,12 @@ glXCreateWindow( Display *dpy, GLXFBConfig config, Window win,
     visinfo = glXGetVisualFromFBConfig(dpy, config);
 
     if(NULL == visinfo) {
-	xError error;
-
-	LockDisplay(dpy);
-
-	error.errorCode = GLXBadFBConfig;
-        error.resourceID = 0;
-        error.sequenceNumber = dpy->request;
-        error.type = X_Error;
-        error.majorCode = 0;
-        error.minorCode = X_GLXCreateWindow;
-        _XError(dpy, &error);
-	
-	UnlockDisplay(dpy);
-
+	__glXSendError(dpy, GLXBadFBConfig, 0, X_GLXCreateWindow, false);
 	return None;
     }
 
     if(visinfo->visualid != XVisualIDFromVisual(xwattr.visual)) {
-	xError error;
-
-	XFree(visinfo);
-
-	LockDisplay(dpy);
-
-        error.errorCode = BadMatch;
-        error.resourceID = 0;
-        error.sequenceNumber = dpy->request;
-        error.type = X_Error;
-        error.majorCode = 0;
-        error.minorCode = X_GLXCreateWindow;
-        _XError(dpy, &error);
-
-        UnlockDisplay(dpy);
-
+	__glXSendError(dpy, BadMatch, 0, X_GLXCreateWindow, true);
 	return None;
     }
 
@@ -310,14 +240,10 @@ glXCreateWindow( Display *dpy, GLXFBConfig config, Window win,
 PUBLIC void
 glXDestroyPixmap(Display *dpy, GLXPixmap pixmap)
 {
-    
-    xError error;
-    GLXContext gc = __glXGetCurrentContext();
-
     if(apple_glx_pixmap_destroy(dpy, pixmap))
 	return; /* The pixmap existed and we successfully destroyed it. */
 
-    __glXSendError(dpy, GLXBadPixmap, pixmap, X_GLXDestroyPixmap);
+    __glXSendError(dpy, GLXBadPixmap, pixmap, X_GLXDestroyPixmap, false);
 }
 
 
