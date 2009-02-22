@@ -397,14 +397,13 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	  case GLX_MAX_PBUFFER_PIXELS:
 	    config->maxPbufferPixels = *bp++;
 	    break;
-#if 0
 	  case GLX_OPTIMAL_PBUFFER_WIDTH_SGIX:
 	    config->optimalPbufferWidth = *bp++;
 	    break;
 	  case GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX:
 	    config->optimalPbufferHeight = *bp++;
 	    break;
-	  case GLX_VISUAL_SELECT_GROUP_SGIX:
+          case GLX_VISUAL_SELECT_GROUP_SGIX:
 	    config->visualSelectGroup = *bp++;
 	    break;
 	  case GLX_SWAP_METHOD_OML:
@@ -414,28 +413,27 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	    config->sampleBuffers = *bp++;
 	    break;
 	  case GLX_SAMPLES_SGIS:
-	    config->samples = *bp++;
+	      config->samples = *bp++;
 	    break;
-#endif
-	case GLX_BIND_TO_TEXTURE_RGB_EXT:
+	  case GLX_BIND_TO_TEXTURE_RGB_EXT:
 	    config->bindToTextureRgb = *bp++;
 	    break;
-	case GLX_BIND_TO_TEXTURE_RGBA_EXT:
+	  case GLX_BIND_TO_TEXTURE_RGBA_EXT:
 	    config->bindToTextureRgba = *bp++;
 	    break;
-	case GLX_BIND_TO_MIPMAP_TEXTURE_EXT:
+	  case GLX_BIND_TO_MIPMAP_TEXTURE_EXT:
 	    config->bindToMipmapTexture = *bp++;
 	    break;
-	case GLX_BIND_TO_TEXTURE_TARGETS_EXT:
+	  case GLX_BIND_TO_TEXTURE_TARGETS_EXT:
 	    config->bindToTextureTargets = *bp++;
 	    break;
-	case GLX_Y_INVERTED_EXT:
+	  case GLX_Y_INVERTED_EXT:
 	    config->yInverted = *bp++;
 	    break;
-	case None:
+	  case None:
 	    i = count;
 	    break;
-	default:
+	  default:
 	    if(getenv("LIBGL_DIAGNOSTIC")) {
 		long int tag = *bp;
 		fprintf(stderr, "WARNING: unknown GLX tag from server: %ld\n",
