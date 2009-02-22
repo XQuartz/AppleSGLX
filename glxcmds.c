@@ -40,6 +40,7 @@
 
 #include "apple_glx_context.h"
 #include "apple_glx.h"
+#include "glx_error.h"
 
 static const char __glXGLXClientVendorName[] = "SGI";
 static const char __glXGLXClientVersion[] = "1.4";
@@ -358,6 +359,7 @@ CreateContext(Display *dpy, XVisualInfo *vis,
     __GLXscreenConfigs *const psc = GetGLXScreenConfigs(dpy, screen);
     const __GLcontextModes *mode;
     int errorcode;
+    bool x11error;
 
     if ( dpy == NULL )
        return NULL;
@@ -379,20 +381,8 @@ CreateContext(Display *dpy, XVisualInfo *vis,
     mode = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
     
     if(NULL == mode) {
-	xError error;
-	
-	LockDisplay(dpy);
-	
-	error.errorCode = BadValue;
-	error.resourceID = vis->visualid;
-	error.sequenceNumber = dpy->request;
-	error.type = X_Error;
-	error.majorCode = gc->majorOpcode;
-	error.minorCode = X_GLXCreateContext;
-	_XError(dpy, &error);
-	
-	UnlockDisplay(dpy);
-
+	__glXSendError(dpy, BadValue, vis->visualid, X_GLXCreateContext,
+		       true);
 	__glXFreeContext(gc);
 
 	return NULL;
@@ -401,18 +391,8 @@ CreateContext(Display *dpy, XVisualInfo *vis,
     
     if(apple_glx_create_context(&gc->apple, dpy, screen, mode, 
 				shareList ? shareList->apple : NULL,
-				&errorcode)) {
-	xError error;
-	error.errorCode = errorcode;
-	error.resourceID = 0;
-	error.sequenceNumber = dpy->request;
-	error.type = X_Error;
-	error.majorCode = gc->majorOpcode;
-	error.minorCode = X_GLXCreateContext;
-	_XError(dpy, &error);
-
-	UnlockDisplay(dpy);
-	
+				&errorcode, &x11error)) {
+	__glXSendError(dpy, errorcode, 0, X_GLXCreateContext, x11error);
 	__glXFreeContext(gc);
 
 	return NULL;
@@ -573,24 +553,11 @@ PUBLIC void glXCopyContext(Display *dpy, GLXContext source,
 {
     GLXContext gc = __glXGetCurrentContext();
     int errorcode;
+    bool x11error;
 
     if(apple_glx_copy_context(gc->apple, source->apple, dest->apple,
-			      mask, &errorcode)) {
-	xError error;
-	
-	LockDisplay(dpy);
-	
-	error.errorCode = errorcode;
-	error.resourceID = 0;
-	error.sequenceNumber = dpy->request;
-	error.type = X_Error;
-	error.majorCode = gc->majorOpcode;
-	error.minorCode = X_GLXCopyContext;
-	_XError(dpy, &error);
-	
-	UnlockDisplay(dpy);
-	
-	return;
+			      mask, &errorcode, &x11error)) {
+	__glXSendError(dpy, errorcode, 0, X_GLXCopyContext, x11error);
     }
 }
 
@@ -602,25 +569,12 @@ PUBLIC void glXCopyContext(Display *dpy, GLXContext source,
  */
 PUBLIC Bool glXIsDirect(Display *dpy, GLXContext gc)
 {
-    xError error;
-
+    /*
+     * This isn't an ideal test.  
+     * glXIsDirect should probably search a list of contexts.
+     */
     if(NULL == gc) {
-	/*
-	 * This isn't an ideal test.  
-	 * glXIsDirect should probably search a list of contexts.
-	 */
-	LockDisplay(dpy);
-	
-	error.errorCode = GLXBadContext;
-	error.resourceID = 0;
-	error.sequenceNumber = dpy->request;
-	error.type = X_Error;
-	error.majorCode = 0; //gc->majorOpcode;
-	error.minorCode = X_GLXIsDirect;
-	_XError(dpy, &error);
-	
-	UnlockDisplay(dpy);
-	
+	__glXSendError(dpy, GLXBadContext, 0, X_GLXIsDirect, false);
 	return False;
     }
 
@@ -647,7 +601,10 @@ PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis,
 */
 PUBLIC void glXDestroyGLXPixmap(Display *dpy, GLXPixmap glxpixmap)
 {
-    apple_glx_pixmap_destroy(dpy, glxpixmap);
+    if(apple_glx_pixmap_destroy(dpy, glxpixmap))
+	return; /*Success*/
+    
+    __glXSendError(dpy, GLXBadPixmap, glxpixmap, X_GLXDestroyPixmap, false);
 }
 
 PUBLIC void glXSwapBuffers(Display *dpy, GLXDrawable drawable) {
@@ -661,18 +618,7 @@ PUBLIC void glXSwapBuffers(Display *dpy, GLXDrawable drawable) {
     if(apple_glx_is_current_drawable(gc->apple, drawable)) {
 	apple_glx_swap_buffers(gc->apple);
     } else {
-	LockDisplay(dpy);
-
-	xError error;
-	error.errorCode = GLXBadCurrentWindow;
-	error.resourceID = 0;
-	error.sequenceNumber = dpy->request;
-	error.type = X_Error;
-	error.majorCode = gc->majorOpcode;
-	error.minorCode = X_GLXSwapBuffers;
-	_XError(dpy, &error);
-
-	UnlockDisplay(dpy);
+	__glXSendError(dpy, GLXBadCurrentWindow, 0, X_GLXSwapBuffers, false);
     }
 }
 

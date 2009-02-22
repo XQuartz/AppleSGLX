@@ -112,7 +112,7 @@ static bool is_context_valid(struct apple_glx_context *ac) {
  */
 bool apple_glx_create_context(void **ptr, Display *dpy, int screen, 
 			      const void *mode, void *sharedContext,
-			      int *errorptr) {
+			      int *errorptr, bool *x11errorptr) {
     struct apple_glx_context *ac;
     struct apple_glx_context *sharedac = sharedContext;
     CGLError error;
@@ -123,11 +123,13 @@ bool apple_glx_create_context(void **ptr, Display *dpy, int screen,
 
     if(NULL == ac) {
 	*errorptr = BadAlloc;
+	*x11errorptr = true;
 	return true;
     }
 
     if(sharedac && !is_context_valid(sharedac)) {
 	*errorptr = GLXBadContext;
+	*x11errorptr = false;
 	return true;
     }
     
@@ -155,8 +157,10 @@ bool apple_glx_create_context(void **ptr, Display *dpy, int screen,
 	
 	if(kCGLBadMatch == error) {
 	    *errorptr = BadMatch;
+	    *x11errorptr = true;
 	} else {
 	    *errorptr = GLXBadContext;
+	    *x11errorptr = false;
 	}
 
 	if(getenv("LIBGL_DIAGNOSTIC"))
@@ -299,8 +303,6 @@ static void update_viewport_and_scissor(Display *dpy, GLXDrawable drawable) {
 }
 
 /* Return true if an error occured. */
-/* TODO handle the readable GLXDrawable...? STUDY */
-
 bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 				    GLXDrawable drawable) {
     struct apple_glx_context *oldac = oldptr;
@@ -498,7 +500,8 @@ bool apple_glx_get_surface_from_uid(unsigned int uid, xp_surface_id *sid,
 }
 
 bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr, 
-			   unsigned long mask, int *errorptr) {
+			    unsigned long mask, int *errorptr,
+			    bool *x11errorptr) {
     struct apple_glx_context *src, *dest;
     CGLError err;
 
@@ -507,11 +510,13 @@ bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr,
 
     if(src->screen != dest->screen) {
 	*errorptr = BadMatch;
+	*x11errorptr = true;
 	return true;
     }
     
     if(dest == currentptr || dest->is_current) {
 	*errorptr = BadAccess;
+	*x11errorptr = true;
 	return true;
     }
 
@@ -526,6 +531,7 @@ bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr,
     
     if(kCGLNoError != err) {
 	*errorptr = GLXBadContext;
+	*x11errorptr = false;
 	return true;
     }
     

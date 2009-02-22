@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -55,7 +55,7 @@ struct apple_glx_context {
 
 bool apple_glx_create_context(void **ptr, Display *dpy, int screen, 
 			      const void *mode, void *sharedContext,
-                              int *errorptr);
+                              int *errorptr, bool *x11errorptr);
 void apple_glx_destroy_context(void **ptr, Display *dpy);
 
 bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr, GLXDrawable drawable);
@@ -65,6 +65,7 @@ bool apple_glx_get_surface_from_uid(unsigned int uid, xp_surface_id *sid,
         CGLContextObj *contextobj);
 
 bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr, 
-			    unsigned long mask, int *errorptr);
+			    unsigned long mask, int *errorptr, 
+			    bool *x11errorptr);
 
 #endif /*APPLE_GLX_CONTEXT_H*/
