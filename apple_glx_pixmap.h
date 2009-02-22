@@ -38,7 +38,8 @@
 bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
 			     const void *mode);
 
-void apple_glx_pixmap_destroy(Display *dpy, Pixmap pixmap);
+/* Returns true if the pixmap was successfully destroyed. */
+bool apple_glx_pixmap_destroy(Display *dpy, Pixmap pixmap);
 
 bool apple_glx_is_pixmap(Display *dpy, GLXDrawable drawable);
 

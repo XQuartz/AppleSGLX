@@ -171,9 +171,10 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
     return false;
 }
 
-void apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
+bool apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
     struct apple_glx_pixmap *p;
-    
+    bool result = false;
+
     lock_pixmap_list();
 
     if(find_pixmap(pixmap, &p)) {
@@ -206,9 +207,13 @@ void apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
 	    p->next->previous = p->previous;
 
 	free(p);
+
+	result = true;
     }
 
     unlock_pixmap_list();
+
+    return result;
 }
 
 bool apple_glx_is_pixmap(Display *dpy, GLXDrawable drawable) {

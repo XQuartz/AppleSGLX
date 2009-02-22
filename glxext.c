@@ -83,7 +83,9 @@ _X_HIDDEN int __glXDebug = 0;
 /* Extension required boiler plate */
 
 static char *__glXExtensionName = GLX_EXTENSION_NAME;
-XExtensionInfo *__glXExtensionInfo = NULL;
+
+static XExtensionInfo glxext_info_data;
+static XExtensionInfo *glXExtensionInfo = &glxext_info_data;
 
 static /* const */ char *error_list[] = {
     "GLXBadContext",
@@ -111,12 +113,11 @@ static int __glXCloseDisplay(Display *dpy, XExtCodes *codes)
     __glXFreeContext(gc);
   }
 
-  return XextRemoveDisplay(__glXExtensionInfo, dpy);
+  return XextRemoveDisplay(glXExtensionInfo, dpy);
 }
 
-
-static XEXT_GENERATE_ERROR_STRING(__glXErrorString, __glXExtensionName,
-				  __GLX_NUMBER_ERRORS, error_list)
+static char *__glXErrorString(Display *dpy, int code, XExtCodes *codes, 
+			  char *buf, int n);
 
 static /* const */ XExtensionHooks __glXExtensionHooks = {
     NULL,				/* create_gc */
@@ -132,10 +133,16 @@ static /* const */ XExtensionHooks __glXExtensionHooks = {
     __glXErrorString,			/* error_string */
 };
 
-static
-XEXT_GENERATE_FIND_DISPLAY(__glXFindDisplay, __glXExtensionInfo,
+
+XEXT_GENERATE_FIND_DISPLAY(__glXFindDisplay, glXExtensionInfo,
 			   __glXExtensionName, &__glXExtensionHooks,
 			   __GLX_NUMBER_EVENTS, NULL)
+
+static XEXT_GENERATE_ERROR_STRING(__glXErrorString, __glXExtensionName,
+				  __GLX_NUMBER_ERRORS, error_list)
+
+
+
 
 /************************************************************************/
 
@@ -634,7 +641,8 @@ _X_HIDDEN __GLXdisplayPrivate *__glXInitialize(Display* dpy)
 #ifdef GLX_DIRECT_RENDERING
     Bool glx_direct, glx_accel;
 #endif
-
+ 
+    
 #if defined(USE_XTHREADS)
     {
         static int firstCall = 1;

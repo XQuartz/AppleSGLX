@@ -43,6 +43,7 @@
 
 #include "apple_glx_pbuffer.h"
 #include "apple_glx_pixmap.h"
+#include "glx_error.h"
 
 /**
  * Create a new pbuffer.
@@ -309,7 +310,14 @@ glXCreateWindow( Display *dpy, GLXFBConfig config, Window win,
 PUBLIC void
 glXDestroyPixmap(Display *dpy, GLXPixmap pixmap)
 {
-    apple_glx_pixmap_destroy(dpy, pixmap);
+    
+    xError error;
+    GLXContext gc = __glXGetCurrentContext();
+
+    if(apple_glx_pixmap_destroy(dpy, pixmap))
+	return; /* The pixmap existed and we successfully destroyed it. */
+
+    __glXSendError(dpy, GLXBadPixmap, pixmap, X_GLXDestroyPixmap);
 }
 
 
