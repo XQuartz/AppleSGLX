@@ -207,10 +207,10 @@ array set typemap {
     GLenum GLenum
     BufferTargetARB GLenum
     ConstUInt32 "const GLuint"
-    BufferSize GLsizeiptrARB
+    BufferSize GLsizeiptr
     ConstVoid "const GLvoid"
     BufferUsageARB GLenum
-    BufferOffset GLintptrARB
+    BufferOffset GLintptr
     BufferAccessARB GLenum
     BufferPNameARB GLenum
     BufferPointerNameARB GLenum
@@ -230,8 +230,8 @@ array set typemap {
     ProgramTargetARB GLenum
     ProgramFormatARB GLenum
     ProgramStringPropertyARB GLenum
-    BufferSizeARB GLsizeiptr
-    BufferOffsetARB GLintptr
+    BufferSizeARB GLsizeiptrARB
+    BufferOffsetARB GLintptrARB
     handleARB GLhandleARB
     charPointerARB "GLcharARB *"
     charARB GLcharARB
