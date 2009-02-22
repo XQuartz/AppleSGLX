@@ -35,11 +35,11 @@ OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.
 #This is used for building the tests.
 #The tests don't require installation.
 $(TEST_BUILD_DIR)/libGL.dylib: $(OBJECTS)
-	$(MKDIR) $(TEST_BUILD_DIR)
+	-if ! test -d $(TEST_BUILD_DIR); then $(MKDIR) $(TEST_BUILD_DIR); fi
 	$(CC) -o $@ -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 $(BUILD_DIR)/libGL.1.2.dylib: $(OBJECTS)
-	$(MKDIR) $(BUILD_DIR)
+	-if ! test -d $(BUILD_DIR); then $(MKDIR) $(BUILD_DIR); fi
 	$(CC) $(GL_CFLAGS) -o $@ -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(GL_LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 .c.o:
