@@ -3,14 +3,14 @@ X11_DIR = $(INSTALL_DIR)
 
 CC=gcc
 GL_CFLAGS=-Wall -ggdb3 -Os -DPTHREADS -D_REENTRANT -DPUBLIC="" $(RC_CFLAGS) $(CFLAGS)
-GL_LDFLAGS=-L$(X11_DIR)/lib $(LDFLAGS)
+GL_LDFLAGS=-L$(X11_DIR)/lib $(LDFLAGS) -Wl,-single_module
 
 MKDIR=mkdir
 INSTALL=install
 LN=ln
 RM=rm
 
-INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -F/System/Library/Frameworks/OpenGL.framework -I$(INSTALL_DIR)/include
+INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -F/System/Library/Frameworks/OpenGL.framework -I$(INSTALL_DIR)/include -I$(X11_DIR)/include
 COMPILE=$(CC) $(INCLUDE) $(GL_CFLAGS) -c
 
 #The directory with the final binaries.
@@ -36,7 +36,7 @@ OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.
 #The tests don't require installation.
 $(TEST_BUILD_DIR)/libGL.dylib: $(OBJECTS)
 	-if ! test -d $(TEST_BUILD_DIR); then $(MKDIR) $(TEST_BUILD_DIR); fi
-	$(CC) -o $@ -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list $(OBJECTS)
+	$(CC) -O0 -ggdb3 -o $@ -dynamiclib -lXplugin -framework ApplicationServices -framework CoreFoundation -L$(X11_DIR)/lib -lX11 -lXext -Wl,-exported_symbols_list,exports.list -Wl,-single_module $(OBJECTS)
 
 $(BUILD_DIR)/libGL.1.2.dylib: $(OBJECTS)
 	-if ! test -d $(BUILD_DIR); then $(MKDIR) $(BUILD_DIR); fi
@@ -73,10 +73,10 @@ pixel.o: pixel.c
 glx_empty.o: glx_empty.c
 
 $(BUILD_DIR)/glxinfo: tests/glxinfo/glxinfo.c $(BUILD_DIR)/libGL.1.2.dylib
-	$(CC) tests/glxinfo/glxinfo.c -I$(DESTDIR)$(INSTALL_DIR)/include -L$(X11_DIR)/lib -lX11 $(BUILD_DIR)/libGL.1.2.dylib -o $@
+	$(CC) tests/glxinfo/glxinfo.c $(INCLUDE) -L$(X11_DIR)/lib -lX11 $(BUILD_DIR)/libGL.1.2.dylib -o $@
 
 $(BUILD_DIR)/glxgears: tests/glxgears/glxgears.c $(BUILD_DIR)/libGL.1.2.dylib
-	$(CC) tests/glxgears/glxgears.c -I$(DESTDIR)$(INSTALL_DIR)/include -L$(X11_DIR)/lib -lX11 $(BUILD_DIR)/libGL.1.2.dylib -o $@
+	$(CC) tests/glxgears/glxgears.c $(INCLUDE) -L$(X11_DIR)/lib -lX11 $(BUILD_DIR)/libGL.1.2.dylib -o $@
 
 install_headers:
 	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/include/GL
