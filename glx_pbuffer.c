@@ -71,10 +71,12 @@ glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list) {
 	    
 	case GLX_LARGEST_PBUFFER:
 	    /* This is a hint we should probably handle, but how? */
+	    ++i;
 	    break;
 
 	case GLX_PRESERVED_CONTENTS:
 	    /* The contents are always preserved with AppleSGLX with CGL. */
+	    ++i;
 	    break;
 	    
 	default:
