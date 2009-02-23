@@ -377,9 +377,13 @@ CreateContext(Display *dpy, XVisualInfo *vis,
     gc->xid = contextID;
     gc->imported = GL_FALSE;
 
-    LockDisplay(dpy);
-    mode = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
-    
+    if(vis) {
+	mode = _gl_context_modes_find_visual(psc->visuals, vis->visualid);
+    } else {
+	mode = _gl_context_modes_find_fbconfig(psc->configs, 
+					       fbconfig->fbconfigID);
+    }
+
     if(NULL == mode) {
 	__glXSendError(dpy, BadValue, vis->visualid, X_GLXCreateContext,
 		       true);
@@ -402,8 +406,6 @@ CreateContext(Display *dpy, XVisualInfo *vis,
     gc->mode = mode;
     gc->isDirect = allowDirect;
 
-    UnlockDisplay(dpy);
-       
     return gc;
 }
 
