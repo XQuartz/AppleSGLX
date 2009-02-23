@@ -59,7 +59,8 @@ static void SetRead(struct apple_xgl_saved_state *saved) {
      * the user has requested a readable drawable with glXMakeContextCurrent().
      * We emulate this behavior by switching the current drawable.
      */
-    if(gc->currentReadable != gc->currentDrawable) {
+    if(None != gc->currentReadable 
+       && gc->currentReadable != gc->currentDrawable) {
 	Display *dpy = glXGetCurrentDisplay();
 
 	saved->swapped = true;
