@@ -386,10 +386,10 @@ extern Bool glXDrawableAttribARB(Display *dpy, GLXDrawable draw, const int *attr
 #ifndef GLX_MESA_swap_frame_usage
 #define GLX_MESA_swap_frame_usage 1
 
-extern int glXGetFrameUsageMESA(Display *dpy, GLXDrawable drawable, float *usage);
-extern int glXBeginFrameTrackingMESA(Display *dpy, GLXDrawable drawable);
-extern int glXEndFrameTrackingMESA(Display *dpy, GLXDrawable drawable);
-extern int glXQueryFrameTrackingMESA(Display *dpy, GLXDrawable drawable, int64_t *swapCount, int64_t *missedFrames, float *lastMissedUsage);
+extern GLint glXGetFrameUsageMESA(Display *dpy, GLXDrawable drawable, float *usage);
+extern GLint glXBeginFrameTrackingMESA(Display *dpy, GLXDrawable drawable);
+extern GLint glXEndFrameTrackingMESA(Display *dpy, GLXDrawable drawable);
+extern GLint glXQueryFrameTrackingMESA(Display *dpy, GLXDrawable drawable, int64_t *swapCount, int64_t *missedFrames, float *lastMissedUsage);
 
 typedef int (*PFNGLXGETFRAMEUSAGEMESAPROC) (Display *dpy, GLXDrawable drawable, float *usage);
 typedef int (*PFNGLXBEGINFRAMETRACKINGMESAPROC)(Display *dpy, GLXDrawable drawable);
