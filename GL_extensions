@@ -92,3 +92,15 @@ extension APPLE_object_purgeable
 
 #The OpenGL framework has moved this to the core OpenGL, and eliminated EXT_convolution listing.
 #extension EXT_convolution
+
+#Leopard supports these according to nm.
+#Applications should use the GL_EXTENSIONS list to determine capabilities.
+extension EXT_paletted_texture
+extension APPLE_fence
+extension NV_vertex_program4
+extension EXT_draw_buffers2
+extension EXT_gpu_shader4 
+extension ATI_pn_triangles
+extension NV_register_combiners
+extension EXT_depth_bounds_test
+

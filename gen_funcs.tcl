@@ -71,6 +71,7 @@ proc is-extension-supported? name {
     return [info exists extensions($name)]
 }
 
+#This is going to need to be updated for OpenGL >= 2.1 in SnowLeopard.
 array set typemap {
     void void
     List GLuint
@@ -224,7 +225,7 @@ array set typemap {
     VertexAttribPointerTypeARB GLenum
     ClampColorTargetARB unknown3.0
     ClampColorModeARB unknown3.0
-    VertexAttribEnum unknown3.0
+    VertexAttribEnum GLenum
     DrawBufferName unknown3.0
     WeightPointerTypeARB GLenum
     ProgramTargetARB GLenum
@@ -520,6 +521,59 @@ proc main {argc argv} {
 	set newapi($from) $d
     }
 
+    #Iterate the nm output and set each symbol in an associative array.
+    array set validapi {}
+
+    foreach line [split [exec nm -j -g /System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib] \n] {
+	set fn [string trim $line]
+
+	#Only match the _gl functions.
+	if {[string match _gl* $fn]} {
+	    set finalfn [string range $fn 3 end]
+	    puts FINALFN:$finalfn
+	    set validapi($finalfn) $finalfn
+	}
+    }
+
+    puts "Correcting the API functions to match the OpenGL framework."
+    #parray validapi
+    
+    #Iterate the newapi and unset any members that the
+    #libGL.dylib doesn't support, assuming they aren't no-ops.
+    foreach fn [array names newapi] {
+	if {![info exists validapi($fn)]} {
+	    puts "WARNING: libGL.dylib lacks support for: $fn"
+
+	    if {[dict exists $newapi($fn) noop] 
+		&& [dict get $newapi($fn) noop]} {
+		#This is no-op, so we should skip it.
+		continue
+	    }
+
+	    #Is the function an alias for another in libGL?
+	    if {[dict exists $newapi($fn) alias_for]} {
+		set alias [dict get $newapi($fn) alias_for]
+
+		if {![info exists validapi($alias)]} {
+		    puts "WARNING: alias function doesn't exist for $fn."
+		    puts "The alias is $alias."
+		    puts "unsetting $fn"		    
+		    unset newapi($fn)
+		} 
+	    } else {
+		puts "unsetting $fn"
+		unset newapi($fn)
+	    }
+	}
+    }
+
+    
+    #Now print a warning about any symbols that libGL supports that we don't.
+    foreach fn [array names validapi] {
+	if {![info exists newapi($fn)]} {
+	    puts "AppleSGLX is missing $fn"
+	}
+    }
 
     puts "NOW GENERATING:[lindex $::argv 1]"
     set fd [open [lindex $::argv 1] w]
