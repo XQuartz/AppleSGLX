@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <GL/glut.h>
-#include <GL/glext.h>
-#include <GL/gl.h>
+#include <GLUT/GLUT.h>
+#include <OpenGL/OpenGL.h>
 
 void initialize(void) {
     glEnable(GL_DEPTH_TEST);
