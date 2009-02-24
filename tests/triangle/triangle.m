@@ -36,6 +36,11 @@ int main(int argc, char *argv[]) {
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
 
+    printf( "GL_RENDERER   = %s\n", (char *) glGetString( GL_RENDERER ) );
+    printf( "GL_VERSION    = %s\n", (char *) glGetString( GL_VERSION ) );
+    printf( "GL_VENDOR     = %s\n", (char *) glGetString( GL_VENDOR ) ) ;
+    printf( "GL_EXTENSIONS = %s\n", (char *) glGetString( GL_EXTENSIONS ) );
+
     glutMainLoop();
 
     return EXIT_FAILURE;
