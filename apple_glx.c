@@ -176,6 +176,8 @@ void *apple_glx_get_proc_address(const GLubyte *procname) {
 	s = dlsym(libgl_handle, pname);
     }
     
+    dlclose(h);
+
     return s;
 }
 
