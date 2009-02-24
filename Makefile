@@ -5,6 +5,8 @@ CC=gcc
 GL_CFLAGS=-Wall -ggdb3 -Os -DPTHREADS -D_REENTRANT -DPUBLIC="" $(RC_CFLAGS) $(CFLAGS)
 GL_LDFLAGS=-L$(X11_DIR)/lib $(LDFLAGS) -Wl,-single_module
 
+TCLSH=tclsh8.5
+
 MKDIR=mkdir
 INSTALL=install
 LN=ln
@@ -60,7 +62,7 @@ glxextensions.o: glxextensions.h glxextensions.c
 glxhash.o: glxhash.h glxhash.c
 appledri.o: appledri.h appledristr.h appledri.c
 apple_glx_context.o: apple_glx_context.c apple_glx_context.h apple_glx_context.h
-apple_glx.o: apple_glx.h apple_glx.c
+apple_glx.o: apple_glx.h apple_glx.c apple_xgl_api.h
 apple_visual.o: apple_visual.h apple_visual.c
 apple_cgl.o: apple_cgl.h apple_cgl.c
 apple_glx_pbuffer.o: apple_glx_pbuffer.h apple_glx_pbuffer.c
@@ -71,6 +73,10 @@ renderpix.o: renderpix.c
 singlepix.o: singlepix.c
 pixel.o: pixel.c
 glx_empty.o: glx_empty.c
+
+apple_xgl_api.c: apple_xgl_api.h
+apple_xgl_api.h: gen_api_header.tcl  gen_api_library.tcl  gen_code.tcl  gen_defs.tcl  gen_exports.tcl  gen_funcs.tcl  gen_types.tcl
+	$(TCLSH) gen_code.tcl
 
 $(BUILD_DIR)/glxinfo: tests/glxinfo/glxinfo.c $(BUILD_DIR)/libGL.1.2.dylib
 	$(CC) tests/glxinfo/glxinfo.c $(INCLUDE) -L$(X11_DIR)/lib -lX11 $(BUILD_DIR)/libGL.1.2.dylib -o $@
@@ -102,4 +108,5 @@ clean:
 	rm -rf $(TEST_BUILD_DIR)
 	rm -f *.o *.a
 	rm -f *.c~ *.h~
+	rm -f apple_xgl_api.h apple_xgl_api.c
 	rm -f *.dylib
