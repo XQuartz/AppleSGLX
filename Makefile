@@ -86,8 +86,7 @@ $(BUILD_DIR)/glxgears: tests/glxgears/glxgears.c $(BUILD_DIR)/libGL.1.2.dylib
 
 install_headers:
 	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/include/GL
-	$(INSTALL) -m 644 include/GL/gl.h include/GL/glext.h include/GL/glx.h include/GL/glxext.h \
-	                  include/GL/glxint.h include/GL/glxmd.h include/GL/glxproto.h $(DESTDIR)$(INSTALL_DIR)/include/GL
+	$(INSTALL) -m 644 include/GL/gl.h include/GL/glext.h include/GL/glx.h include/GL/glxext.h $(DESTDIR)$(INSTALL_DIR)/include/GL
 
 install_programs: programs
 	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)/bin
