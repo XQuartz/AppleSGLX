@@ -139,6 +139,7 @@ bool apple_glx_create_context(void **ptr, Display *dpy, int screen,
     ac->thread_id = pthread_self();
     ac->screen = screen;
     ac->double_buffered = false;
+    ac->need_update = false;
     ac->is_current = false;
     ac->made_current = false;
     
@@ -315,13 +316,14 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     assert(NULL != dpy);
 
     /* Reset the is_current state of the old context, if non-NULL. */
-    if(oldac)
+    if(oldac && (ac != oldac))
 	oldac->is_current = false;
 
     if(NULL == ac) {
 	/*Clear the current context.*/
 	apple_cgl.set_current_context(NULL);
-	
+	oldac->is_current = false;
+
 	return false;
     }
     
@@ -337,7 +339,12 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 	return false;
     }
 
-    newagd = apple_glx_find_drawable(dpy, drawable);
+    /* This is an optimisation to avoid searching for the drawable. */
+    if(ac->drawable && ac->drawable->drawable == drawable) {
+	newagd = ac->drawable;
+    } else {
+	newagd = apple_glx_find_drawable(dpy, drawable);
+    }
 
     if(ac->drawable == newagd)
 	same_drawable = true;
@@ -370,6 +377,13 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 	    ac->drawable->reference(ac->drawable);
 	}
     }
+
+    /* 
+     * Avoid this costly path if this is the same drawable and the
+     * context is already current. 
+     */
+    if(same_drawable && ac->is_current)
+	return false;
 
     cglerr = apple_cgl.set_current_context(ac->context_obj);
 
@@ -555,4 +569,39 @@ void apple_glx_destroy_drawable_in_any(Display *dpy, GLXDrawable d) {
     }
 
     unlock_context_list();
+}
+
+/* 
+ * The value returned is the total number of contexts set to update. 
+ * It's meant for debugging/introspection.
+ */
+int apple_glx_context_surface_changed(unsigned int uid, pthread_t caller) {
+    struct apple_glx_context *ac;
+    int updated = 0;
+
+    lock_context_list();
+
+    for(ac = context_list; ac; ac = ac->next) {
+	if(ac->drawable && ac->drawable->uid == uid) {
+	    ac->need_update = true;
+	    ++updated;
+	}
+    }
+
+    unlock_context_list();
+
+    return updated;
+} 
+
+void apple_glx_context_update(void *ptr) {
+    struct apple_glx_context *ac = ptr;
+
+    if(ac->need_update) {
+	xp_update_gl_context(ac->context_obj);
+	ac->need_update = false;
+
+#ifdef LIBGL_DEBUG
+	printf("updating context %p\n", ptr);
+#endif
+    }
 }

@@ -127,7 +127,10 @@ proc main {argc argv} {
 
     #These are special to glXMakeContextCurrent.
     #See also: apple_xgl_api_read.c.    
-    lappend exclude ReadPixels CopyPixels CopyColorTable
+    lappend exclude ReadPixels CopyPixels CopyColorTable 
+    
+    #This is excluded to work with surface updates.
+    lappend exclude Viewport
     
     foreach f $sorted {
 	if {$f in $exclude} {

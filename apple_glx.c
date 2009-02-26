@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -58,22 +58,33 @@ int apple_get_dri_event_base(void) {
 }
 
 static void surface_notify_handler(Display *dpy, unsigned int uid, int kind) {
-    xp_surface_id sid;
-    CGLContextObj contextobj;
     
-    if(apple_glx_get_surface_from_uid(uid, &sid, &contextobj)) {
-	/* The surface was probably destroyed. */
-	return;
-    }
-
     switch(kind) {
-    case AppleDRISurfaceNotifyDestroyed:
+    case AppleDRISurfaceNotifyDestroyed: {
+	 xp_surface_id sid;
+	 CGLContextObj contextobj;
+
+	if(apple_glx_get_surface_from_uid(uid, &sid, &contextobj)) {
+	    /* The surface was probably destroyed. */
+	    return;
+	}
+	
+	/* FIXME this needs more thread safety. */
+
 	apple_cgl.clear_drawable(contextobj);
 	xp_destroy_surface(sid);
+    }
 	break;
 
-    case AppleDRISurfaceNotifyChanged:
-	xp_update_gl_context(contextobj);
+    case AppleDRISurfaceNotifyChanged: {
+	int updated;
+
+	updated = apple_glx_context_surface_changed(uid, pthread_self());
+
+#ifdef LIBGL_DEBUG
+	printf("surface notify updated %d\n", updated);
+#endif
+    }
 	break;
 	
     default:
