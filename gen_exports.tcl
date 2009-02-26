@@ -89,6 +89,30 @@ proc main {argc argv} {
 	glXDestroyGLXPbufferSGIX glXSelectEventSGIX \
 	glXGetSelectedEventSGIX 
     
+    #These are for GLX_SGIX_fbconfig, which isn't implemented, because
+    #we have the GLX 1.3 GLXFBConfig functions which are in the standard spec.
+    #It should be possible to support these to some extent.
+    #The old libGL somewhat supported the GLXFBConfigSGIX code, but lacked
+    #pbuffer, and pixmap support.
+    #We mainly just need these stubs for linking with apps, because for 
+    #some reason the OpenGL site suggests using the latest glxext.h, 
+    #and glxext.h defines all GLX extensions, which doesn't seem right for
+    #compile-time capability detection.
+    #See also: http://www.mesa3d.org/brianp/sig97/exten.htm#Compile
+    #which conflicts with: the ABI registry from what I saw on opengl.org. 
+    #By disabling some of the #defines in glxext.h we break some software,
+    #and by enabling them without the symbols we break others (in Mesa).
+    #I think a lot of OpenGL-based programs have issues one way or another.
+    #It seems that even Mesa developers are confused on this issue, because
+    #Mesa-7.3/progs/xdemos/glxgears_fbconfig.c has comments about breakage 
+    #in some comments.
+    lappend glxlist glXGetFBConfigAttribSGIX \
+	glXChooseFBConfigSGIX \
+	glXGetVisualFromFBConfigSGIX \
+	glXCreateGLXPixmapWithConfigSGIX \
+	glXCreateContextWithConfigSGIX \
+	glXGetFBConfigFromVisualSGIX
+    
 
     set fd [open [lindex $argv 1] w]
     
