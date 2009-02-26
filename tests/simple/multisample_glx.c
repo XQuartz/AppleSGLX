@@ -89,6 +89,8 @@ int main() {
 	GLX_GREEN_SIZE, 8,
 	GLX_BLUE_SIZE, 8,
 	GLX_ALPHA_SIZE, 8,
+	GLX_SAMPLE_BUFFERS, 1,
+	GLX_SAMPLES, 1,
 	None
     };
 
@@ -157,10 +159,11 @@ int main() {
 			CWBackPixel | CWBorderPixel | CWColormap | CWEventMask,
 			&attr);
    
-    ctx = glXCreateContext(dpy, visinfo, NULL, True );
+    ctx = glXCreateNewContext(dpy, fbconfig[bestfbi], GLX_WINDOW_BIT,
+			      NULL, True);
 
     if (!ctx) {
-	fprintf(stderr, "error: glXCreateContext failed!\n");
+	fprintf(stderr, "error: glXCreateNewContext failed!\n");
 	return EXIT_FAILURE;
     }
     

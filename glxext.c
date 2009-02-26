@@ -420,7 +420,7 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	    config->sampleBuffers = *bp++;
 	    break;
 	  case GLX_SAMPLES_SGIS:
-	      config->samples = *bp++;
+	    config->samples = *bp++;
 	    break;
 	  case GLX_BIND_TO_TEXTURE_RGB_EXT:
 	    config->bindToTextureRgb = *bp++;
