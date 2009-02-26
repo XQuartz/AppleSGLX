@@ -5,12 +5,20 @@
 void glDrawBuffer(GLenum mode) {
     GLenum buf[2];
     GLsizei n = 0;
-	     
-    if(GL_BACK == mode) {
+	
+    switch(mode) {
+    case GL_BACK:
 	buf[0] = GL_BACK_LEFT;
 	buf[1] = GL_BACK_RIGHT;
 	n = 2;
-    } else {
+	break;
+    case GL_FRONT:
+	buf[0] = GL_FRONT_LEFT;
+	buf[1] = GL_FRONT_RIGHT;
+	n = 2;
+	break;
+	
+    default:
 	buf[0] = mode;
 	n = 1;
     }
@@ -23,7 +31,7 @@ void glDrawBuffers(GLsizei n, const GLenum *bufs) {
     GLenum newbuf[n + 2];
     GLsizei i, outi = 0;
     bool have_back = false;
-    
+        
     for(i = 0; i < n; ++i) {
 	if(GL_BACK == bufs[i]) {
 	    have_back = true;
