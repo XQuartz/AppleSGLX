@@ -489,7 +489,7 @@ bool apple_glx_is_current_drawable(void *ptr, GLXDrawable drawable) {
 
     assert(NULL != ac);
     
-    return (ac->drawable->drawable == drawable);
+    return (ac->drawable && ac->drawable->drawable == drawable);
 }
 
 /* Return true if an error occurred. */
