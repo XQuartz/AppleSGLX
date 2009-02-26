@@ -1,6 +1,6 @@
 -- Feb 20, 2009
 
-Fix glXCreateWindow and glXDestroyWindow.
+DONE Fix glXCreateWindow and glXDestroyWindow.
 
 Add API major version testing to the apple_cgl layer.  This way we can avoid
 future API fiascos.  Jordan suggested this a while ago.
