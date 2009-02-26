@@ -3,7 +3,7 @@ X11_DIR = $(INSTALL_DIR)
 
 CC=gcc
 GL_CFLAGS=-Wall -ggdb3 -Os -DPTHREADS -D_REENTRANT -DPUBLIC="" $(RC_CFLAGS) $(CFLAGS)
-GL_LDFLAGS=-L$(X11_DIR)/lib $(LDFLAGS) -Wl,-single_module
+GL_LDFLAGS=-L$(INSTALL_DIR)/lib -L$(X11_DIR)/lib $(LDFLAGS) -Wl,-single_module
 
 TCLSH=tclsh8.5
 
