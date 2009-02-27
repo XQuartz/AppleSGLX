@@ -152,16 +152,7 @@ bool apple_init_glx(Display *dpy) {
 
 void apple_glx_swap_buffers(void *ptr) {
     struct apple_glx_context *ac = ptr;
-    assert(NULL != ac);
-
     glFlush();
-
-#if 0    
-    if(XAppleDRISwapBuffers(ac->apple_glx_drawable->display,
-			    ac->screen, ac->apple_glx_drawable->drawable))
-	return;
-#endif
-    
     apple_cgl.flush_drawable(ac->context_obj);
 }
 

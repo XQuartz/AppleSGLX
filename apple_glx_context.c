@@ -267,6 +267,7 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     CGLError cglerr;
     bool same_drawable = false;
 
+#if 0
     apple_glx_diagnostic("%s: oldac %p ac %p drawable 0x%lx\n",
 			 __func__, (void *)oldac, (void *)ac,
 			 drawable);
@@ -275,9 +276,16 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 			__func__, 
 			(void *)(oldac ? oldac->context_obj : NULL),
 			(void *)(ac ? ac->context_obj : NULL));
+#endif
 
-    assert(NULL != dpy);
-
+    /* This a common path for GLUT and other apps, so special case it. */
+    if(ac && ac->drawable && ac->drawable->drawable == drawable) {
+	same_drawable = true;
+	
+	if(ac->is_current)
+	    return false;
+    }
+    
     /* Reset the is_current state of the old context, if non-NULL. */
     if(oldac && (ac != oldac))
 	oldac->is_current = false;
@@ -322,9 +330,6 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 	/* Find the drawable if possible, and retain a reference to it. */
 	newagd = apple_glx_drawable_find(drawable, APPLE_GLX_DRAWABLE_REFERENCE);
     }
-
-    if(ac->drawable && ac->drawable == newagd)
-	same_drawable = true;
     
     /*
      * Try to destroy the old drawable, so long as the new one
@@ -401,8 +406,6 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 bool apple_glx_is_current_drawable(void *ptr, GLXDrawable drawable) {
     struct apple_glx_context *ac = ptr;
 
-    assert(NULL != ac);
-    
     return (ac->drawable && ac->drawable->drawable == drawable);
 }
 
