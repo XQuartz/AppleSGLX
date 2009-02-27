@@ -33,7 +33,7 @@ OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.
     compsize.o apple_visual.o apple_cgl.o glxreply.o glcontextmodes.o \
     apple_xgl_api.o apple_glx_drawable.o xfont.o apple_glx_pbuffer.o \
     apple_glx_pixmap.o apple_xgl_api_read.o glx_empty.o glx_error.o \
-    apple_xgl_api_viewport.o
+    apple_xgl_api_viewport.o apple_glx_surface.o
 
 #This is used for building the tests.
 #The tests don't require installation.
@@ -48,7 +48,7 @@ $(BUILD_DIR)/libGL.1.2.dylib: $(OBJECTS)
 .c.o:
 	$(COMPILE) $<
 
-apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c apple_glx_pixmap.h apple_glx_pbuffer.h
+apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c
 apple_xgl_api.o: apple_xgl_api.h apple_xgl_api.c apple_xgl_api_stereo.c
 apple_xgl_api_read.o: apple_xgl_api_read.h apple_xgl_api_read.c apple_xgl_api.h
 apple_xgl_api_viewport.o: apple_xgl_api_viewport.h apple_xgl_api_viewport.c apple_xgl_api.h
@@ -67,8 +67,9 @@ apple_glx_context.o: apple_glx_context.c apple_glx_context.h apple_glx_context.h
 apple_glx.o: apple_glx.h apple_glx.c apple_xgl_api.h
 apple_visual.o: apple_visual.h apple_visual.c
 apple_cgl.o: apple_cgl.h apple_cgl.c
-apple_glx_pbuffer.o: apple_glx_pbuffer.h apple_glx_pbuffer.c
-apple_glx_pixmap.o: apple_glx_pixmap.h apple_glx_pixmap.c appledri.h
+apple_glx_pbuffer.o: apple_glx_drawable.h apple_glx_pbuffer.c
+apple_glx_pixmap.o: apple_glx_drawable.h apple_glx_pixmap.c appledri.h
+apple_glx_surface.o: apple_glx_drawable.h apple_glx_surface.c appledri.h
 xfont.o: xfont.c glxclient.h
 compsize.o: compsize.c
 renderpix.o: renderpix.c
