@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <stdarg.h>
 #include <dlfcn.h>
 #include "appledri.h"
 #include "apple_glx.h"
@@ -48,6 +49,20 @@ const GLuint __glXDefaultPixelStore[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 #endif
 
 static void *libgl_handle = NULL;
+
+static bool diagnostic = false;
+
+void apple_glx_diagnostic(const char *fmt, ...) {
+    va_list vl;
+
+    if(diagnostic) {
+	fprintf(stderr, "DIAG: ");
+
+	va_start(vl, fmt);
+	vfprintf(stderr, fmt, vl);
+	va_end(vl);
+    }
+}
 
 int apple_get_dri_event_base(void) {
     if(!initialized) {
@@ -81,9 +96,7 @@ static void surface_notify_handler(Display *dpy, unsigned int uid, int kind) {
 
 	updated = apple_glx_context_surface_changed(uid, pthread_self());
 
-#ifdef LIBGL_DEBUG
-	printf("surface notify updated %d\n", updated);
-#endif
+	apple_glx_diagnostic("surface notify updated %d\n", updated);
     }
 	break;
 	
@@ -114,7 +127,8 @@ bool apple_init_glx(Display *dpy) {
 	return false;
 
     if(getenv("LIBGL_DIAGNOSTIC")) {
-	printf("initializing libGL in %s", __func__);
+	printf("initializing libGL in %s\n", __func__);
+	diagnostic = true;
     }
 
     apple_cgl_init();
@@ -129,9 +143,6 @@ bool apple_init_glx(Display *dpy) {
         return true;
   
     XAppleDRISetSurfaceNotifyHandler(surface_notify_handler);
-
-
-    
 
     dri_event_base = eventBase;
     initialized = true;

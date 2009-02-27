@@ -41,8 +41,7 @@
 #include "glcontextmodes.h"
 //#include "glheader.h"
 
-#include "apple_glx_pbuffer.h"
-#include "apple_glx_pixmap.h"
+#include "apple_glx_drawable.h"
 #include "glx_error.h"
 
 /**
@@ -105,7 +104,9 @@ glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list) {
 PUBLIC void
 glXDestroyPbuffer(Display *dpy, GLXPbuffer pbuf)
 {
-    apple_glx_pbuffer_destroy(dpy, pbuf);
+    if(apple_glx_pbuffer_destroy(dpy, pbuf)) {
+	__glXSendError(dpy, GLXBadPbuffer, pbuf, X_GLXDestroyPbuffer, false);
+    }
 }
 
 
@@ -243,9 +244,7 @@ PUBLIC void
 glXDestroyPixmap(Display *dpy, GLXPixmap pixmap)
 {
     if(apple_glx_pixmap_destroy(dpy, pixmap))
-	return; /* The pixmap existed and we successfully destroyed it. */
-
-    __glXSendError(dpy, GLXBadPixmap, pixmap, X_GLXDestroyPixmap, false);
+	__glXSendError(dpy, GLXBadPixmap, pixmap, X_GLXDestroyPixmap, false);
 }
 
 

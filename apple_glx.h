@@ -37,6 +37,7 @@
 #define XP_NO_X_HEADERS
 #include <Xplugin.h>
 
+void apple_glx_diagnostic(const char *fmt, ...);
 xp_client_id apple_glx_get_client_id(void);
 bool apple_init_glx(Display *dpy);
 void apple_glx_swap_buffers(void *ptr);

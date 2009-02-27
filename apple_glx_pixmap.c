@@ -34,76 +34,98 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <assert.h>
+#include "apple_glx.h"
 #include "apple_cgl.h"
 #include "apple_visual.h"
-#include "apple_glx_pixmap.h"
+#include "apple_glx_drawable.h"
 #include "appledri.h"
 #include "glcontextmodes.h"
 
-struct apple_glx_pixmap {
-    GLXPixmap xpixmap;
-    void *buffer;
-    int width, height, pitch, /*bytes per pixel*/ bpp;
-    size_t size;
-    char path[PATH_MAX];
-    int fd;
-    CGLPixelFormatObj pixel_format_obj;
-    CGLContextObj context_obj;
-    GLint fbconfigID;
-    
-    struct apple_glx_pixmap *next, *previous;    
+static bool pixmap_make_current(struct apple_glx_context *ac,
+				struct apple_glx_drawable *d);
+
+static void pixmap_destroy(Display *dpy, struct apple_glx_drawable *d);
+
+static struct apple_glx_drawable_callbacks callbacks = {
+    .type = APPLE_GLX_DRAWABLE_PIXMAP,
+    .make_current = pixmap_make_current,
+    .destroy = pixmap_destroy
 };
 
-static pthread_mutex_t pixmap_lock = PTHREAD_MUTEX_INITIALIZER;
-static struct apple_glx_pixmap *pixmap_list = NULL;
+static bool pixmap_make_current(struct apple_glx_context *ac,
+				struct apple_glx_drawable *d) {
+    CGLError cglerr;
+    struct apple_glx_pixmap *p = &d->types.pixmap;
+    
+    assert(APPLE_GLX_DRAWABLE_PIXMAP == d->type);
 
-static void lock_pixmap_list(void) {
-    int err;
+    cglerr = apple_cgl.set_current_context(p->context_obj);
     
-    err = pthread_mutex_lock(&pixmap_lock);
-    
-    if(err) {
-        fprintf(stderr, "pthread_mutex_lock failure in %s: %d\n",
-                __func__, err);
-        abort();
+    if(kCGLNoError != cglerr) {
+	fprintf(stderr, "set current context: %s\n",
+		apple_cgl.error_string(cglerr));
+	return true;
     }
-}
 
-static void unlock_pixmap_list(void) {
-    int err;
+    cglerr = apple_cgl.set_off_screen(p->context_obj, p->width, p->height,
+				      p->pitch, p->buffer);
     
-    err = pthread_mutex_unlock(&pixmap_lock);
+    if(kCGLNoError != cglerr) {
+	fprintf(stderr, "set off screen: %s\n", apple_cgl.error_string(cglerr));
+	
+	return true;
+    }
     
-    if(err) {
-        fprintf(stderr, "pthread_mutex_unlock failure in %s: %d\n",
-                __func__, err);
-        abort();
-    }    
-}
-
-static bool find_pixmap(GLXPixmap pix, struct apple_glx_pixmap **result) {
-    struct apple_glx_pixmap *p;
-    
-    for(p = pixmap_list; p; p = p->next) {
-	if(p->xpixmap == pix) {
-	    *result = p;
-	    return true;
-	}
+    if(!ac->made_current) {
+	glViewport(0, 0, p->width, p->height);
+	glScissor(0, 0, p->width, p->height);
+	ac->made_current = true;
     }
 
     return false;
 }
 
+static void pixmap_destroy(Display *dpy, struct apple_glx_drawable *d) {
+    struct apple_glx_pixmap *p = &d->types.pixmap;
+
+    if(p->pixel_format_obj)
+	(void)apple_cgl.destroy_pixel_format(p->pixel_format_obj);
+
+    if(p->context_obj)
+	(void)apple_cgl.destroy_context(p->context_obj);
+    
+    XAppleDRIDestroyPixmap(dpy, p->xpixmap);
+    
+    if(p->buffer) {
+	if(munmap(p->buffer, p->size))
+	    perror("munmap");
+	
+	if(-1 == close(p->fd))
+	    perror("close");
+	
+	if(shm_unlink(p->path))
+	    perror("shm_unlink");
+    }
+
+    apple_glx_diagnostic("destroyed pixmap buffer for: 0x%lx\n", d->drawable);
+}
 
 /* Return true if an error occurred. */
 bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap, 
 			     const void *mode) {
+    struct apple_glx_drawable *d;
     struct apple_glx_pixmap *p;
     bool double_buffered;
     CGLError error;
     const __GLcontextModes *cmodes = mode;
+
+    if(apple_glx_drawable_create(dpy, screen, pixmap, &d, &callbacks))
+	return true;
     
-    p = malloc(sizeof(*p));
+    /* d is locked and referenced at this point. */
+
+    p = &d->types.pixmap;
 
     p->xpixmap = pixmap;
     p->buffer = NULL;
@@ -111,19 +133,17 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
     if(!XAppleDRICreatePixmap(dpy, screen, pixmap,
 			      &p->width, &p->height, &p->pitch, &p->bpp,
 			      &p->size, p->path, PATH_MAX)) {
-	free(p);
+	d->unlock(d);
+	d->destroy(d);
 	return true;
     }
-
-    /*printf("%s width %d height %d\n", __func__, p->width, p->height);
-     */
       
     p->fd = shm_open(p->path, O_RDWR, 0);
     
     if(p->fd < 0) {
 	perror("shm_open");
-	XAppleDRIDestroyPixmap(dpy, pixmap);
-	free(p);
+	d->unlock(d);
+	d->destroy(d);
 	return true;
     }
 
@@ -132,9 +152,8 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
 
     if(MAP_FAILED == p->buffer) {
 	perror("mmap");
-	XAppleDRIDestroyPixmap(dpy, pixmap);
-	shm_unlink(p->path);
-	free(p);
+	d->unlock(d);
+	d->destroy(d);
 	return true;
     }
 
@@ -145,123 +164,31 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
 				     &p->context_obj);
 
     if(kCGLNoError != error) {
-	(void)apple_cgl.destroy_pixel_format(p->pixel_format_obj); 
-	munmap(p->buffer, p->size);
-	XAppleDRIDestroyPixmap(dpy, pixmap);
-	shm_unlink(p->path);
-	free(p);
+	d->unlock(d);
+	d->destroy(d);
 	return true;
     }
     
     p->fbconfigID = cmodes->fbconfigID;
 
-    lock_pixmap_list();
-    
-    p->previous = NULL;
-    
-    p->next = pixmap_list;
-    
-    if(pixmap_list)
-	pixmap_list->previous = p;
+    d->unlock(d);
 
-    pixmap_list = p;    
-    
-    unlock_pixmap_list();    
+    apple_glx_diagnostic("created: pixmap buffer for 0x%lx\n", d->drawable);
 
     return false;
 }
 
-bool apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
-    struct apple_glx_pixmap *p;
-    bool result = false;
-
-    lock_pixmap_list();
-
-    if(find_pixmap(pixmap, &p)) {
-	if(p->context_obj == apple_cgl.get_current_context()) {
-	    apple_cgl.set_current_context(NULL);
-	}
-
-	(void)apple_cgl.destroy_pixel_format(p->pixel_format_obj);
-	(void)apple_cgl.destroy_context(p->context_obj);
-	XAppleDRIDestroyPixmap(dpy, pixmap);
-
-	if(munmap(p->buffer, p->size))
-	    perror("munmap");
-
-	if(-1 == close(p->fd))
-	    perror("close");
-
-        if(shm_unlink(p->path))
-	    perror("shm_unlink");
-
-	/* Delink the pixmap from the pixmap_list. */
-	
-	if(p->previous) {
-	    p->previous->next = p->next;
-	} else {
-	    pixmap_list = p->next;
-	}
-
-	if(p->next)
-	    p->next->previous = p->previous;
-
-	free(p);
-
-	result = true;
-    }
-
-    unlock_pixmap_list();
-
-    return result;
-}
-
-bool apple_glx_is_pixmap(Display *dpy, GLXDrawable drawable) {
-    struct apple_glx_pixmap *p;
-    bool result = false;
-
-    lock_pixmap_list();
-
-    if(find_pixmap(drawable, &p))
-	result = true;
-
-    unlock_pixmap_list();
-
-    return result;
-}
-
-bool apple_glx_pixmap_data(Display *dpy, GLXPixmap pixmap, int *width,
-			   int *height, int *pitch, int *bpp, void **ptr,
-			   void **contextptr) {
-    struct apple_glx_pixmap *p;
-    bool result = false;
-
-    lock_pixmap_list();
-
-    if(find_pixmap(pixmap, &p)) {
-	*width = p->width;
-	*height = p->height;
-	*pitch = p->pitch;
-	*bpp = p->bpp;
-	*ptr = p->buffer;
-	*contextptr = p->context_obj;
-		
-	result = true;
-    }
-
-    unlock_pixmap_list();
-
-    return result;    
-}
-
-
 bool apple_glx_pixmap_query(GLXPixmap pixmap, int attr, unsigned int *value) {
-    bool result = false;
+    struct apple_glx_drawable *d;
     struct apple_glx_pixmap *p;
+    bool result = false;
+ 
+    d = apple_glx_drawable_find_by_type(pixmap, APPLE_GLX_DRAWABLE_PIXMAP,
+					APPLE_GLX_DRAWABLE_LOCK);
 
-    lock_pixmap_list();
+    if(d) {
+	p = &d->types.pixmap;
 
-    if(find_pixmap(pixmap, &p)) {
 	switch(attr) {
 	case GLX_WIDTH:
 	    *value = p->width;
@@ -278,9 +205,15 @@ bool apple_glx_pixmap_query(GLXPixmap pixmap, int attr, unsigned int *value) {
 	    result = true;
 	    break;
 	}
+
+	d->unlock(d);
     }
 
-    unlock_pixmap_list();
-
     return result;
+}
+
+/* Return true if the type is valid for pixmap. */
+bool apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
+    return !apple_glx_drawable_destroy_by_type(dpy, pixmap,
+					       APPLE_GLX_DRAWABLE_PIXMAP);
 }

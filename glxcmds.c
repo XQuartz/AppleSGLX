@@ -604,9 +604,7 @@ PUBLIC GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis,
 PUBLIC void glXDestroyGLXPixmap(Display *dpy, GLXPixmap glxpixmap)
 {
     if(apple_glx_pixmap_destroy(dpy, glxpixmap))
-	return; /*Success*/
-    
-    __glXSendError(dpy, GLXBadPixmap, glxpixmap, X_GLXDestroyPixmap, false);
+	__glXSendError(dpy, GLXBadPixmap, glxpixmap, X_GLXDestroyPixmap, false);
 }
 
 PUBLIC void glXSwapBuffers(Display *dpy, GLXDrawable drawable) {

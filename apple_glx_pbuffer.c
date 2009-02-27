@@ -29,96 +29,83 @@
 
 #include <stdlib.h>
 #include <pthread.h>
+#include <assert.h>
+#include "apple_glx.h"
 #include "glcontextmodes.h"
-#include "apple_glx_pbuffer.h"
+#include "apple_glx_context.h"
 #include "apple_glx_drawable.h"
+#include "apple_cgl.h"
 
-struct apple_glx_pbuffer {
-    GLXPbuffer xid; /* our pixmap */
-    int width, height;
-    GLint fbconfigID;
-    CGLPBufferObj buffer_obj;
-    unsigned long event_mask;    
-    struct apple_glx_pbuffer *previous, *next;
+static bool pbuffer_make_current(struct apple_glx_context *ac,
+			    struct apple_glx_drawable *d);
+
+static void pbuffer_destroy(Display *dpy, struct apple_glx_drawable *d);
+
+static struct apple_glx_drawable_callbacks callbacks = {
+    .type = APPLE_GLX_DRAWABLE_PBUFFER,
+    .make_current = pbuffer_make_current,
+    .destroy = pbuffer_destroy
 };
 
-static struct apple_glx_pbuffer *pbuffer_list = NULL;
 
-static pthread_mutex_t pbuffer_lock = PTHREAD_MUTEX_INITIALIZER;
+/* Return true if an error occurred. */
+bool pbuffer_make_current(struct apple_glx_context *ac,
+			  struct apple_glx_drawable *d) {
+    struct apple_glx_pbuffer *pbuf = &d->types.pbuffer;
+    CGLError cglerr;
 
-static void lock_list(void) {
-    int err;
+    assert(APPLE_GLX_DRAWABLE_PBUFFER == d->type);
 
-    err = pthread_mutex_lock(&pbuffer_lock);
-
-    if(err) {
-	fprintf(stderr, "pthread_mutex_lock failure in %s: %d\n",
-		__func__, err);
-	abort();
-    }
-}
-
-static void unlock_list(void) {
-    int err;
+    cglerr = apple_cgl.set_pbuffer(ac->context_obj, 
+				   pbuf->buffer_obj,
+				   0, 0, 0);
     
-    err = pthread_mutex_unlock(&pbuffer_lock);
-
-    if(err) {
-	fprintf(stderr, "pthread_mutex_unlock failure in %s: %d\n",
-		__func__, err);
-	abort();
+    if(kCGLNoError != cglerr) {
+	fprintf(stderr, "set_pbuffer: %s\n", apple_cgl.error_string(cglerr));
+	return true;
     }
-}
 
-static bool find_pbuffer(GLXDrawable d, struct apple_glx_pbuffer **result) {
-    struct apple_glx_pbuffer *pbuf;
-
-    lock_list();
-
-    for(pbuf = pbuffer_list; pbuf; pbuf = pbuf->next) {
-	if(pbuf->xid == d) {
-	    *result = pbuf;
-	    unlock_list();
-	    return true;
-	}
+    if(!ac->made_current) {
+	glViewport(0, 0, pbuf->width, pbuf->height);
+	glScissor(0, 0, pbuf->width, pbuf->height);
+	ac->made_current = true;
     }
+
+    apple_glx_diagnostic("made pbuffer drawable 0x%lx current\n",
+			 d->drawable);
     
-    unlock_list();
-
     return false;
 }
 
+void pbuffer_destroy(Display *dpy, struct apple_glx_drawable *d) {
+    struct apple_glx_pbuffer *pbuf = &d->types.pbuffer;
 
+    assert(APPLE_GLX_DRAWABLE_PBUFFER == d->type);
+
+    apple_glx_diagnostic("destroying pbuffer for drawable 0x%lx\n",
+			 d->drawable);
+
+    apple_cgl.destroy_pbuffer(pbuf->buffer_obj);
+    XFreePixmap(dpy, pbuf->xid);
+}
+
+/* Return true if an error occurred. */
+bool apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer pbuf) {
+    return !apple_glx_drawable_destroy_by_type(dpy, pbuf,
+					      APPLE_GLX_DRAWABLE_PBUFFER);
+}
+
+/* Return true if an error occurred. */
 bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config, 
 			      int width, int height, int *errorcode,
 			      GLXPbuffer *result) {
+    struct apple_glx_drawable *d;
+    struct apple_glx_pbuffer *pbuf = NULL;
     CGLError err;
-    struct apple_glx_pbuffer *pbuf;
     Window root;
     int screen;
+    Pixmap xid;
     __GLcontextModes *modes = (__GLcontextModes *)config;
-
-    pbuf = malloc(sizeof(*pbuf));
-
-    if(NULL == pbuf) {
-	*errorcode = BadAlloc;
-	return true;
-    }
-
-    pbuf->width = width;
-    pbuf->height = height;
-    pbuf->previous = NULL;
-    pbuf->next = NULL;
-
-    err = apple_cgl.create_pbuffer(width, height, GL_TEXTURE_RECTANGLE_EXT,
-				   (modes->alphaBits > 0) ? GL_RGBA : GL_RGB,
-				   0, &pbuf->buffer_obj);
-
-    if(kCGLNoError != err) {
-	free(pbuf);
-	*errorcode = BadMatch;
-	return true;
-    }
 
     root = DefaultRootWindow(dpy);
     screen = DefaultScreen(dpy);
@@ -128,16 +115,37 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
      * The XC-MISC extension cleans up XIDs and reuses them transparently,
      * so we need to retain a server-side reference.
      */
-    pbuf->xid = XCreatePixmap(dpy, root, (unsigned int)1,
+    xid = XCreatePixmap(dpy, root, (unsigned int)1,
 			      (unsigned int)1,
 			      DefaultDepth(dpy, screen));
 
-    if(None == pbuf->xid) {
-	apple_cgl.destroy_pbuffer(pbuf->buffer_obj);
-	free(pbuf);
+    if(None == xid) {
 	*errorcode = BadAlloc;
 	return true;
     } 
+
+    if(apple_glx_drawable_create(dpy, screen, xid, &d, &callbacks)) {
+	*errorcode = BadAlloc;
+	return true;
+    }
+    
+    /* The lock is held in d from create onward. */
+    pbuf = &d->types.pbuffer;
+    
+    pbuf->xid = xid;    
+    pbuf->width = width;
+    pbuf->height = height;
+
+    err = apple_cgl.create_pbuffer(width, height, GL_TEXTURE_RECTANGLE_EXT,
+				   (modes->alphaBits > 0) ? GL_RGBA : GL_RGB,
+				   0, &pbuf->buffer_obj);
+
+    if(kCGLNoError != err) {
+	d->unlock(d);
+	d->destroy(d);
+	*errorcode = BadMatch;
+	return true;
+    }
 
     pbuf->fbconfigID = modes->fbconfigID;
 
@@ -145,66 +153,12 @@ bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config,
 
     *result = pbuf->xid;
 
-    /* Link the pbuffer into the list. */
-    lock_list();
-
-    pbuf->next = pbuffer_list;
-    
-    if(pbuffer_list)
-	pbuffer_list->previous = pbuf;
-
-    pbuffer_list = pbuf;
-
-    unlock_list();
-    
+    d->unlock(d);
+        
     return false;
 }
 
-void apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer xid) {
-    struct apple_glx_pbuffer *pbuf;
 
-    /*
-     * This cleans up the drawable associated with any currently alive
-     * context.
-     */
-    apple_glx_destroy_drawable_in_any(dpy, xid);
-    
-    lock_list();
-
-    for(pbuf = pbuffer_list; pbuf; pbuf = pbuf->next) {
-	if(pbuf->xid == xid) {
-	    apple_cgl.destroy_pbuffer(pbuf->buffer_obj);
-	    XFreePixmap(dpy, pbuf->xid);
-	    
-	    if(pbuf->previous) {
-		pbuf->previous->next = pbuf->next;
-	    } else {
-		pbuffer_list = pbuf->next;
-	    }
-
-	    if(pbuf->next)
-		pbuf->next->previous = pbuf->previous;
-	    
-	    free(pbuf);
-
-	    break;
-	}
-    }
-
-    unlock_list();    
-}
-
-/* Return true if able to get the pbuffer object for the drawable. */
-bool apple_glx_pbuffer_get(GLXDrawable d, CGLPBufferObj *result) {
-    struct apple_glx_pbuffer *pbuf;
-
-    if(find_pbuffer(d, &pbuf)) {
-	*result = pbuf->buffer_obj;
-	return true;
-    }
-
-    return false;
-}
 
 /* Return true if an error occurred. */
 static bool get_max_size(int *widthresult, int *heightresult) {
@@ -281,9 +235,15 @@ static bool get_max_size(int *widthresult, int *heightresult) {
 
 bool apple_glx_pbuffer_query(GLXPbuffer p, int attr, unsigned int *value) {
     bool result = false;
+    struct apple_glx_drawable *d;
     struct apple_glx_pbuffer *pbuf;
+
+    d = apple_glx_drawable_find_by_type(p, APPLE_GLX_DRAWABLE_PBUFFER,
+					APPLE_GLX_DRAWABLE_LOCK);
     
-    if(find_pbuffer(p, &pbuf)) {
+    if(d) {
+	pbuf = &d->types.pbuffer;
+
 	switch(attr) {
 	case GLX_WIDTH:
 	    *value = pbuf->width;
@@ -317,29 +277,43 @@ bool apple_glx_pbuffer_query(GLXPbuffer p, int attr, unsigned int *value) {
 	    result = true;
 	    break;
 	}
+
+	d->unlock(d);
     }
 
     return result;
 }
 
-bool apple_glx_pbuffer_set_event_mask(GLXDrawable d, unsigned long mask) {
-    struct apple_glx_pbuffer *pbuf;
+bool apple_glx_pbuffer_set_event_mask(GLXDrawable drawable,
+				      unsigned long mask) {
+    struct apple_glx_drawable *d;
+    bool result = false;
 
-    if(find_pbuffer(d, &pbuf)) {
-	pbuf->event_mask = mask;
-	return true;
+    d = apple_glx_drawable_find_by_type(drawable, APPLE_GLX_DRAWABLE_PBUFFER,
+					APPLE_GLX_DRAWABLE_LOCK);
+
+    if(d) {
+	d->types.pbuffer.event_mask = mask;
+	result = true;
+	d->unlock(d);
     }
 
-    return false;
+    return result;
 }
 
-bool apple_glx_pbuffer_get_event_mask(GLXDrawable d, unsigned long *mask) {
-    struct apple_glx_pbuffer *pbuf;
-
-    if(find_pbuffer(d, &pbuf)) {
-	*mask = pbuf->event_mask;
-	return true;
-    }
+bool apple_glx_pbuffer_get_event_mask(GLXDrawable drawable,
+				      unsigned long *mask) {
+    struct apple_glx_drawable *d;
+    bool result = false;
     
-    return false;
+    d = apple_glx_drawable_find_by_type(drawable, APPLE_GLX_DRAWABLE_PBUFFER,
+					APPLE_GLX_DRAWABLE_LOCK);
+    if(d) {
+	*mask = d->types.pbuffer.event_mask;
+	result = true;
+	d->unlock(d);
+    }
+
+    return result;
 }
+

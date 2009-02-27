@@ -44,12 +44,12 @@
 
 #include "glxclient.h"
 
+#include "apple_glx.h"
 #include "apple_glx_context.h"
 #include "appledri.h"
 #include "apple_visual.h"
 #include "apple_cgl.h"
 #include "apple_glx_drawable.h"
-#include "apple_glx_pbuffer.h"
 
 static pthread_mutex_t context_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -221,28 +221,14 @@ void apple_glx_destroy_context(void **ptr, Display *dpy) {
     }
     
     /*
-     * This causes surface_notify_handler to be called in apple_glx.c... 
+     * This potentially causes surface_notify_handler to be called in
+     * apple_glx.c... 
      * We can NOT have a lock held at this point.  It would result in 
      * an abort due to an attempted deadlock.  This is why we earlier
      * removed the ac pointer from the double-linked list.
      */
     if(ac->drawable) {
-	Drawable drawable = ac->drawable->drawable;
-
-	/* 
-	 * Release the drawable, so that the ->destroy may actually destroy
-	 * the drawable, and we don't leak memory.  If the destroy returns
-	 * false, then another context has a reference to the drawable.
-	 */
-	ac->drawable->release(ac->drawable);
-	
-	if(ac->drawable->destroy(ac->drawable)) {
-	    /* 
-	     * The drawable has no more references, so we can destroy
-	     * the surface. 
-	     */
-	   XAppleDRIDestroySurface(dpy, ac->screen, drawable);
-	}
+	ac->drawable->destroy(ac->drawable);
     }
 
     if(apple_cgl.destroy_pixel_format(ac->pixel_format_obj)) {
@@ -262,53 +248,12 @@ void apple_glx_destroy_context(void **ptr, Display *dpy) {
     apple_glx_garbage_collect_drawables(dpy);
 }
 
-#if 0
-static bool setup_drawable(struct apple_glx_drawable *agd) {
-    printf("buffer path %s\n", agd->path);
-      
-    agd->fd = shm_open(agd->path, O_RDWR, 0);
-
-    if(-1 == agd->fd) {
-	perror("open");
-	return true;
-    }
-        
-    agd->row_bytes = agd->width * /*TODO don't hardcode 4*/ 4;
-    agd->buffer_length = agd->row_bytes * agd->height;
-
-    printf("agd->width %d agd->height %d\n", agd->width, agd->height);
-
-    agd->buffer = mmap(NULL, agd->buffer_length, PROT_READ | PROT_WRITE,
-		       MAP_FILE | MAP_SHARED, agd->fd, 0);
-
-    if(MAP_FAILED == agd->buffer) {
-	perror("mmap");
-	close(agd->fd);
-	agd->fd = -1;
-	return true;
-    }
-
-    return false;
-}
-#endif
-
-static void update_viewport_and_scissor(Display *dpy, GLXDrawable drawable) {
-    Window root;
-    int x, y;
-    unsigned int width, height, bd, depth;
-
-    XGetGeometry(dpy, drawable, &root, &x, &y, &width, &height, &bd, &depth);
-
-    glViewport(0, 0, width, height);
-    glScissor(0, 0, width, height);
-}
 
 /* Return true if an error occured. */
 bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 				    GLXDrawable drawable) {
     struct apple_glx_context *oldac = oldptr;
     struct apple_glx_context *ac = ptr;
-    xp_error error;
     struct apple_glx_drawable *newagd = NULL;
     CGLError cglerr;
     bool same_drawable = false;
@@ -322,8 +267,16 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     if(NULL == ac) {
 	/*Clear the current context.*/
 	apple_cgl.set_current_context(NULL);
-	oldac->is_current = false;
 
+	if(oldac) {
+	    oldac->is_current = false;
+	
+	    if(oldac->drawable) {
+		oldac->drawable->destroy(oldac->drawable);
+		oldac->drawable = NULL;
+	    }
+	}
+	
 	return false;
     }
     
@@ -335,53 +288,59 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
 	
 	if(apple_cgl.clear_drawable(ac->context_obj))
 	    return true;
+
+	if(ac->drawable) {
+	    ac->drawable->destroy(ac->drawable);
+	    ac->drawable = NULL;
+	}
 	
 	return false;
     }
 
-    /* This is an optimisation to avoid searching for the drawable. */
+    /* This is an optimisation to avoid searching for the current drawable. */
     if(ac->drawable && ac->drawable->drawable == drawable) {
 	newagd = ac->drawable;
     } else {
-	newagd = apple_glx_find_drawable(dpy, drawable);
+	/* Find the drawable if possible, and retain a reference to it. */
+	newagd = apple_glx_drawable_find(drawable, APPLE_GLX_DRAWABLE_REFERENCE);
     }
 
-    if(ac->drawable == newagd)
+    if(ac->drawable && ac->drawable == newagd)
 	same_drawable = true;
     
     /*
-     * Release and try to destroy the old drawable, so long as the new one
+     * Try to destroy the old drawable, so long as the new one
      * isn't the old. 
      */
     if(ac->drawable && !same_drawable) {
-	ac->drawable->release(ac->drawable);
 	ac->drawable->destroy(ac->drawable);
 	ac->drawable = NULL;
     }
     
     if(NULL == newagd) {
-	if(apple_glx_create_drawable(dpy, ac, drawable, &newagd))
+	if(apple_glx_surface_create(dpy, ac->screen, drawable, &newagd))
 	    return true;
     
+	/* The drawable is referenced once by apple_glx_surface_create. */
+
 	/* Save the new drawable with the context structure. */
 	ac->drawable = newagd;
-
-	/* Save a reference to the new drawable. */
-	ac->drawable->reference(ac->drawable);
     } else {
 	/* We are reusing an existing drawable structure. */
 
-	if(!same_drawable) {
-	    /* The drawable isn't the same as the previously made current. */
+	if(same_drawable) {
+	    assert(ac->drawable == newagd);
+	    /* The drawable_find above retained a reference for us. */
+	} else {
 	    ac->drawable = newagd;
-	    ac->drawable->reference(ac->drawable);
 	}
     }
-
+    
     /* 
      * Avoid this costly path if this is the same drawable and the
      * context is already current. 
      */
+
     if(same_drawable && ac->is_current)
 	return false;
 
@@ -398,89 +357,24 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     assert(NULL != ac->context_obj);
     assert(NULL != ac->drawable);
 
-    switch(ac->drawable->type) {
-    case APPLE_GLX_DRAWABLE_PBUFFER: {
-	CGLPBufferObj pbufobj;
-
-	if(false == apple_glx_pbuffer_get(ac->drawable->drawable, &pbufobj)) {
-	    fprintf(stderr, "internal error: drawable is a pbuffer, "
-		    "but the pbuffer layer was unable to retrieve "
-		    "the CGLPBufferObj!\n");
-	    return true;
-	}
-		
-	cglerr = apple_cgl.set_pbuffer(ac->context_obj, 
-				       pbufobj,
-				       0, 0, 0);
-	    
-	if(kCGLNoError != cglerr) {
-	    fprintf(stderr, "set_pbuffer: %s\n", apple_cgl.error_string(cglerr));
-	    return true;
-	}
-    }
-	break;
-	
-    case APPLE_GLX_DRAWABLE_SURFACE:
-	error = xp_attach_gl_context(ac->context_obj, ac->drawable->surface_id);
-
-	if(error) {
-	    fprintf(stderr, "error: xp_attach_gl_context returned: %d\n",
-		    error);
-	    return true;
-	}
-    
-    
-	if(!ac->made_current) {
-	    /* 
-	     * The first time a new context is made current the glViewport
-	     * and glScissor should be updated.
-	     */
-	    update_viewport_and_scissor(dpy, ac->drawable->drawable);
-	    ac->made_current = true;
-	}
-	break;
-
-    case APPLE_GLX_DRAWABLE_PIXMAP: {
-	int width, height, pitch, bpp;
-	void *ptr;
-	CGLContextObj ctxobj;
-	void *ctxobjptr;
-	
-	apple_cgl.clear_drawable(ac->context_obj);
-
-	if(false == apple_glx_pixmap_data(dpy, ac->drawable->drawable,
-					  &width, &height, &pitch, &bpp,
-					  &ptr, &ctxobjptr)) {
-	    return true;
-	}
-
-	ctxobj = ctxobjptr;
-	
-	cglerr = apple_cgl.set_current_context(ctxobj);
-
-	if(kCGLNoError != cglerr) {
-	    fprintf(stderr, "set current context: %s\n",
-		    apple_cgl.error_string(cglerr));
-	    
-	    return true;
-	}
-
-	cglerr = apple_cgl.set_off_screen(ctxobj, width, height,
-					  pitch, ptr);
-
-	if(kCGLNoError != cglerr) {
-	    fprintf(stderr, "set off screen: %s\n",
-		    apple_cgl.error_string(cglerr));
-	    
-	    return true;
-	}
-    }
-	break;
-    }
-    
-
     ac->thread_id = pthread_self();
+     
+    switch(ac->drawable->type) {
+    case APPLE_GLX_DRAWABLE_PBUFFER:
+    case APPLE_GLX_DRAWABLE_SURFACE:
+    case APPLE_GLX_DRAWABLE_PIXMAP:
+	if(ac->drawable->callbacks.make_current) {
+	    if(ac->drawable->callbacks.make_current(ac, ac->drawable))
+		return true;
+	}
+	break;
 
+    default:
+	fprintf(stderr, "internal error: invalid drawable type: %d\n", 
+		ac->drawable->type);
+	abort();
+    }
+    
     return false;
 }
 
@@ -500,8 +394,9 @@ bool apple_glx_get_surface_from_uid(unsigned int uid, xp_surface_id *sid,
     lock_context_list();
 
     for(ac = context_list; ac; ac = ac->next) {
-	if(ac->drawable && ac->drawable->uid == uid) {
-	    *sid = ac->drawable->surface_id;
+	if(ac->drawable && APPLE_GLX_DRAWABLE_SURFACE == ac->drawable->type
+	   && ac->drawable->types.surface.uid == uid) {
+	    *sid = ac->drawable->types.surface.surface_id;
 	    *contextobj = ac->context_obj;
 	    unlock_context_list();
 	    return false;
@@ -582,9 +477,18 @@ int apple_glx_context_surface_changed(unsigned int uid, pthread_t caller) {
     lock_context_list();
 
     for(ac = context_list; ac; ac = ac->next) {
-	if(ac->drawable && ac->drawable->uid == uid) {
-	    ac->need_update = true;
-	    ++updated;
+	if(ac->drawable && APPLE_GLX_DRAWABLE_SURFACE == ac->drawable->type
+	   && ac->drawable->types.surface.uid == uid) {
+
+	    if(caller == ac->thread_id) {
+		apple_glx_diagnostic("caller is the same thread for uid %u\n",
+				     uid);
+
+		xp_update_gl_context(ac->context_obj);
+	    } else {
+		ac->need_update = true;
+		++updated;
+	    }
 	}
     }
 
@@ -599,9 +503,7 @@ void apple_glx_context_update(void *ptr) {
     if(ac->need_update) {
 	xp_update_gl_context(ac->context_obj);
 	ac->need_update = false;
-
-#ifdef LIBGL_DEBUG
-	printf("updating context %p\n", ptr);
-#endif
+	
+	apple_glx_diagnostic("updating context %p\n", ptr);
     }
 }

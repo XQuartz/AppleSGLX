@@ -26,7 +26,6 @@
  promote the sale, use or other dealings in this Software without
  prior written authorization.
 */
-
 #ifndef APPLE_GLX_DRAWABLE_H
 #define APPLE_GLX_DRAWABLE_H
 
@@ -37,7 +36,7 @@
 #define XP_NO_X_HEADERS
 #include <Xplugin.h>
 #undef XP_NO_X_HEADERS
-#include "apple_glx_pixmap.h"
+#include "apple_glx_context.h"
 
 enum {
     APPLE_GLX_DRAWABLE_SURFACE = 1,
@@ -45,14 +44,61 @@ enum {
     APPLE_GLX_DRAWABLE_PIXMAP
 };
 
+/* The flag for the find routine. */
+enum {
+    APPLE_GLX_DRAWABLE_LOCK = 2,
+    APPLE_GLX_DRAWABLE_REFERENCE = 4
+};
+
+struct apple_glx_context;
+struct apple_glx_drawable;
+
+struct apple_glx_surface {
+    xp_surface_id surface_id;
+    unsigned int uid;
+};
+
+struct apple_glx_pbuffer {
+    GLXPbuffer xid; /* our pixmap */
+    int width, height;
+    GLint fbconfigID;
+    CGLPBufferObj buffer_obj;
+    unsigned long event_mask;    
+};
+
+struct apple_glx_pixmap {
+    GLXPixmap xpixmap;
+    void *buffer;
+    int width, height, pitch, /*bytes per pixel*/ bpp;
+    size_t size;
+    char path[PATH_MAX];
+    int fd;
+    CGLPixelFormatObj pixel_format_obj;
+    CGLContextObj context_obj;
+    GLint fbconfigID;
+};
+
+struct apple_glx_drawable_callbacks {
+    int type;
+    bool (*make_current)(struct apple_glx_context *ac,
+			 struct apple_glx_drawable *d);
+    void (*destroy)(Display *dpy, struct apple_glx_drawable *d);
+};
+
 struct apple_glx_drawable {
     Display *display;
     int reference_count;
     GLXDrawable drawable;
-    xp_surface_id surface_id;
-    unsigned int uid;
     int type; /* APPLE_GLX_DRAWABLE_* */
 
+    union {
+	struct apple_glx_pixmap pixmap;
+	struct apple_glx_pbuffer pbuffer;
+	struct apple_glx_surface surface;
+    } types;
+    
+    struct apple_glx_drawable_callbacks callbacks;
+    
     /* 
      * This mutex protects the reference count and any other drawable data.
      * It's used to prevent an early release of a drawable.
@@ -88,6 +134,13 @@ struct apple_glx_context;
 struct apple_glx_drawable *apple_glx_find_drawable(Display *dpy, 
 						   GLXDrawable drawable);
 
+/* Returns true on error and locks the agd result with a reference. */
+bool apple_glx_drawable_create(Display *dpy,
+			       int screen,
+			       GLXDrawable drawable,
+			       struct apple_glx_drawable **agd,
+			       struct apple_glx_drawable_callbacks *callbacks);
+
 /* Returns true on error */
 bool apple_glx_create_drawable(Display *dpy, 
 			       struct apple_glx_context *ac,
@@ -103,5 +156,55 @@ void apple_glx_destroy_drawable_in_any(Display *dpy, GLXDrawable d);
  * It's mostly intended for debugging and introspection.
  */
 unsigned int apple_glx_get_drawable_count(void);
+
+struct apple_glx_drawable *apple_glx_drawable_find_by_type(GLXDrawable drawable,
+							   int type, int flags);
+
+struct apple_glx_drawable *
+apple_glx_drawable_find(GLXDrawable drawable, int flags);
+
+
+bool apple_glx_drawable_destroy_by_type(Display *dpy, GLXDrawable drawable,
+					int type);
+
+
+/* Surfaces */
+
+bool apple_glx_surface_create(Display *dpy, int screen, GLXDrawable drawable,
+			      struct apple_glx_drawable **resultptr);
+
+/* Pbuffers */
+
+/* Returns true if an error occurred. */
+bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config, 
+			      int width, int height, int *errorcode,
+			      GLXPbuffer *pbuf);
+
+/* Returns true if the pbuffer was invalid. */
+bool apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer pbuf);
+
+/* Returns true if the pbuffer was valid and the attribute. */
+bool apple_glx_pbuffer_query(GLXDrawable d, int attribute, 
+			      unsigned int *value);
+
+/* Returns true if the GLXDrawable is a valid GLXPbuffer, and the mask is set. */
+bool apple_glx_pbuffer_set_event_mask(GLXDrawable d, unsigned long mask);
+
+/* Returns true if the GLXDrawable is a valid GLXPbuffer, and the *mask is set. */
+bool apple_glx_pbuffer_get_event_mask(GLXDrawable d, unsigned long *mask);
+
+
+/* Pixmaps */
+
+/* mode is a __GLcontextModes * */
+/* Returns true if an error occurred. */
+bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
+			     const void *mode);
+
+/* Returns true if an error occurred. */
+bool apple_glx_pixmap_destroy(Display *dpy, Pixmap pixmap);
+
+bool apple_glx_pixmap_query(GLXPixmap pixmap, int attribute,
+			    unsigned int *value);
 
 #endif

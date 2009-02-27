@@ -26,7 +26,6 @@
  promote the sale, use or other dealings in this Software without
  prior written authorization.
 */
-
 #ifndef APPLE_GLX_CONTEXT_H
 #define APPLE_GLX_CONTEXT_H
 
