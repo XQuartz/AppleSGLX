@@ -160,6 +160,8 @@ int main() {
     draw(dpy);
     glXDestroyPbuffer(dpy, pbuf);
     draw(dpy);
-
+    glXMakeCurrent(dpy, None, ctx);
+    draw(dpy);
+	
     return EXIT_SUCCESS;
 }
