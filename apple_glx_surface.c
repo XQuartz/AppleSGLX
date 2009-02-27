@@ -62,6 +62,9 @@ static bool surface_make_current(struct apple_glx_context *ac,
 
     assert(APPLE_GLX_DRAWABLE_SURFACE == d->type);
   
+    apple_glx_diagnostic("%s: ac->context_obj %p s->surface_id %u\n",
+			 __func__, (void *)ac->context_obj, s->surface_id);
+
     error = xp_attach_gl_context(ac->context_obj, s->surface_id);
     
     if(error) {

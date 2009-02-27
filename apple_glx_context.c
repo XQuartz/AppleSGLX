@@ -180,9 +180,12 @@ bool apple_glx_create_context(void **ptr, Display *dpy, int screen,
     ac->next = context_list;
     context_list = ac;
 
-    unlock_context_list();
-
     *ptr = ac;
+
+    apple_glx_diagnostic("%s: ac %p ac->context_obj %p\n",
+			 __func__, (void *)ac, (void *)ac->context_obj);
+
+    unlock_context_list();
 
     return false;
 }
@@ -193,7 +196,13 @@ void apple_glx_destroy_context(void **ptr, Display *dpy) {
     if(NULL == ac)
 	return;
 
+    apple_glx_diagnostic("%s: ac %p ac->context_obj %p\n",
+			 __func__, (void *)ac, (void *)ac->context_obj);
+
     if(apple_cgl.get_current_context() == ac->context_obj) {
+	apple_glx_diagnostic("%s: context ac->context_obj %p "
+			     "is still current!\n", __func__,
+			     (void *)ac->context_obj);
 	if(apple_cgl.set_current_context(NULL)) {
 	    abort();
 	}
@@ -257,6 +266,15 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     struct apple_glx_drawable *newagd = NULL;
     CGLError cglerr;
     bool same_drawable = false;
+
+    apple_glx_diagnostic("%s: oldac %p ac %p drawable 0x%lx\n",
+			 __func__, (void *)oldac, (void *)ac,
+			 drawable);
+    
+    apple_glx_diagnostic("%s: oldac->context_obj %p ac->context_obj %p\n",
+			__func__, 
+			(void *)(oldac ? oldac->context_obj : NULL),
+			(void *)(ac ? ac->context_obj : NULL));
 
     assert(NULL != dpy);
 
@@ -341,8 +359,10 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
      * context is already current. 
      */
 
-    if(same_drawable && ac->is_current)
+    if(same_drawable && ac->is_current) {
+	apple_glx_diagnostic("%s: same_drawable and ac->is_current\n");
 	return false;
+    }
 
     cglerr = apple_cgl.set_current_context(ac->context_obj);
 
