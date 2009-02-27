@@ -149,8 +149,6 @@ bool apple_glx_create_drawable(Display *dpy,
 
 void apple_glx_garbage_collect_drawables(Display *dpy);
 
-void apple_glx_destroy_drawable_in_any(Display *dpy, GLXDrawable d);
-
 /* 
  * This returns the total number of drawables. 
  * It's mostly intended for debugging and introspection.

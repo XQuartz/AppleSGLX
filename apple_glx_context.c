@@ -447,25 +447,6 @@ bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr,
     return false;
 }
 
-void apple_glx_destroy_drawable_in_any(Display *dpy, GLXDrawable d) {
-    struct apple_glx_context *ac;
-    struct apple_glx_drawable *agd;
-
-    lock_context_list();
-
-    for(ac = context_list; ac; ac = ac->next) {
-	if(ac->drawable && ac->drawable->drawable == d) {
-	    agd = ac->drawable;
-	    ac->drawable = NULL;
-	    agd->release(agd);
-	    (void)agd->destroy(agd);
-	    apple_cgl.clear_drawable(ac->context_obj);
-	}
-    }
-
-    unlock_context_list();
-}
-
 /* 
  * The value returned is the total number of contexts set to update. 
  * It's meant for debugging/introspection.
