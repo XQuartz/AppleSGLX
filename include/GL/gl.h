@@ -57,5 +57,26 @@
 
 #endif /* GL_MESA_packed_depth_stencil */
 
+/* Various other OS projects expect to get these macros from Mesa's gl.h */
+#ifndef GLAPI
+#define GLAPI extern
+#endif
+
+#ifndef GLAPIENTRY
+#define GLAPIENTRY
+#endif
+
+#ifndef APIENTRY
+#define APIENTRY GLAPIENTRY
+#endif
+
+/* "P" suffix to be used for a pointer to a function */
+#ifndef APIENTRYP
+#define APIENTRYP APIENTRY *
+#endif
+
+#ifndef GLAPIENTRYP
+#define GLAPIENTRYP GLAPIENTRY *
+#endif
 
 #endif /*__X_GL_H*/
