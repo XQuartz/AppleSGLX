@@ -109,8 +109,8 @@ static void surface_destroy(Display *dpy, struct apple_glx_drawable *d) {
     XAppleDRIDestroySurface(d->display, DefaultScreen(d->display), 
 			    d->drawable);
 
-    apple_glx_diagnostic("%s: destroyed a surface for drawable 0x%lx\n", 
-			 __func__, d->drawable);
+    apple_glx_diagnostic("%s: destroyed a surface for drawable 0x%lx uid %u\n", 
+			 __func__, d->drawable, s->uid);
 }
 
 /* Return true if an error occured. */
