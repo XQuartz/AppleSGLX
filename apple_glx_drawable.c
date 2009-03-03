@@ -170,6 +170,10 @@ static bool destroy_drawable_callback(struct apple_glx_drawable *d) {
     bool result;
 
     d->lock(d);
+
+    apple_glx_diagnostic("%s: %p ->reference_count before -- %d\n", __func__,
+			 (void *)d, d->reference_count);
+
     d->reference_count--;
 
     if(d->reference_count > 0) {
