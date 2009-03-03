@@ -140,8 +140,9 @@ static bool create_surface(Display *dpy, int screen,
 	    return true;
 	}
 	
-	apple_glx_diagnostic("%s: created a surface for 0x%lx\n", 
-			     __func__, d->drawable);
+	apple_glx_diagnostic("%s: created a surface for drawable 0x%lx"
+			     " with uid %u\n", 
+			     __func__, d->drawable, s->uid);
 	return false; /*success*/
     }
 
