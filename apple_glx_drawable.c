@@ -70,10 +70,6 @@ struct apple_glx_drawable *apple_glx_find_drawable(Display *dpy,
 
     lock_drawables_list();
 
-    /*
-     * Pixmaps aren't required to have a globally unique ID from what I recall.
-     * so we use the display connection with the drawable lookup.
-     */
     for(i = drawables_list; i; i = i->next) {
 	if(i->drawable == drawable) {
 	    agd = i;
@@ -147,8 +143,6 @@ static bool destroy_drawable(struct apple_glx_drawable *d) {
     if(d->next)
 	d->next->previous = d->previous;
 
-    /* Temporarily increase the reference count. */
-    d->reference_count++;
     unlock_drawables_list();
     
     if (d->callbacks.destroy) {
@@ -379,11 +373,11 @@ apple_glx_drawable_find_by_type(GLXDrawable drawable, int type,
 
     for(d = drawables_list; d; d = d->next) {
 	if(d->type == type && d->drawable == drawable) {
-	    if(flags & APPLE_GLX_DRAWABLE_LOCK)
-		d->lock(d);
-
 	    if(flags & APPLE_GLX_DRAWABLE_REFERENCE)
 		d->reference(d);
+	    
+	    if(flags & APPLE_GLX_DRAWABLE_LOCK)
+		d->lock(d);
 
 	    unlock_drawables_list();
 	    
@@ -404,12 +398,12 @@ apple_glx_drawable_find(GLXDrawable drawable, int flags) {
     
     for(d = drawables_list; d; d = d->next) {
 	if(d->drawable == drawable) {
-	    if(flags & APPLE_GLX_DRAWABLE_LOCK)
-		d->lock(d);
-
 	    if(flags & APPLE_GLX_DRAWABLE_REFERENCE)
 		d->reference(d);
-
+	    
+	    if(flags & APPLE_GLX_DRAWABLE_LOCK)
+		d->lock(d);
+	    
 	    unlock_drawables_list();
 	    
 	    return d;
@@ -452,4 +446,32 @@ bool apple_glx_drawable_destroy_by_type(Display *dpy,
     unlock_drawables_list();
 
     return false;
+}
+
+struct apple_glx_drawable *
+apple_glx_drawable_find_by_uid(unsigned int uid, int flags) {
+    struct apple_glx_drawable *d;
+    
+    lock_drawables_list();
+
+    for(d = drawables_list; d; d = d->next) {
+	/* Only surfaces have a uid. */
+	if(APPLE_GLX_DRAWABLE_SURFACE == d->type) {
+	    if(d->types.surface.uid == uid) {
+		if(flags & APPLE_GLX_DRAWABLE_REFERENCE)
+		    d->reference(d);
+
+		if(flags & APPLE_GLX_DRAWABLE_LOCK)
+		    d->lock(d);
+
+		unlock_drawables_list();
+
+		return d;
+	    }
+	}
+    }
+
+    unlock_drawables_list();
+
+    return NULL;
 }

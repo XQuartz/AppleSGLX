@@ -61,9 +61,6 @@ void apple_glx_destroy_context(void **ptr, Display *dpy);
 bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr, GLXDrawable drawable);
 bool apple_glx_is_current_drawable(void *ptr, GLXDrawable drawable);
 
-bool apple_glx_get_surface_from_uid(unsigned int uid, xp_surface_id *sid, 
-        CGLContextObj *contextobj);
-
 bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr, 
 			    unsigned long mask, int *errorptr, 
 			    bool *x11errorptr);

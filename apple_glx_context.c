@@ -409,28 +409,6 @@ bool apple_glx_is_current_drawable(void *ptr, GLXDrawable drawable) {
     return (ac->drawable && ac->drawable->drawable == drawable);
 }
 
-/* Return true if an error occurred. */
-bool apple_glx_get_surface_from_uid(unsigned int uid, xp_surface_id *sid,
-				    CGLContextObj *contextobj) {
-    struct apple_glx_context *ac;
-
-    lock_context_list();
-
-    for(ac = context_list; ac; ac = ac->next) {
-	if(ac->drawable && APPLE_GLX_DRAWABLE_SURFACE == ac->drawable->type
-	   && ac->drawable->types.surface.uid == uid) {
-	    *sid = ac->drawable->types.surface.surface_id;
-	    *contextobj = ac->context_obj;
-	    unlock_context_list();
-	    return false;
-	}
-    }
-
-    unlock_context_list();
-
-    return true;
-}
-
 bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr, 
 			    unsigned long mask, int *errorptr,
 			    bool *x11errorptr) {
@@ -508,6 +486,34 @@ void apple_glx_context_update(void *ptr) {
 	xp_update_gl_context(ac->context_obj);
 	ac->need_update = false;
 	
-	apple_glx_diagnostic("updating context %p\n", ptr);
+	apple_glx_diagnostic("%s: updating context %p\n", __func__, ptr);
+    }
+
+    if(ac->drawable && APPLE_GLX_DRAWABLE_SURFACE == ac->drawable->type
+       && ac->drawable->types.surface.pending_destroy) {
+	apple_glx_diagnostic("%s: clearing drawable %p\n", __func__, ptr);
+	apple_cgl.clear_drawable(ac->context_obj);
+
+	if(ac->drawable) {
+	    struct apple_glx_drawable *d;
+
+	    apple_glx_diagnostic("%s: attempting to destroy drawable %p\n", 
+				 __func__, ptr);
+	    apple_glx_diagnostic("%s: ac->drawable->drawable is 0x%lx\n",
+				 __func__, ac->drawable->drawable);
+
+	    d = ac->drawable;
+
+	    ac->drawable = NULL;
+
+	    /* 
+	     * This will destroy the surface drawable if there are 
+	     * no references to it.  
+	     * It also subtracts 1 from the reference_count.
+	     * If there are references to it, then it's probably made
+	     * current in another context.
+	     */
+	    d->destroy(d);
+	}
     }
 }

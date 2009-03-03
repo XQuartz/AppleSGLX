@@ -56,6 +56,7 @@ struct apple_glx_drawable;
 struct apple_glx_surface {
     xp_surface_id surface_id;
     unsigned int uid;
+    bool pending_destroy;
 };
 
 struct apple_glx_pbuffer {
@@ -165,11 +166,15 @@ apple_glx_drawable_find(GLXDrawable drawable, int flags);
 bool apple_glx_drawable_destroy_by_type(Display *dpy, GLXDrawable drawable,
 					int type);
 
+struct apple_glx_drawable *
+apple_glx_drawable_find_by_uid(unsigned int uid, int flags);
 
 /* Surfaces */
 
 bool apple_glx_surface_create(Display *dpy, int screen, GLXDrawable drawable,
 			      struct apple_glx_drawable **resultptr);
+
+void apple_glx_surface_destroy(unsigned int uid);
 
 /* Pbuffers */
 
@@ -204,5 +209,7 @@ bool apple_glx_pixmap_destroy(Display *dpy, Pixmap pixmap);
 
 bool apple_glx_pixmap_query(GLXPixmap pixmap, int attribute,
 			    unsigned int *value);
+
+
 
 #endif

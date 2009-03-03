@@ -37,6 +37,7 @@ static bool surface_make_current(struct apple_glx_context *ac,
 
 static void surface_destroy(Display *dpy, struct apple_glx_drawable *d);
 
+
 static struct apple_glx_drawable_callbacks callbacks = {
     .type = APPLE_GLX_DRAWABLE_SURFACE,
     .make_current = surface_make_current,
@@ -92,6 +93,8 @@ static bool surface_make_current(struct apple_glx_context *ac,
 static void surface_destroy(Display *dpy, struct apple_glx_drawable *d) {
     struct apple_glx_surface *s = &d->types.surface;
 
+    apple_glx_diagnostic("%s: s->surface_id %u\n", __func__, s->surface_id);
+
     xp_error error = xp_destroy_surface(s->surface_id);
         
     if(error) {
@@ -121,6 +124,8 @@ static bool create_surface(Display *dpy, int screen,
 	return true;
 
     assert(None != d->drawable);
+
+    s->pending_destroy = false;
 
     if(XAppleDRICreateSurface(dpy, screen, d->drawable,
 			      id, key, &s->uid)) {
@@ -164,4 +169,27 @@ bool apple_glx_surface_create(Display *dpy, int screen,
     d->unlock(d);
     
     return false;
+}
+
+/*
+ * All surfaces are reference counted, and surfaces are only created
+ * when the window is made current.  When all contexts no longer reference
+ * a surface drawable the apple_glx_drawable gets destroyed, and thus
+ * its surface is destroyed.  
+ *
+ * However we can make the destruction occur a bit sooner by setting
+ * pending_destroy, which is then checked for in glViewport by
+ * apple_glx_context_update.
+ */
+void apple_glx_surface_destroy(unsigned int uid) {
+    struct apple_glx_drawable *d;
+    
+    d = apple_glx_drawable_find_by_uid(uid, APPLE_GLX_DRAWABLE_REFERENCE 
+				       | APPLE_GLX_DRAWABLE_LOCK);
+
+    if(d) {
+	d->types.surface.pending_destroy = true;
+	d->release(d);
+	d->unlock(d);
+    }
 }

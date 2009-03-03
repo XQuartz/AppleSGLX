@@ -75,25 +75,14 @@ int apple_get_dri_event_base(void) {
 static void surface_notify_handler(Display *dpy, unsigned int uid, int kind) {
     
     switch(kind) {
-    case AppleDRISurfaceNotifyDestroyed: {
-	 xp_surface_id sid;
-	 CGLContextObj contextobj;
-
-	if(apple_glx_get_surface_from_uid(uid, &sid, &contextobj)) {
-	    /* The surface was probably destroyed. */
-	    return;
-	}
-	
-	/* FIXME this needs more thread safety. */
-
-	apple_cgl.clear_drawable(contextobj);
-	xp_destroy_surface(sid);
-    }
+    case AppleDRISurfaceNotifyDestroyed:
+	apple_glx_diagnostic("%s: surface destroyed %u\n", __func__, uid);
+	apple_glx_surface_destroy(uid);
 	break;
-
+	
     case AppleDRISurfaceNotifyChanged: {
 	int updated;
-
+	
 	updated = apple_glx_context_surface_changed(uid, pthread_self());
 
 	apple_glx_diagnostic("surface notify updated %d\n", updated);
