@@ -153,7 +153,9 @@ static bool destroy_drawable(struct apple_glx_drawable *d) {
 	 */
 	d->callbacks.destroy(d->display, d);
     }
-        
+     
+    apple_glx_diagnostic("%s: freeing %p\n", __func__, (void *)d);
+   
     free(d);
 
     /* So that the locks are balanced and the caller correctly unlocks. */
@@ -276,6 +278,8 @@ bool apple_glx_drawable_create(Display *dpy,
     d->lock(d);
 
     link_tail(d);
+
+    apple_glx_diagnostic("%s: new drawable %p\n", __func__, (void *)d);
 
     *agdResult = d;
     
