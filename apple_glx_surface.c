@@ -85,7 +85,7 @@ static bool surface_make_current(struct apple_glx_context *ac,
 	ac->made_current = true;
     }
 
-    apple_glx_diagnostic("%s drawable 0x%lx\n", __func__, d->drawable);
+    apple_glx_diagnostic("%s: drawable 0x%lx\n", __func__, d->drawable);
 
     return false;
 }

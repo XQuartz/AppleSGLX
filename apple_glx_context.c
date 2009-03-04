@@ -307,20 +307,25 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     }
     
     if(None == drawable) {
+	bool error = false;
+
 	/* Clear the current drawable for this context_obj. */
 
 	if(apple_cgl.set_current_context(ac->context_obj))
-	    return true;
+	    error = true;
 	
 	if(apple_cgl.clear_drawable(ac->context_obj))
-	    return true;
+	    error = true;
 
 	if(ac->drawable) {
 	    ac->drawable->destroy(ac->drawable);
 	    ac->drawable = NULL;
 	}
 	
-	return false;
+	apple_glx_diagnostic("%s: drawable is None, error is: %d\n",
+			     __func__, error);
+
+	return error;
     }
 
     /* This is an optimisation to avoid searching for the current drawable. */
