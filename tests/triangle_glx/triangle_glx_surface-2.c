@@ -48,9 +48,10 @@ void event_loop(Display *dpy) {
 
 	draw(dpy, mainwin);
 	/* This should destroy the surface. */
-	glXMakeCurrent(dpy, None, ctx);
-	
-	XSync(dpy, False);
+	if(!glXMakeCurrent(dpy, None, ctx)) {
+	    fprintf(stderr, "%s: make current None failed!\n");
+	    exit(EXIT_FAILURE);
+	}	
 
 	printf("destroying mainwin 0x%lx\n", mainwin);
 	XDestroyWindow(dpy, mainwin);
@@ -66,7 +67,10 @@ void event_loop(Display *dpy) {
 	printf("created mainwin 0x%lx\n", mainwin);
 
 	/* This should recreate the surface. */
-	glXMakeCurrent(dpy, mainwin, ctx);
+	if(!glXMakeCurrent(dpy, mainwin, ctx)) {
+	    fprintf(stderr, "%s: make mainwin current failed!\n");
+	    exit(EXIT_FAILURE);
+	}
     }
 }
 
