@@ -460,9 +460,7 @@ bool apple_glx_drawable_destroy_by_type(Display *dpy,
 	     * release it, and call destroy_drawable which doesn't destroy
 	     * if the reference_count is > 0.
 	     */	      
-	    d->lock(d);
-	    d->reference_count--;
-	    d->unlock(d);
+	    d->release(d);
 
 	    apple_glx_diagnostic("%s d->reference_count %d\n", 
 				 __func__, d->reference_count);
