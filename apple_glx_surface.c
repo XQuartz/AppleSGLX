@@ -187,7 +187,7 @@ bool apple_glx_surface_create(Display *dpy, int screen,
 void apple_glx_surface_destroy(unsigned int uid) {
     struct apple_glx_drawable *d;
     
-    d = apple_glx_drawable_find_by_uid(uid, APPLE_GLX_DRAWABLE_REFERENCE 
+    d = apple_glx_drawable_find_by_uid(uid, APPLE_GLX_DRAWABLE_REFERENCE
 				       | APPLE_GLX_DRAWABLE_LOCK);
 
     if(d) {

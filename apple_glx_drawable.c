@@ -205,18 +205,40 @@ static bool is_pixmap(struct apple_glx_drawable *d) {
 static void common_init(Display *dpy, GLXDrawable drawable, 
 			struct apple_glx_drawable *d) {
     int err;
-
+    pthread_mutexattr_t attr;
+    
     d->display = dpy;
     d->reference_count = 0;
     d->drawable = drawable;
     d->type = -1;
 
-    err = pthread_mutex_init(&d->mutex, NULL);
+    err = pthread_mutexattr_init(&attr);
+
+    if(err) {
+	fprintf(stderr, "pthread_mutexattr_init error: %d\n", err);
+	abort();
+    }
+
+    /* 
+     * There are some patterns that require a recursive mutex,
+     * when working with locks that protect the apple_glx_drawable,
+     * and reference functions like ->reference, and ->release.
+     */
+    err = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+
+    if(err) {
+	fprintf(stderr, "error: setting pthread mutex type: %d\n", err);
+	abort();
+    }
+
+    err = pthread_mutex_init(&d->mutex, &attr);
     
     if(err) {
 	fprintf(stderr, "pthread_mutex_init error: %d\n", err);
 	abort();
     }
+
+    (void)pthread_mutexattr_destroy(&attr);
 
     d->lock = drawable_lock;
     d->unlock = drawable_unlock;
