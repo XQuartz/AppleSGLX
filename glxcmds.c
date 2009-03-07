@@ -1043,11 +1043,6 @@ PUBLIC XVisualInfo *glXChooseVisual(Display *dpy, int screen, int *attribList)
 
 PUBLIC const char *glXQueryExtensionsString( Display *dpy, int screen )
 {
-    static const char extstr[] = "GLX_ARB_get_proc_address ";
-
-    return extstr;
-    
-#if 0
     __GLXscreenConfigs *psc;
     __GLXdisplayPrivate *priv;
 
@@ -1072,7 +1067,6 @@ PUBLIC const char *glXQueryExtensionsString( Display *dpy, int screen )
     }
 
     return psc->effectiveGLXexts;
-#endif
 }
 
 PUBLIC const char *glXGetClientString( Display *dpy, int name )
@@ -1502,6 +1496,12 @@ PUBLIC GLXPixmap glXCreateGLXPixmapWithConfigSGIX(Display *dpy,
 	return None;
     }
 
+    if(apple_glx_pixmap_create(dpy, fbconfig->screen, pixmap, fbconfig))
+	return None;
+
+    return pixmap;
+
+
     psc = GetGLXScreenConfigs( dpy, fbconfig->screen );
     if ( (psc != NULL) 
 	 && __glXExtensionBitIsEnabled( psc, SGIX_fbconfig_bit ) ) {
@@ -1568,7 +1568,6 @@ PUBLIC GLXFBConfigSGIX glXGetFBConfigFromVisualSGIX(Display *dpy,
 
     return NULL;
 }
-
 
 #if 0 /* AppleSGLX may someday need to support this for X11 OpenGL
 	 compositing managers. */

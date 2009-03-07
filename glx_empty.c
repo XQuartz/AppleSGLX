@@ -278,6 +278,55 @@ PUBLIC GLXDrawable glXCreateGLXPbufferSGIX(Display *dpy, GLXFBConfig config,
     return None;
 }
 
+#if 0
+/* GLX_SGIX_fbconfig */
+PUBLIC int glXGetFBConfigAttribSGIX (Display *dpy, void *config, int a, int *b) {
+     (void)dpy;
+     (void)config;
+     (void)a;
+     (void)b;
+     return 0;
+}
+
+PUBLIC void *glXChooseFBConfigSGIX(Display *dpy, int a, int *b, int *c) {
+    (void)dpy;
+    (void)a;
+    (void)b;
+    (void)c;
+    return NULL;
+}
+
+PUBLIC GLXPixmap glXCreateGLXPixmapWithConfigSGIX (Display *dpy, void *config, Pixmap p) {
+    (void)dpy;
+    (void)config;
+    (void)p;
+    return None;
+}
+
+PUBLIC GLXContext glXCreateContextWithConfigSGIX (Display *dpy, void *config, int a, 
+						  GLXContext b, Bool c) {
+    (void)dpy;
+    (void)config;
+    (void)a;
+    (void)b;
+    (void)c;
+    return NULL;
+}
+
+PUBLIC XVisualInfo * glXGetVisualFromFBConfigSGIX (Display *dpy, void *config) {
+    (void)dpy;
+    (void)config;
+    return NULL;
+}
+
+PUBLIC void *glXGetFBConfigFromVisualSGIX (Display *dpy, XVisualInfo *visinfo) {
+    (void)dpy;
+    (void)visinfo;
+    return NULL;
+}
+#endif
+
+
 PUBLIC GLX_ALIAS_VOID(glXDestroyGLXPbufferSGIX,
 		      (Display *dpy, GLXDrawable pbuf),
 		      (dpy, pbuf),

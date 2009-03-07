@@ -404,24 +404,36 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	  case GLX_MAX_PBUFFER_PIXELS:
 	    config->maxPbufferPixels = *bp++;
 	    break;
+#if 0
+	    /* We can't currently support these with CGL. */
 	  case GLX_OPTIMAL_PBUFFER_WIDTH_SGIX:
 	    config->optimalPbufferWidth = *bp++;
 	    break;
 	  case GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX:
 	    config->optimalPbufferHeight = *bp++;
 	    break;
+#endif
+#if 0 
+	    /* Not supported. */
           case GLX_VISUAL_SELECT_GROUP_SGIX:
 	    config->visualSelectGroup = *bp++;
 	    break;
+#endif
+#if 0
+	    /* Changing the swap method is not supported by Xplugin. */
 	  case GLX_SWAP_METHOD_OML:
 	    config->swapMethod = *bp++;
 	    break;
-	  case GLX_SAMPLE_BUFFERS_SGIS:
+#endif
+	    /* These 2 have the same values as the SGIS versions, and ARB. */
+	  case GLX_SAMPLE_BUFFERS:
 	    config->sampleBuffers = *bp++;
 	    break;
-	  case GLX_SAMPLES_SGIS:
+	  case GLX_SAMPLES:
 	    config->samples = *bp++;
 	    break;
+#if 0
+	    /*These are part of GLX_EXT_texture_from_pixmap */
 	  case GLX_BIND_TO_TEXTURE_RGB_EXT:
 	    config->bindToTextureRgb = *bp++;
 	    break;
@@ -437,6 +449,7 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	  case GLX_Y_INVERTED_EXT:
 	    config->yInverted = *bp++;
 	    break;
+#endif
 	  case None:
 	    i = count;
 	    break;

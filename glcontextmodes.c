@@ -266,9 +266,12 @@ _gl_get_context_mode_data(const __GLcontextModes *mode, int attribute,
       case GLX_LEVEL:
 	*value_return = mode->level;
 	return 0;
+#if 0
+	/* This isn't supported by CGL. */
       case GLX_TRANSPARENT_TYPE_EXT:
 	*value_return = mode->transparentPixel;
 	return 0;
+#endif
       case GLX_TRANSPARENT_RED_VALUE:
 	*value_return = mode->transparentRed;
 	return 0;
@@ -314,6 +317,8 @@ _gl_get_context_mode_data(const __GLcontextModes *mode, int attribute,
       case GLX_MAX_PBUFFER_PIXELS:
 	*value_return = mode->maxPbufferPixels;
 	return 0;
+#if 0
+	/* These aren't supported by CGL. */
       case GLX_OPTIMAL_PBUFFER_WIDTH_SGIX:
 	*value_return = mode->optimalPbufferWidth;
 	return 0;
@@ -323,10 +328,12 @@ _gl_get_context_mode_data(const __GLcontextModes *mode, int attribute,
       case GLX_SWAP_METHOD_OML:
 	*value_return = mode->swapMethod;
 	return 0;
-      case GLX_SAMPLE_BUFFERS_SGIS:
+#endif
+
+      case GLX_SAMPLE_BUFFERS:
 	*value_return = mode->sampleBuffers;
 	return 0;
-      case GLX_SAMPLES_SGIS:
+      case GLX_SAMPLES:
 	*value_return = mode->samples;
 	return 0;
       case GLX_BIND_TO_TEXTURE_RGB_EXT:
@@ -349,7 +356,10 @@ _gl_get_context_mode_data(const __GLcontextModes *mode, int attribute,
        * It is ONLY for communication between the GLX client and the GLX
        * server.
        */
+#if 0
+	/* Not supported by AppleSGLX. */
       case GLX_VISUAL_SELECT_GROUP_SGIX:
+#endif
 
       default:
 	return GLX_BAD_ATTRIBUTE;

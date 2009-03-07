@@ -28,6 +28,41 @@ extern "C" {
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
+#define GLX_ARB_fbconfig_float 0
+#define GLX_EXT_visual_info 0
+#define GLX_EXT_import_context 0
+#define GLX_SGIS_shared_multisample 0
+#define GLX_SGIX_visual_select_group 0
+#define GLX_NV_present_video 0
+#define GLX_EXT_framebuffer_sRGB 0
+#define GLX_EXT_fbconfig_packed_float 0
+#define GLX_NV_float_buffer 0
+#define GLX_MESA_release_buffers 0
+#define GLX_SGIS_blended_overlay 0
+#define GLX_ARB_create_context 0
+#define GLX_SGIX_pbuffer 0
+#define GLX_SGIX_dmbuffer 0
+#define GLX_SGI_swap_control 0
+#define GLX_SGI_video_sync 0
+#define GLX_SGI_make_current_read 0
+#define GLX_SGIX_hyperpipe 0
+#define GLX_MESA_pixmap_colormap 0
+#define GLX_NV_video_out 0
+#define GLX_MESA_set_3dfx_mode 0
+#define GLX_3DFX_multisample 0
+#define GLX_SGIX_swap_group 0
+#define GLX_SGIX_video_source 0
+#define GLX_NV_swap_group 0
+#define GLX_EXT_texture_from_pixmap 0
+#define GLX_OML_swap_method 0
+#define GLX_MESA_copy_sub_buffer 0
+#define GLX_SGIX_video_resize 0
+#define GLX_MESA_agp_offset 0
+#define GLX_SGIX_swap_barrier 0
+#define GLX_SGI_cushion 0
+#define GLX_OML_sync_control 0
+#define GLX_SUN_get_transparent_index 0
+
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
@@ -825,6 +860,40 @@ typedef void ( * PFNGLXRELEASETEXIMAGEEXTPROC) (Display *dpy, GLXDrawable drawab
 #define GLX_NV_swap_group 1
 #endif
 
+#undef GLX_ARB_fbconfig_float
+#undef GLX_EXT_visual_info
+#undef GLX_EXT_import_context
+#undef GLX_SGIS_shared_multisample
+#undef GLX_SGIX_visual_select_group
+#undef GLX_NV_present_video
+#undef GLX_EXT_framebuffer_sRGB
+#undef GLX_EXT_fbconfig_packed_float
+#undef GLX_NV_float_buffer
+#undef GLX_MESA_release_buffers
+#undef GLX_SGIS_blended_overlay
+#undef GLX_ARB_create_context
+#undef GLX_SGIX_pbuffer
+#undef GLX_SGIX_dmbuffer
+#undef GLX_SGI_swap_control
+#undef GLX_SGI_video_sync
+#undef GLX_SGI_make_current_read
+#undef GLX_SGIX_hyperpipe
+#undef GLX_MESA_pixmap_colormap
+#undef GLX_NV_video_out
+#undef GLX_MESA_set_3dfx_mode
+#undef GLX_3DFX_multisample
+#undef GLX_SGIX_swap_group
+#undef GLX_SGIX_video_source
+#undef GLX_NV_swap_group
+#undef GLX_EXT_texture_from_pixmap
+#undef GLX_OML_swap_method
+#undef GLX_MESA_copy_sub_buffer
+#undef GLX_SGIX_video_resize
+#undef GLX_MESA_agp_offset
+#undef GLX_SGIX_swap_barrier
+#undef GLX_SGI_cushion
+#undef GLX_OML_sync_control
+#undef GLX_SUN_get_transparent_index
 
 #ifdef __cplusplus
 }
