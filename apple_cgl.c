@@ -36,7 +36,7 @@
 #include "apple_glx.h"
 
 #ifndef OPENGL_FRAMEWORK_PATH
-#define OPENGL_FRAMEWORK_PATH "/System/Library/Frameworks/OpenGL.framework/OpenGL"
+#define OPENGL_FRAMEWORK_PATH "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL"
 #endif
 
 static void *dl_handle = NULL;
@@ -61,17 +61,23 @@ static void *sym(void *h, const char *name) {
 void apple_cgl_init(void) {
     void *h;
     GLint major = 0, minor = 0;
+    const char *opengl_framework_path;
     
     if(initialized)
 	return;
+    
+    opengl_framework_path = getenv("OPENGL_FRAMEWORK_PATH");
+    if(!opengl_framework_path) {
+        opengl_framework_path = OPENGL_FRAMEWORK_PATH;
+    }
 
     (void)dlerror(); /*drain dlerror*/
-    h = dlopen(OPENGL_FRAMEWORK_PATH, RTLD_NOW);
+    h = dlopen(opengl_framework_path, RTLD_NOW);
 
     if(NULL == h) {
-	fprintf(stderr, "error: unable to dlopen " OPENGL_FRAMEWORK_PATH " : " "%s\n",
-		dlerror());
-	abort();
+        fprintf(stderr, "error: unable to dlopen %s : %s\n", opengl_framework_path,
+                dlerror());
+        abort();
     }
 
     dl_handle = h;
