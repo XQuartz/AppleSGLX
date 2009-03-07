@@ -2,7 +2,7 @@
 
 DONE Fix glXCreateWindow and glXDestroyWindow.
 
-Add API major version testing to the apple_cgl layer.  This way we can avoid
+DONE Add API major version testing to the apple_cgl layer.  This way we can avoid
 future API fiascos.  Jordan suggested this a while ago.
 
 -- Feb 16, 2009
@@ -16,7 +16,7 @@ DONE The old surface/pbuffer/pixmap needs to be restored after that.
 
 DONE glXGetCurrentReadDrawable should also report the read drawable.  It appears correct.
 
-Test glXGetCurrentDisplay().  It appears correct.
+DONE Test glXGetCurrentDisplay().  It appears correct.
 --
 
 Improve the glX symbol compatibility with the old libGL.
@@ -46,7 +46,7 @@ DONE Add support for the newer glXCreatePixmap (from 1.4).  We have glXCreateGLX
 
 Test glXCopyContext.
 
-Add the PBUFFER_BIT to the fbconfigs/visualconfigs in the X server.  This is actually unclear.  We should perhaps set that bit in the libGL instead.
+DONE (in 1.6) Add the PBUFFER_BIT to the fbconfigs/visualconfigs in the X server.  This is actually unclear.  We should perhaps set that bit in the libGL instead.
 
 DONE Test the pbuffer by using glReadPixels to verify it's being written to.
 
@@ -62,7 +62,7 @@ DONE Add glDrawBuffersARB to the exclusion list, and make it forward to the glDr
 
 -- Feb 7, 2009
 
-Extend the GL_aliases for compatibility with the old libGL (wherever possible).
+DONE Extend the GL_aliases for compatibility with the old libGL (wherever possible).
 
 
 -- Feb 5, 2009
@@ -83,7 +83,7 @@ DONE The first time a context is made current we should set the glViewport and g
 
 DONE test glXQueryServerString, glXGetClientString, and glXGetProcAddress.
 
-Use CGLGetVersion to assert ABI major version compatibility with the OpenGL framework.
+DONE Use CGLGetVersion to assert ABI major version compatibility with the OpenGL framework.
 
 DONE Work out the include/GL/gl.h problems (with the ARB functions).
 

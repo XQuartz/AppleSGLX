@@ -98,6 +98,8 @@ int main() {
     XMapWindow(dpy, win);
 
     glXMakeCurrent(dpy, win, ctx);
+    printf("passed dpy %p current dpy %p\n", (void *)dpy,
+	(void *)glXGetCurrentDisplay());
 
     event_loop(dpy);
 
