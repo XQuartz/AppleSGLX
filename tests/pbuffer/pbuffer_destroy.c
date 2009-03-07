@@ -7,32 +7,6 @@
 GLXPbuffer pbuf;
 
 void dump_pbuffer(Display *dpy) {
-    size_t length = 400 * 400 * /*RGBA*/ 4;
-    void *p = malloc(length);
-    unsigned char *cp;
-    int x, y;
-
-    if(NULL == p) {
-	perror("malloc");
-	abort();
-    }
-
-    memset(p, 0, length);
-
-    glReadPixels(0, 0, 400, 400, GL_RGBA, GL_UNSIGNED_BYTE, p); 
-
-    cp = p;
-    for(y = 0; y < 400; ++y) {
-	for(x = 0; x < 400; ++x) {
-	    printf("%d %d %d %d, ", cp[0], cp[1], cp[2], cp[3]);
-	    cp += 4;
-	}
-	putchar('\n');	    
-    }
-
-    free(p);
-
-    {
 	unsigned int width = 0, height = 0, fbid = 0;
 
 	glXQueryDrawable(dpy, pbuf, GLX_WIDTH, &width);
@@ -41,8 +15,6 @@ void dump_pbuffer(Display *dpy) {
 
 	printf("queried drawable width %u height %u fbconfigID %x\n",
 	       width, height, fbid);
-	
-    }
 }
 
 void draw(Display *dpy) {
@@ -160,7 +132,9 @@ int main() {
     draw(dpy);
     glXDestroyPbuffer(dpy, pbuf);
     draw(dpy);
+    /* This should release the final reference to the pbuffer. */
     glXMakeCurrent(dpy, None, ctx);
+    printf("Expect a GLXBadDrawable error.\n");
     draw(dpy);
 	
     return EXIT_SUCCESS;
