@@ -39,6 +39,8 @@
 #include <OpenGL/gl.h>
 
 struct apple_cgl_api {
+    void (*get_version)(GLint *majorvers, GLint *minorvers);
+    
     CGLError (*choose_pixel_format)(const CGLPixelFormatAttribute *attribs, 
 				    CGLPixelFormatObj *pix, GLint *npix);
     CGLError (*destroy_pixel_format)(CGLPixelFormatObj pix);

@@ -33,6 +33,7 @@
 #include <dlfcn.h>
 
 #include "apple_cgl.h"
+#include "apple_glx.h"
 
 #ifndef OPENGL_FRAMEWORK_PATH
 #define OPENGL_FRAMEWORK_PATH "/System/Library/Frameworks/OpenGL.framework/OpenGL"
@@ -59,6 +60,7 @@ static void *sym(void *h, const char *name) {
 
 void apple_cgl_init(void) {
     void *h;
+    GLint major = 0, minor = 0;
     
     if(initialized)
 	return;
@@ -73,6 +75,17 @@ void apple_cgl_init(void) {
     }
 
     dl_handle = h;
+
+    apple_cgl.get_version = sym(h, "CGLGetVersion");
+
+    apple_cgl.get_version(&major, &minor);
+
+    apple_glx_diagnostic("CGL major %d minor %d\n", major, minor);
+
+    if(1 != major) {
+	fprintf(stderr, "WARNING: the CGL major version has changed!\n"
+		"libGL may be incompatible!\n");
+    }
 
     apple_cgl.choose_pixel_format = sym(h, "CGLChoosePixelFormat");
     apple_cgl.destroy_pixel_format = sym(h, "CGLDestroyPixelFormat");
