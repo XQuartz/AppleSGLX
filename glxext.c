@@ -254,15 +254,33 @@ static Bool QueryVersion(Display *dpy, int opcode, int *major, int *minor)
 }
 
 
+/* 
+ * We don't want to enable this GLX_OML_swap_method in glxext.h, 
+ * because we can't support it.  The X server writes it out though,
+ * so we should handle it somehow, to avoid false warnings.
+ */
+enum {
+    IGNORE_GLX_SWAP_METHOD_OML = 0x8060
+};
+
+
+/*
+ * getVisualConfigs uses the !tagged_only path.
+ * getFBConfigs uses the tagged_only path.
+ */
 _X_HIDDEN void 
 __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count, 
 				     const INT32 *bp, Bool tagged_only,
 				     Bool fbconfig_style_tags )
 {
     int i;
-
+    long int tag, tagvalue;
+    
     if (!tagged_only) {
-	/* Copy in the first set of properties */
+	/*
+	 * Copy in the first set of properties.
+	 * There should only be 18 initial properties.
+	 */
 	config->visualID = *bp++;
 
 	config->visualType = _gl_convert_from_x_visual_type( *bp++ );
@@ -289,8 +307,8 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 
 	/* AppleSGLX supports pixmap and pbuffers with all config. */
 	config->drawableType = GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;
-
-	count -= __GLX_MIN_CONFIG_PROPS;
+	/* Unfortunately this can create an ABI compatibility problem. */
+	count -= 18;
     }
 
     /*
@@ -303,7 +321,9 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
     config-> tag = ( fbconfig_style_tags ) ? *bp++ : 1
 
     for (i = 0; i < count; i += 2 ) {
-	switch(*bp++) {
+	tag = *bp++;
+
+	switch(tag) {
 	  case GLX_RGBA:
 	    FETCH_OR_SET( rgbMode );
 	    break;
@@ -450,14 +470,20 @@ __glXInitializeVisualConfigFromTags( __GLcontextModes *config, int count,
 	    config->yInverted = *bp++;
 	    break;
 #endif
+	case IGNORE_GLX_SWAP_METHOD_OML:
+	    /* We ignore this tag.  See the comment above this function. */
+	    ++bp;
+	    break;
+		
 	  case None:
 	    i = count;
 	    break;
 	  default:
 	    if(getenv("LIBGL_DIAGNOSTIC")) {
-		long int tag = *bp;
-		fprintf(stderr, "WARNING: unknown GLX tag from server: %ld\n",
-			tag);
+		tagvalue = *bp++;
+		fprintf(stderr, "WARNING: unknown GLX tag from server: "
+			"tag 0x%lx value 0x%lx\n",
+			tag, tagvalue);
 	    }
 	    break;
 	}
@@ -485,8 +511,6 @@ createConfigsFromProperties(Display *dpy, int nvisuals, int nprops,
     if (nprops == 0)
 	return NULL;
 
-    /* FIXME: Is the __GLX_MIN_CONFIG_PROPS test correct for FBconfigs? */
-
     /* Check number of properties */
     if (nprops < __GLX_MIN_CONFIG_PROPS || nprops > __GLX_MAX_CONFIG_PROPS)
 	return NULL;
@@ -511,8 +535,6 @@ createConfigsFromProperties(Display *dpy, int nvisuals, int nprops,
 	 * The XQuartz 2.3.2.1 X server doesn't set this properly, so
 	 * set the proper bits here.
 	 * AppleSGLX supports windows, pixmaps, and pbuffers with all config.
-	 * The xorg-server-1.6-apple branch supports pixmaps, but we those
-	 * will fail at runtime with XQuartz 2.3.2.1.
 	 */
 	m->drawableType = GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;
 
