@@ -141,6 +141,8 @@ bool apple_init_glx(Display *dpy) {
 
 void apple_glx_swap_buffers(void *ptr) {
     struct apple_glx_context *ac = ptr;
+
+    /* This may not be needed with CGLFlushDrawable: */
     glFlush();
     apple_cgl.flush_drawable(ac->context_obj);
 }

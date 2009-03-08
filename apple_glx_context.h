@@ -50,6 +50,13 @@ struct apple_glx_context {
     bool need_update;
     bool is_current; /* True if the context is current in some thread. */
     bool made_current; /* True if the context has ever been made current. */
+
+    /*
+     * last_surface is set by the pending_destroy code handler for a drawable.
+     * Due to a CG difference, we have to recreate a surface if the window
+     * is unmapped and mapped again.
+     */
+    Window last_surface_window;
     struct apple_glx_context *previous, *next;
 };
 
@@ -59,7 +66,7 @@ bool apple_glx_create_context(void **ptr, Display *dpy, int screen,
 void apple_glx_destroy_context(void **ptr, Display *dpy);
 
 bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr, GLXDrawable drawable);
-bool apple_glx_is_current_drawable(void *ptr, GLXDrawable drawable);
+bool apple_glx_is_current_drawable(Display *dpy, void *ptr, GLXDrawable drawable);
 
 bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr, 
 			    unsigned long mask, int *errorptr, 
@@ -67,6 +74,6 @@ bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr,
 
 int apple_glx_context_surface_changed(unsigned int uid, pthread_t caller);
 
-void apple_glx_context_update(void *ptr);
+void apple_glx_context_update(Display *dpy, void *ptr);
 
 #endif /*APPLE_GLX_CONTEXT_H*/
