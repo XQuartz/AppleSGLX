@@ -32,10 +32,14 @@ void event_loop(Display *dpy) {
 	    break;
 	
 	case KeyPress:
+	    printf("withdrawing window...\n");
 	    XWithdrawWindow(dpy, event.xkey.window, DefaultScreen(dpy));
 	    XFlush(dpy);
+	    printf("sleeping...\n");
 	    sleep(1);
+	    printf("mapping window again...\n");
 	    XMapWindow(dpy, event.xkey.window);
+	    printf("drawing...\n");
 	    draw(dpy, event.xkey.window);
 	    XFlush(dpy);
 	    break;
