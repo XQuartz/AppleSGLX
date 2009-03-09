@@ -19,10 +19,14 @@ DONE glXGetCurrentReadDrawable should also report the read drawable.  It appears
 DONE Test glXGetCurrentDisplay().  It appears correct.
 --
 
-Improve the glX symbol compatibility with the old libGL.
+DONE Improve the glX symbol compatibility with the old libGL.
 
-Work out something for the GLXFBConfig optimal width/height.  These types
-of things aren't really exposed AFAIK by CGL.
+DONE Work out something for the GLXFBConfig optimal width/height.  These types
+of things aren't really exposed AFAIK by CGL.  We can't do this, so we
+don't enable the extension that enables the optimal pbuffer width/height.
+Specifically don't enable the SGIX_pbuffer:
+#define GLX_OPTIMAL_PBUFFER_WIDTH_SGIX     0x8019
+#define GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX    0x801A
 
 Verify the XError behavior of GLXPixmap support functions.
 
@@ -106,7 +110,7 @@ TEST glXCopyContext needs some work and additional code in apple_glx.c.
 
 -- OLD:
 
-Add glxext.h support, and support functions.
+DONE Add glxext.h support, and support functions.
 
 ----
 
