@@ -43,7 +43,7 @@ $(TEST_BUILD_DIR)/libGL.dylib: $(OBJECTS)
 
 $(BUILD_DIR)/libGL.1.2.dylib: $(OBJECTS)
 	-if ! test -d $(BUILD_DIR); then $(MKDIR) $(BUILD_DIR); fi
-	$(CC) $(GL_CFLAGS) -o $@ -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.2.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(GL_LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
+	$(CC) $(GL_CFLAGS) -o $@ -dynamiclib -install_name $(INSTALL_DIR)/lib/libGL.1.dylib -compatibility_version 1.2 -current_version 1.2 -lXplugin -framework ApplicationServices -framework CoreFoundation $(GL_LDFLAGS) -lXext -lX11 -Wl,-exported_symbols_list,exports.list $(OBJECTS)
 
 .c.o:
 	$(COMPILE) $<
