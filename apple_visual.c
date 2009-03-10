@@ -34,6 +34,7 @@
 #include <GL/gl.h>
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLContext.h>
+#include <OpenGL/CGLRenderers.h>
 #include "glcontextmodes.h" 
 #include "apple_cgl.h"
 #include "apple_visual.h"
@@ -56,6 +57,14 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
         
         attr[numattr++] = kCGLPFAColorSize;
         attr[numattr++] = 32;
+    } else if(getenv("LIBGL_ALWAYS_HARDWARE") != NULL) {
+        fprintf(stderr, "libGL: Hardware rendering forced.\n");
+        attr[numattr++] = kCGLPFAAccelerated;
+        attr[numattr++] = kCGLPFANoRecovery;
+    } else if(getenv("LIBGL_ALWAYS_SOFTWARE") != NULL) {
+        fprintf(stderr, "libGL: Software rendering forced.\n");
+        attr[numattr++] = kCGLPFARendererID;
+        attr[numattr++] = kCGLRendererGenericFloatID;
     }
     
     /* 
