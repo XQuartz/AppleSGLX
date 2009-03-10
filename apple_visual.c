@@ -52,7 +52,14 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
 	attr[numattr++] = kCGLPFAColorSize;
 	attr[numattr++] = 32;
     }
-    
+
+    /* 
+     * The program chose a config based on the fbconfigs or visuals.
+     * Those are based on the attributes from CGL, so we probably
+     * do want the closest match for the color, depth, and accum.
+     */
+    attr[numattr++] = kCGLPFAClosestPolicy;
+
     if(c->stereoMode) 
 	attr[numattr++] = kCGLPFAStereo;
     
