@@ -30,6 +30,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <GL/gl.h>
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLContext.h>
@@ -37,10 +38,14 @@
 #include "apple_cgl.h"
 #include "apple_visual.h"
 
+enum {
+    MAX_ATTR = 60
+};
+
 /*mode is a __GlcontextModes*/
 void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
 			       bool *double_buffered, bool offscreen) {
-    CGLPixelFormatAttribute attr[60];
+    CGLPixelFormatAttribute attr[MAX_ATTR];
     const __GLcontextModes *c = mode;
     int numattr = 0;
     GLint vsref = 0;
@@ -59,7 +64,7 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
      * do want the closest match for the color, depth, and accum.
      */
     attr[numattr++] = kCGLPFAClosestPolicy;
-
+    
     if(c->stereoMode) 
 	attr[numattr++] = kCGLPFAStereo;
     
@@ -92,6 +97,7 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
     }
 
     if(c->sampleBuffers > 0) {
+	attr[numattr++] = kCGLPFAMultisample;
 	attr[numattr++] = kCGLPFASampleBuffers;
         attr[numattr++] = c->sampleBuffers;
 	attr[numattr++] = kCGLPFASamples;
@@ -99,6 +105,8 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
     }
     
     attr[numattr++] = 0;
+
+    assert(numattr < MAX_ATTR);
 
     error = apple_cgl.choose_pixel_format(attr, pfobj, &vsref);
 
