@@ -44,20 +44,20 @@ enum {
 
 /*mode is a __GlcontextModes*/
 void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
-			       bool *double_buffered, bool offscreen) {
+                               bool *double_buffered, bool offscreen) {
     CGLPixelFormatAttribute attr[MAX_ATTR];
     const __GLcontextModes *c = mode;
     int numattr = 0;
     GLint vsref = 0;
     CGLError error = 0;
-
+    
     if(offscreen) {
-	attr[numattr++] = kCGLPFAOffScreen;
-	
-	attr[numattr++] = kCGLPFAColorSize;
-	attr[numattr++] = 32;
+        attr[numattr++] = kCGLPFAOffScreen;
+        
+        attr[numattr++] = kCGLPFAColorSize;
+        attr[numattr++] = 32;
     }
-
+    
     /* 
      * The program chose a config based on the fbconfigs or visuals.
      * Those are based on the attributes from CGL, so we probably
@@ -66,52 +66,52 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
     attr[numattr++] = kCGLPFAClosestPolicy;
     
     if(c->stereoMode) 
-	attr[numattr++] = kCGLPFAStereo;
+        attr[numattr++] = kCGLPFAStereo;
     
     if(c->doubleBufferMode) {
-	attr[numattr++] = kCGLPFADoubleBuffer;
-	*double_buffered = true;
+        attr[numattr++] = kCGLPFADoubleBuffer;
+        *double_buffered = true;
     } else {
-	*double_buffered = false;
+        *double_buffered = false;
     }
-
+    
     attr[numattr++] = kCGLPFAColorSize;
     attr[numattr++] = c->redBits + c->greenBits + c->blueBits;
     attr[numattr++] = kCGLPFAAlphaSize;
     attr[numattr++] = c->alphaBits;
-
+    
     if((c->accumRedBits + c->accumGreenBits + c->accumBlueBits) > 0) {
-	attr[numattr++] = kCGLPFAAccumSize;
-	attr[numattr++] = c->accumRedBits + c->accumGreenBits + 
+        attr[numattr++] = kCGLPFAAccumSize;
+        attr[numattr++] = c->accumRedBits + c->accumGreenBits + 
 	    c->accumBlueBits + c->accumAlphaBits;
     }
-
+    
     if(c->depthBits > 0) {
-	attr[numattr++] = kCGLPFADepthSize;
-	attr[numattr++] = c->depthBits;
+        attr[numattr++] = kCGLPFADepthSize;
+        attr[numattr++] = c->depthBits;
     }
-
+    
     if(c->stencilBits > 0) {
-	attr[numattr++] = kCGLPFAStencilSize;
-	attr[numattr++] = c->stencilBits;
+        attr[numattr++] = kCGLPFAStencilSize;
+        attr[numattr++] = c->stencilBits;
     }
-
+    
     if(c->sampleBuffers > 0) {
-	attr[numattr++] = kCGLPFAMultisample;
-	attr[numattr++] = kCGLPFASampleBuffers;
+        attr[numattr++] = kCGLPFAMultisample;
+        attr[numattr++] = kCGLPFASampleBuffers;
         attr[numattr++] = c->sampleBuffers;
-	attr[numattr++] = kCGLPFASamples;
-	attr[numattr++] = c->samples;
+        attr[numattr++] = kCGLPFASamples;
+        attr[numattr++] = c->samples;
     }
     
     attr[numattr++] = 0;
-
+    
     assert(numattr < MAX_ATTR);
-
+    
     error = apple_cgl.choose_pixel_format(attr, pfobj, &vsref);
-
+    
     if(error) {
-	fprintf(stderr, "error: %s\n", apple_cgl.error_string(error));
-	abort();
+        fprintf(stderr, "error: %s\n", apple_cgl.error_string(error));
+        abort();
     }
- }
+}
