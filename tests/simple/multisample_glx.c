@@ -147,6 +147,11 @@ int main() {
 
     printf("visinfo->visualid %lx\n", visinfo->visualid);
 
+    glXGetFBConfigAttrib(dpy, fbconfig[bestfbi], GLX_FBCONFIG_ID, &value);
+
+    printf("fbconfig id 0x%x\n", value);
+						    
+
     attr.background_pixel = 0;
     attr.border_pixel = 0;
     attr.colormap = XCreateColormap(dpy, root, visinfo->visual, AllocNone);
@@ -173,6 +178,8 @@ int main() {
 	fprintf(stderr, "error: making context current!\n");
 	return EXIT_FAILURE;
     }
+
+    printf("GL_RENDERER %s\n", (char *) glGetString(GL_RENDERER));
 
     glEnable(GL_MULTISAMPLE);
 
