@@ -38,6 +38,7 @@
 #include "glcontextmodes.h" 
 #include "apple_cgl.h"
 #include "apple_visual.h"
+#include "apple_glx.h"
 
 enum {
     MAX_ATTR = 60
@@ -53,18 +54,19 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
     CGLError error = 0;
     
     if(offscreen) {
+        apple_glx_diagnostic("offscreen rendering enabled.  Using kCGLPFAOffScreen\n");
+
         attr[numattr++] = kCGLPFAOffScreen;
-        
         attr[numattr++] = kCGLPFAColorSize;
         attr[numattr++] = 32;
-    } else if(getenv("LIBGL_ALWAYS_HARDWARE") != NULL) {
-        fprintf(stderr, "libGL: Hardware rendering forced.\n");
-        attr[numattr++] = kCGLPFAAccelerated;
-        attr[numattr++] = kCGLPFANoRecovery;
     } else if(getenv("LIBGL_ALWAYS_SOFTWARE") != NULL) {
-        fprintf(stderr, "libGL: Software rendering forced.\n");
+        apple_glx_diagnostic("Software rendering requested.  Using kCGLRendererGenericFloatID.\n");
         attr[numattr++] = kCGLPFARendererID;
         attr[numattr++] = kCGLRendererGenericFloatID;
+    } else if(getenv("LIBGL_ALLOW_SOFTWARE") != NULL) {
+        apple_glx_diagnostic("Software rendering is not being excluded.  Not using kCGLPFAAccelerated.\n");
+    } else {
+        attr[numattr++] = kCGLPFAAccelerated;
     }
     
     /* 
