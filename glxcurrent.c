@@ -36,7 +36,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "glxclient.h"
-
+#include "apple_glx.h"
 #include "apple_glx_context.h"
 
 /*
@@ -136,12 +136,17 @@ static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
 			       Bool pre13)
 {
     const GLXContext oldGC = __glXGetCurrentContext();
-     
-    if(apple_glx_make_current_context(dpy, 
-				      (oldGC && oldGC != &dummyContext) ?
-				      oldGC->apple : NULL, 
-				      gc ? gc->apple : NULL,
-				      draw))
+    bool error;
+    
+    error = apple_glx_make_current_context(dpy, 
+					   (oldGC && oldGC != &dummyContext) ?
+					   oldGC->apple : NULL, 
+					   gc ? gc->apple : NULL,
+					   draw);
+
+    apple_glx_diagnostic("%s: error %s\n", __func__, error ? "YES" : "NO");
+
+    if(error)
 	return GL_FALSE;
     
     __glXLock();
