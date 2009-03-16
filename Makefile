@@ -48,38 +48,41 @@ $(BUILD_DIR)/libGL.1.2.dylib: $(OBJECTS)
 .c.o:
 	$(COMPILE) $<
 
-apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c
-apple_xgl_api.o: apple_xgl_api.h apple_xgl_api.c apple_xgl_api_stereo.c
-apple_xgl_api_read.o: apple_xgl_api_read.h apple_xgl_api_read.c apple_xgl_api.h
-apple_xgl_api_viewport.o: apple_xgl_api_viewport.h apple_xgl_api_viewport.c apple_xgl_api.h
-glcontextmodes.o: glcontextmodes.c glcontextmodes.h
-glxext.o: glxext.c
-glxreply.o: glxreply.c
-glxcmds.o: glxcmds.c apple_glx_context.h
-glx_pbuffer.o: glx_pbuffer.c
-glx_error.o: glx_error.c
-glx_query.o: glx_query.c
-glxcurrent.o: glxcurrent.c
-glxextensions.o: glxextensions.h glxextensions.c
-glxhash.o: glxhash.h glxhash.c
-appledri.o: appledri.h appledristr.h appledri.c
-apple_glx_context.o: apple_glx_context.c apple_glx_context.h apple_glx_context.h
-apple_glx.o: apple_glx.h apple_glx.c apple_xgl_api.h
-apple_visual.o: apple_visual.h apple_visual.c
-apple_cgl.o: apple_cgl.h apple_cgl.c
-apple_glx_pbuffer.o: apple_glx_drawable.h apple_glx_pbuffer.c
-apple_glx_pixmap.o: apple_glx_drawable.h apple_glx_pixmap.c appledri.h
-apple_glx_surface.o: apple_glx_drawable.h apple_glx_surface.c appledri.h
-xfont.o: xfont.c glxclient.h
-compsize.o: compsize.c
-renderpix.o: renderpix.c
-singlepix.o: singlepix.c
-pixel.o: pixel.c
-glx_empty.o: glx_empty.c
+apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c include/GL/gl.h
+apple_xgl_api.o: apple_xgl_api.h apple_xgl_api.c apple_xgl_api_stereo.c include/GL/gl.h
+apple_xgl_api_read.o: apple_xgl_api_read.h apple_xgl_api_read.c apple_xgl_api.h include/GL/gl.h
+apple_xgl_api_viewport.o: apple_xgl_api_viewport.h apple_xgl_api_viewport.c apple_xgl_api.h include/GL/gl.h
+glcontextmodes.o: glcontextmodes.c glcontextmodes.h include/GL/gl.h
+glxext.o: glxext.c include/GL/gl.h
+glxreply.o: glxreply.c include/GL/gl.h
+glxcmds.o: glxcmds.c apple_glx_context.h include/GL/gl.h
+glx_pbuffer.o: glx_pbuffer.c include/GL/gl.h
+glx_error.o: glx_error.c include/GL/gl.h
+glx_query.o: glx_query.c include/GL/gl.h
+glxcurrent.o: glxcurrent.c include/GL/gl.h
+glxextensions.o: glxextensions.h glxextensions.c include/GL/gl.h
+glxhash.o: glxhash.h glxhash.c include/GL/gl.h
+appledri.o: appledri.h appledristr.h appledri.c include/GL/gl.h
+apple_glx_context.o: apple_glx_context.c apple_glx_context.h apple_glx_context.h include/GL/gl.h
+apple_glx.o: apple_glx.h apple_glx.c apple_xgl_api.h include/GL/gl.h
+apple_visual.o: apple_visual.h apple_visual.c include/GL/gl.h
+apple_cgl.o: apple_cgl.h apple_cgl.c include/GL/gl.h
+apple_glx_pbuffer.o: apple_glx_drawable.h apple_glx_pbuffer.c include/GL/gl.h
+apple_glx_pixmap.o: apple_glx_drawable.h apple_glx_pixmap.c appledri.h include/GL/gl.h
+apple_glx_surface.o: apple_glx_drawable.h apple_glx_surface.c appledri.h include/GL/gl.h
+xfont.o: xfont.c glxclient.h include/GL/gl.h
+compsize.o: compsize.c include/GL/gl.h
+renderpix.o: renderpix.c include/GL/gl.h
+singlepix.o: singlepix.c include/GL/gl.h
+pixel.o: pixel.c include/GL/gl.h
+glx_empty.o: glx_empty.c include/GL/gl.h
 
 apple_xgl_api.c: apple_xgl_api.h
 apple_xgl_api.h: gen_api_header.tcl  gen_api_library.tcl  gen_code.tcl  gen_defs.tcl  gen_exports.tcl  gen_funcs.tcl  gen_types.tcl
 	$(TCLSH) gen_code.tcl
+
+include/GL/gl.h: include/GL/gl.h.header include/GL/gl.h.footer
+	./gen_gl_h.sh
 
 $(BUILD_DIR)/glxinfo: tests/glxinfo/glxinfo.c $(BUILD_DIR)/libGL.1.2.dylib
 	$(CC) tests/glxinfo/glxinfo.c $(INCLUDE) -L$(X11_DIR)/lib -lX11 $(BUILD_DIR)/libGL.1.2.dylib -o $@
@@ -112,3 +115,4 @@ clean:
 	rm -f *.c~ *.h~
 	rm -f apple_xgl_api.h apple_xgl_api.c
 	rm -f *.dylib
+	rm -f include/GL/gl.h
