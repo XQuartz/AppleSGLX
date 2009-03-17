@@ -49,7 +49,7 @@ void event_loop(Display *dpy) {
 	draw(dpy, mainwin);
 	/* This should destroy the surface. */
 	if(!glXMakeCurrent(dpy, None, ctx)) {
-	    fprintf(stderr, "%s: make current None failed!\n");
+	    fprintf(stderr, "%s: make current None failed!\n", __func__);
 	    exit(EXIT_FAILURE);
 	}	
 
@@ -68,7 +68,7 @@ void event_loop(Display *dpy) {
 
 	/* This should recreate the surface. */
 	if(!glXMakeCurrent(dpy, mainwin, ctx)) {
-	    fprintf(stderr, "%s: make mainwin current failed!\n");
+	    fprintf(stderr, "%s: make mainwin current failed!\n", __func__);
 	    exit(EXIT_FAILURE);
 	}
     }
