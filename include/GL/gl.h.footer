@@ -1,12 +1,29 @@
+/* We want to use OpelGL.framework's headers to get both prototypes and
+ * function pointers (like Mesa's API)
+ */
 
-#ifdef GL_GLEXT_LEGACY 
-/* The user has requested the exclusion of glext.h. */
-#include "/System/Library/Frameworks/OpenGL.framework/Headers/gl.h"
-#else
-#define GL_GLEXT_LEGACY 1
-#include "/System/Library/Frameworks/OpenGL.framework/Headers/gl.h"
-#undef GL_GLEXT_LEGACY
+#ifndef GL_GLEXT_FUNCTION_POINTERS
+#define GL_GLEXT_FUNCTION_POINTERS 1
+#endif
+
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 0
+#endif
+
 /* Our glext.h is based on a version from the registry that is newer. */
+#ifndef GL_GLEXT_LEGACY
+#define GL_GLEXT_LEGACY 0
+#endif
+
+#include "/System/Library/Frameworks/OpenGL.framework/Headers/gl.h"
+
+/* Unset GL_GLEXT_PROTOTYPES for glext.h if the user didn't want those */
+#if GL_GLEXT_PROTOTYPES == 0
+#undef GL_GLEXT_PROTOTYPES
+#endif
+
+#if GL_GLEXT_LEGACY == 0
+#undef GL_GLEXT_LEGACY
 #include <GL/glext.h>
 #endif
 
