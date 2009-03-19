@@ -30,6 +30,7 @@
 #include <stdbool.h>
 #include "apple_xgl_api_stereo.h"
 #include "apple_xgl_api.h"
+#include "apple_glx_context.h"
 
 extern struct apple_xgl_api __gl_api;
 /* 
