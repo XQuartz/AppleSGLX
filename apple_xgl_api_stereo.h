@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -27,15 +27,13 @@
  prior written authorization.
 */
 
-#ifndef APPLE_VISUAL_H
-#define APPLE_VISUAL_H
+#include "glxclient.h"
 
-#include <stdbool.h>
-#include <OpenGL/CGLTypes.h>
+#ifndef APPLE_XGL_API_STEREO_H
+#define APPLE_XGL_API_STEREO_H
 
-/* mode is expected to be of type __GLcontextModes. */
-void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
-			       bool *double_buffered, bool *uses_stereo,
-			       bool offscreen);
+extern void glDrawBuffer(GLenum mode);
+extern void glDrawBuffers(GLsizei n, const GLenum *bufs);
+extern void glDrawBuffersARB(GLsizei n, const GLenum *bufs);
 
 #endif

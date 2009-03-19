@@ -117,6 +117,7 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
     struct apple_glx_drawable *d;
     struct apple_glx_pixmap *p;
     bool double_buffered;
+    bool uses_stereo;
     CGLError error;
     const __GLcontextModes *cmodes = mode;
 
@@ -158,7 +159,7 @@ bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap,
     }
 
     apple_visual_create_pfobj(&p->pixel_format_obj, mode, &double_buffered,
-			      /*offscreen*/ true);
+			      &uses_stereo, /*offscreen*/ true);
 
     error = apple_cgl.create_context(p->pixel_format_obj, NULL,
 				     &p->context_obj);

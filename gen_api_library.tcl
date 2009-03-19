@@ -180,8 +180,6 @@ proc main {argc argv} {
         puts $fd "[dict get $attr return] gl[set f]([set pstr]) \{\n\t$body\n\}"
     }
 
-    puts $fd {#include "apple_xgl_api_stereo.c"}
-
     puts $fd $::init_code
     
     puts $fd "void apple_xgl_init_direct(void) \{"

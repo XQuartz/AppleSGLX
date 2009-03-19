@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Apple Inc.
+ Copyright (c) 2008, 2009 Apple Inc.
  
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation files
@@ -46,7 +46,8 @@ enum {
 
 /*mode is a __GlcontextModes*/
 void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
-                               bool *double_buffered, bool offscreen) {
+                               bool *double_buffered, bool *uses_stereo,
+			       bool offscreen) {
     CGLPixelFormatAttribute attr[MAX_ATTR];
     const __GLcontextModes *c = mode;
     int numattr = 0;
@@ -76,9 +77,13 @@ void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
      */
     attr[numattr++] = kCGLPFAClosestPolicy;
     
-    if(c->stereoMode) 
+    if(c->stereoMode) {
         attr[numattr++] = kCGLPFAStereo;
-    
+	*uses_stereo = true;
+    } else {
+	*uses_stereo = false;
+    }
+
     if(c->doubleBufferMode) {
         attr[numattr++] = kCGLPFADoubleBuffer;
         *double_buffered = true;

@@ -139,13 +139,15 @@ bool apple_glx_create_context(void **ptr, Display *dpy, int screen,
     ac->thread_id = pthread_self();
     ac->screen = screen;
     ac->double_buffered = false;
+    ac->uses_stereo = false;
     ac->need_update = false;
     ac->is_current = false;
     ac->made_current = false;
     ac->last_surface_window = None;
     
     apple_visual_create_pfobj(&ac->pixel_format_obj, mode, 
-			      &ac->double_buffered, /*offscreen*/ false);
+			      &ac->double_buffered, &ac->uses_stereo,
+			      /*offscreen*/ false);
     
     error = apple_cgl.create_context(ac->pixel_format_obj, 
 				     sharedac ? sharedac->context_obj : NULL,
@@ -552,4 +554,10 @@ void apple_glx_context_update(Display *dpy, void *ptr) {
 	    d->destroy(d);
 	}
     }
+}
+
+bool apple_glx_context_uses_stereo(void *ptr) {
+    struct apple_glx_context *ac = ptr;
+
+    return ac->uses_stereo;
 }

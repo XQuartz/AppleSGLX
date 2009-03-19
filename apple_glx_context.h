@@ -47,6 +47,7 @@ struct apple_glx_context {
     pthread_t thread_id;
     int screen;
     bool double_buffered;
+    bool uses_stereo;
     bool need_update;
     bool is_current; /* True if the context is current in some thread. */
     bool made_current; /* True if the context has ever been made current. */
@@ -75,5 +76,7 @@ bool apple_glx_copy_context(void *currentptr, void *srcptr, void *destptr,
 int apple_glx_context_surface_changed(unsigned int uid, pthread_t caller);
 
 void apple_glx_context_update(Display *dpy, void *ptr);
+
+bool apple_glx_context_uses_stereo(void *ptr);
 
 #endif /*APPLE_GLX_CONTEXT_H*/

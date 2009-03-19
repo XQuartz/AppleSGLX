@@ -33,7 +33,7 @@ OBJECTS=glxext.o glxcmds.o glx_pbuffer.o glx_query.o glxcurrent.o glxextensions.
     compsize.o apple_visual.o apple_cgl.o glxreply.o glcontextmodes.o \
     apple_xgl_api.o apple_glx_drawable.o xfont.o apple_glx_pbuffer.o \
     apple_glx_pixmap.o apple_xgl_api_read.o glx_empty.o glx_error.o \
-    apple_xgl_api_viewport.o apple_glx_surface.o
+    apple_xgl_api_viewport.o apple_glx_surface.o apple_xgl_api_stereo.o
 
 #This is used for building the tests.
 #The tests don't require installation.
@@ -52,6 +52,7 @@ apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c include/GL/gl.h
 apple_xgl_api.o: apple_xgl_api.h apple_xgl_api.c apple_xgl_api_stereo.c include/GL/gl.h
 apple_xgl_api_read.o: apple_xgl_api_read.h apple_xgl_api_read.c apple_xgl_api.h include/GL/gl.h
 apple_xgl_api_viewport.o: apple_xgl_api_viewport.h apple_xgl_api_viewport.c apple_xgl_api.h include/GL/gl.h
+apple_xgl_api_stereo.o: apple_xgl_api_stereo.h apple_xgl_api_stereo.c
 glcontextmodes.o: glcontextmodes.c glcontextmodes.h include/GL/gl.h
 glxext.o: glxext.c include/GL/gl.h
 glxreply.o: glxreply.c include/GL/gl.h
