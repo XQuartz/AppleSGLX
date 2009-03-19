@@ -81,7 +81,7 @@ apple_xgl_api.c: apple_xgl_api.h
 apple_xgl_api.h: gen_api_header.tcl  gen_api_library.tcl  gen_code.tcl  gen_defs.tcl  gen_exports.tcl  gen_funcs.tcl  gen_types.tcl
 	$(TCLSH) gen_code.tcl
 
-include/GL/gl.h: include/GL/gl.h.header include/GL/gl.h.footer
+include/GL/gl.h: include/GL/gl.h.header include/GL/gl.h.core include/GL/gl.h.footer gen_gl_h.sh
 	./gen_gl_h.sh
 
 $(BUILD_DIR)/glxinfo: tests/glxinfo/glxinfo.c $(BUILD_DIR)/libGL.1.2.dylib
