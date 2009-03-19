@@ -1,19 +1,33 @@
 #!/bin/bash
 
-{
-  cat include/GL/gl.h.header 
-  if grep -q GL_GLEXT_PROTOTYPES /System/Library/Frameworks/OpenGL.framework/Headers/gl.h ; then
-    grep gl.*ProcPtr /System/Library/Frameworks/OpenGL.framework/Headers/gl{,ext}.h | sed 's:^.*\(gl.*Ptr\).*$:\1:' | sort -u | perl -ne 'chomp($_); $s = "PFN".uc($_); $s =~ s/PROCPTR/PROC/; print "#define ".$_." ".$s."\n"'
-  fi
-  cat include/GL/gl.h.core
+INFILE=$1
+OUTFILE=$2
 
-  if ! grep -q GL_GLEXT_PROTOTYPES /System/Library/Frameworks/OpenGL.framework/Headers/gl.h ; then
+generate_macros() {
+    grep gl.*ProcPtr /System/Library/Frameworks/OpenGL.framework/Headers/gl{,ext}.h | sed 's:^.*\(gl.*Ptr\).*$:\1:' | sort -u | perl -ne 'chomp($_); $s = "PFN".uc($_); $s =~ s/PROCPTR/PROC/; print "#define ".$_." ".$s."\n"'
+}
+
+generate_function_pointers() {
     { 
       echo "#define GL_GLEXT_FUNCTION_POINTERS 1"
       echo "#define GL_GLEXT_LEGACY 1"
-      grep gl.*ProcPtr /System/Library/Frameworks/OpenGL.framework/Headers/gl.h | sed 's:^.*\(gl.*Ptr\).*$:\1:' | sort -u | perl -ne 'chomp($_); $s = "PFN".uc($_); $s =~ s/PROCPTR/PROC/; print "#define ".$_." ".$s."\n"'
+      generate_macros
       echo '#include "/System/Library/Frameworks/OpenGL.framework/Headers/gl.h"'
     } | gcc -E - | grep typedef.*PFN
-  fi
-  cat include/GL/gl.h.footer
-} > include/GL/gl.h
+}
+
+cat ${INFILE} | while IFS= read LINE ; do
+  case $LINE in
+    "@CGL_MESA_COMPAT_MACROS@")
+      generate_macros
+    ;;
+    "@CGL_MESA_FUNCTION_POINTERS@")
+      if ! grep -q GL_GLEXT_PROTOTYPES /System/Library/Frameworks/OpenGL.framework/Headers/gl.h ; then
+        generate_function_pointers
+      fi
+    ;;
+    *)
+      printf "${LINE}\n"
+    ;;
+  esac
+done > ${OUTFILE}
