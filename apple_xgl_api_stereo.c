@@ -76,11 +76,13 @@ void glDrawBuffers(GLsizei n, const GLenum *bufs) {
 	GLenum newbuf[n + 2];
 	GLsizei i, outi = 0;
 	bool have_back = false;
+	bool have_front = false;
         
 	for(i = 0; i < n; ++i) {
 	    if(GL_BACK == bufs[i]) {
 		have_back = true;
-		continue;
+	    } else if(GL_FRONT == bufs[i]) {
+		have_back = true;
 	    } else {
 		newbuf[outi++] = bufs[i];
 	    }
@@ -89,6 +91,11 @@ void glDrawBuffers(GLsizei n, const GLenum *bufs) {
 	if(have_back) {
 	    newbuf[outi++] = GL_BACK_LEFT;
 	    newbuf[outi++] = GL_BACK_RIGHT;
+	}
+
+	if(have_front) {
+	    newbuf[outi++] = GL_FRONT_LEFT;
+	    newbuf[outi++] = GL_FRONT_RIGHT;
 	}
 	
 	__gl_api.DrawBuffers(outi, newbuf);
