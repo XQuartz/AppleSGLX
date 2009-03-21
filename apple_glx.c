@@ -112,6 +112,12 @@ bool apple_init_glx(Display *dpy) {
     int eventBase, errorBase;
     int major, minor, patch;
 
+    if(!XAppleDRIQueryExtension(dpy, &eventBase, &errorBase))
+	return true;
+    
+    if(!XAppleDRIQueryVersion(dpy, &major, &minor, &patch))
+        return true;
+    
     if(initialized)
 	return false;
 
@@ -125,14 +131,9 @@ bool apple_init_glx(Display *dpy) {
     libgl_handle = dlopen(OPENGL_LIB_PATH, RTLD_LAZY);
     (void)apple_glx_get_client_id();
 
-    if(!XAppleDRIQueryExtension(dpy, &eventBase, &errorBase))
-        return true;
-    
-    if(!XAppleDRIQueryVersion(dpy, &major, &minor, &patch))
-        return true;
-  
     XAppleDRISetSurfaceNotifyHandler(surface_notify_handler);
 
+    /* This should really be per display. */
     dri_event_base = eventBase;
     initialized = true;
 
