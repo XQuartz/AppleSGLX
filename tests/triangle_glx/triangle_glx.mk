@@ -9,3 +9,6 @@ $(TEST_BUILD_DIR)/triangle_glx_surface-2: tests/triangle_glx/triangle_glx_surfac
 
 $(TEST_BUILD_DIR)/triangle_glx_withdraw_remap: tests/triangle_glx/triangle_glx_withdraw_remap.c $(LIBGL)
 	$(CC) tests/triangle_glx/triangle_glx_withdraw_remap.c -Iinclude -o $(TEST_BUILD_DIR)/triangle_glx_withdraw_remap $(LINK_TEST)
+
+$(TEST_BUILD_DIR)/triangle_glx_destroy_relation: tests/triangle_glx/triangle_glx_destroy_relation.c $(LIBGL)
+	$(CC) tests/triangle_glx/triangle_glx_destroy_relation.c -Iinclude -o $(TEST_BUILD_DIR)/triangle_glx_destroy_relation $(LINK_TEST)
