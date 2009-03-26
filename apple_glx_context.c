@@ -360,6 +360,27 @@ bool apple_glx_make_current_context(Display *dpy, void *oldptr, void *ptr,
     
 	/* The drawable is referenced once by apple_glx_surface_create. */
 
+	/*
+	 * FIXME: We actually need 2 references to prevent premature surface 
+	 * destruction.  The problem is that the surface gets destroyed in 
+	 * the case of the context being reused for another window, and
+	 * we then lose the surface contents.  Wait for destruction of a
+	 * window to destroy a surface.
+	 *
+	 * Note: this may leave around surfaces we don't want around, if
+	 * say we are using X for raster drawing after OpenGL rendering, 
+	 * but it will be compatible with the old libGL's behavior.
+	 *
+	 * Someday the X11 and OpenGL rendering must be unified at some
+	 * layer.  I suspect we can do that via shared memory and 
+	 * multiple threads in the X server (1 for each context created
+	 * by a client).  This would also allow users to render from 
+	 * multiple clients to the same OpenGL surface.  In fact it could
+	 * all be OpenGL.
+	 *
+	 */
+	newagd->reference(newagd);
+	
 	/* Save the new drawable with the context structure. */
 	ac->drawable = newagd;
     } else {
@@ -552,7 +573,14 @@ void apple_glx_context_update(Display *dpy, void *ptr) {
 	     * current in another context.
 	     */
 	    d->destroy(d);
-	}
+	    
+	    /*
+	     * FIXME: We retain 2 references to surfaces to prevent
+	     * premature destruction.  See also: the comment in the
+	     * make current path.
+	     */
+	    d->destroy(d);
+ 	}
     }
 }
 
