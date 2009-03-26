@@ -25,23 +25,28 @@ void resize(Display *dpy, Window w, int width, int height) {
 
 void event_loop(Display *dpy) {
     XEvent event;
-    
+    XWindowAttributes wattr;
+
     while(1) {
 	XNextEvent(dpy, &event);
 
 	switch(event.type) {
+	case ButtonPress:
+	    printf("event.xbutton.window 0x%lx\n",
+		   event.xbutton.window);
+	    XDestroyWindow(dpy, event.xbutton.window);
+	    break;
+
 	case Expose:
 	    glXMakeCurrent(dpy, event.xexpose.window, ctx);
+	    XGetWindowAttributes(dpy, event.xexpose.window, &wattr);
+	    resize(dpy, event.xexpose.window, wattr.width, wattr.height);
 	    draw(dpy, event.xexpose.window);
 	    break;
-	
-	case KeyPress: {
-	    XWindowAttributes wattr;
-    
+	    	
+	case KeyPress: {	    
 	    glXMakeCurrent(dpy, win2, ctx);
-
 	    XGetWindowAttributes(dpy, win2, &wattr);
-
 	    resize(dpy, win2, wattr.width, wattr.height);
 	    draw(dpy, win2);
 	    XFlush(dpy);
@@ -97,7 +102,8 @@ int main() {
     attr.background_pixel = 0;
     attr.border_pixel = 0;
     attr.colormap = XCreateColormap(dpy, root, visinfo->visual, AllocNone);
-    attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
+    attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask
+	| ButtonPressMask;
 
     win = XCreateWindow(dpy, root, /*x*/ 0, /*y*/ 0, 
 			/*width*/ 400, /*height*/ 400,
@@ -112,6 +118,8 @@ int main() {
 			 visinfo->visual,
 			 CWBackPixel | CWBorderPixel | CWColormap | CWEventMask,
 			 &attr);
+
+    printf("win 0x%lx win2 0x%lx\n", win, win2);
 
     ctx = glXCreateContext(dpy, visinfo, NULL, True);
     if(!ctx) {
