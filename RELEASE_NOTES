@@ -52,7 +52,10 @@ Due to basic low-level architectural differences the usage of shared
 contexts requires a similar visual or GLXFBConfig be used in the 
 creation of a shared context.  It's best if you specify the same
 visual.  This is due to a CGL design difference, and not something 
-that is easily worked around.
+that is easily worked around.  UPDATE: some changes made seem to
+help resolve this issue in many cases, so you may be able to use a
+shared context without this restriction.
+
 
 o Indirect
 
