@@ -101,16 +101,23 @@ static void surface_destroy(Display *dpy, struct apple_glx_drawable *d) {
 	fprintf(stderr, "xp_destroy_surface error: %d\n", (int)error);
     }
 
-    /*
-     * Warning: this causes other routines to be called (potentially)
-     * from surface_notify_handler.  It's probably best to not have
-     * any locks at this point locked.
+    /* 
+     * Check if this surface destroy came from the surface being destroyed
+     * on the server.  If s->pending_destroy is true, then it did, and 
+     * we don't want to try to destroy the surface on the server.
      */
-    XAppleDRIDestroySurface(d->display, DefaultScreen(d->display), 
-			    d->drawable);
-
-    apple_glx_diagnostic("%s: destroyed a surface for drawable 0x%lx uid %u\n", 
-			 __func__, d->drawable, s->uid);
+    if(!s->pending_destroy) {
+	/*
+	 * Warning: this causes other routines to be called (potentially)
+	 * from surface_notify_handler.  It's probably best to not have
+	 * any locks at this point locked.
+	 */
+	XAppleDRIDestroySurface(d->display, DefaultScreen(d->display), 
+				d->drawable);
+	
+	apple_glx_diagnostic("%s: destroyed a surface for drawable 0x%lx uid %u\n", 
+			     __func__, d->drawable, s->uid);
+    }
 }
 
 /* Return true if an error occured. */
@@ -193,6 +200,18 @@ void apple_glx_surface_destroy(unsigned int uid) {
     if(d) {
 	d->types.surface.pending_destroy = true;
 	d->release(d);
+	/* 
+	 * We release 2 references to the surface.  One was acquired by
+	 * the find, and the other was leftover from a context, or 
+	 * the surface being displayed, so the destroy() will decrease it
+	 * once more.
+	 *
+	 * If the surface is in a context, it will take one d->destroy(d);
+	 * to actually destroy it when the pending_destroy is processed
+	 * by a glViewport callback (see apple_glx_context_update()).
+	 */
+	d->destroy(d);
+	
 	d->unlock(d);
     }
 }

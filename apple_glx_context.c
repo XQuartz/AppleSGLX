@@ -572,14 +572,7 @@ void apple_glx_context_update(Display *dpy, void *ptr) {
 	     * If there are references to it, then it's probably made
 	     * current in another context.
 	     */
-	    d->destroy(d);
-	    
-	    /*
-	     * FIXME: We retain 2 references to surfaces to prevent
-	     * premature destruction.  See also: the comment in the
-	     * make current path.
-	     */
-	    d->destroy(d);
+	    d->destroy(d);	    
  	}
     }
 }
