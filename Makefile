@@ -12,7 +12,7 @@ INSTALL=install
 LN=ln
 RM=rm
 
-INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -F/System/Library/Frameworks/OpenGL.framework -I$(INSTALL_DIR)/include -I$(X11_DIR)/include
+INCLUDE=-I. -Iinclude -Iinclude/internal -DGLX_ALIAS_UNSUPPORTED -I$(INSTALL_DIR)/include -I$(X11_DIR)/include
 COMPILE=$(CC) $(INCLUDE) $(GL_CFLAGS) -c
 
 #The directory with the final binaries.
@@ -52,7 +52,7 @@ apple_glx_drawable.o: apple_glx_drawable.h apple_glx_drawable.c include/GL/gl.h
 apple_xgl_api.o: apple_xgl_api.h apple_xgl_api.c apple_xgl_api_stereo.c include/GL/gl.h
 apple_xgl_api_read.o: apple_xgl_api_read.h apple_xgl_api_read.c apple_xgl_api.h include/GL/gl.h
 apple_xgl_api_viewport.o: apple_xgl_api_viewport.h apple_xgl_api_viewport.c apple_xgl_api.h include/GL/gl.h
-apple_xgl_api_stereo.o: apple_xgl_api_stereo.h apple_xgl_api_stereo.c
+apple_xgl_api_stereo.o: apple_xgl_api_stereo.h apple_xgl_api_stereo.c apple_xgl_api.h include/GL/gl.h
 glcontextmodes.o: glcontextmodes.c glcontextmodes.h include/GL/gl.h
 glxext.o: glxext.c include/GL/gl.h
 glxreply.o: glxreply.c include/GL/gl.h
