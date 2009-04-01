@@ -2,7 +2,7 @@
 alias AreTexturesResidentEXT AreTexturesResident
 alias BindTextureEXT BindTexture
 alias DeleteTexturesEXT DeleteTextures
-alias GenTexturesExt GenTextures
+alias GenTexturesEXT GenTextures
 alias IsTextureEXT IsTexture
 alias PrioritizeTexturesEXT PrioritizeTextures
 alias TexImage3DEXT TexImage3D
