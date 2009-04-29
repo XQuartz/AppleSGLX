@@ -35,5 +35,6 @@ tests: $(TEST_BUILD_DIR)/simple $(TEST_BUILD_DIR)/fbconfigs $(TEST_BUILD_DIR)/tr
   $(TEST_BUILD_DIR)/triangle_glx_surface \
   $(TEST_BUILD_DIR)/triangle_glx_surface-2 \
   $(TEST_BUILD_DIR)/triangle_glx_withdraw_remap \
-  $(TEST_BUILD_DIR)/triangle_glx_destroy_relation
+  $(TEST_BUILD_DIR)/triangle_glx_destroy_relation \
+  $(TEST_BUILD_DIR)/query_drawable
 

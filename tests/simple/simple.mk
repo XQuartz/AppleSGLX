@@ -13,3 +13,5 @@ $(TEST_BUILD_DIR)/multisample_glx: tests/simple/multisample_glx.c $(LIBGL)
 $(TEST_BUILD_DIR)/glthreads: tests/simple/glthreads.c $(LIBGL)
 	$(CC) -DPTHREADS -pthread tests/simple/glthreads.c $(INCLUDE) -o $(TEST_BUILD_DIR)/glthreads $(LINK_TEST)
 
+$(TEST_BUILD_DIR)/query_drawable: tests/simple/query_drawable.c $(LIBGL)
+	$(CC) tests/simple/query_drawable.c $(INCLUDE) -o $@ $(LINK_TEST)

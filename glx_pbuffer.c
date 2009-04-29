@@ -44,21 +44,6 @@
 #include "apple_glx_drawable.h"
 #include "glx_error.h"
 
-
-static pthread_mutex_t queryLock = PTHREAD_MUTEX_INITIALIZER;
-
-/* 
- * This is protected by the queryLock.
- * Unfortunately XSetErrorHandler requires a lock. 
- */
-static int errorCount = 0;
-
-static int
-errorHandler(Display *dpy, XErrorEvent *error) {
-    ++errorCount;
-    return 0; /* don't exit */
-}
-
 /**
  * Create a new pbuffer.
  */
@@ -133,7 +118,6 @@ glXQueryDrawable(Display *dpy, GLXDrawable drawable,
     Window root;
     int x, y;
     unsigned int width, height, bd, depth;
-    int (*old_handler)(Display *, XErrorEvent *);
 
     if(apple_glx_pixmap_query(drawable, attribute, value))
 	return; /*done*/
@@ -142,33 +126,27 @@ glXQueryDrawable(Display *dpy, GLXDrawable drawable,
 	return; /*done*/
 
     /*
-     * This is used because XSetErrorHandler changes global state.
-     * Ideally we should prevent other threads from calling XSetErrorHandler.
-     * Another way of handling this might be a private display connection.
+     * The OpenGL spec states that we should report GLXBadDrawable if
+     * the drawable is invalid, however doing so would require that we
+     * use XSetErrorHandler(), which is known to not be thread safe.
+     * If we use a round-trip call to validate the drawable, there could
+     * be a race, so instead we just opt in favor of letting the
+     * XGetGeometry request fail with a GetGeometry request X error 
+     * rather than GLXBadDrawable, in what is hoped to be a rare
+     * case of an invalid drawable.  In practice most and possibly all
+     * X11 apps using GLX shouldn't notice a difference.
      */
-    pthread_mutex_lock(&queryLock);
-
-    old_handler = XSetErrorHandler(errorHandler);
-
     if(XGetGeometry(dpy, drawable, &root, &x, &y, &width, &height, &bd, &depth)) {
 	switch(attribute) {
 	case GLX_WIDTH:
 	    *value = width;
-	    return;
+	    break;
 
 	case GLX_HEIGHT:
 	    *value = height;
-	    return;
+	    break;
 	}
-	/*FALL THROUGH*/
     }
-
-    XSetErrorHandler(old_handler);
-
-    pthread_mutex_unlock(&queryLock);
-
-    __glXSendError(dpy, GLXBadDrawable, drawable, X_GLXGetDrawableAttributes,
-		   false);
 }
 
 
