@@ -38,9 +38,9 @@ extern struct apple_xgl_api __gl_api;
  * differences in MacOS X.
  */ 
 void glDrawBuffer(GLenum mode) {
-    GLXContext gc = __glXGetCurrentContext();
+    GLXContext gc = glXGetCurrentContext();
 
-    if(apple_glx_context_uses_stereo(gc->apple)) {
+    if(gc && apple_glx_context_uses_stereo(gc->apple)) {
 	GLenum buf[2];
 	GLsizei n = 0;
 	
@@ -70,9 +70,9 @@ void glDrawBuffer(GLenum mode) {
 
 	 
 void glDrawBuffers(GLsizei n, const GLenum *bufs) {
-    GLXContext gc = __glXGetCurrentContext();
+    GLXContext gc = glXGetCurrentContext();
 
-    if(apple_glx_context_uses_stereo(gc->apple)) {
+    if(gc && apple_glx_context_uses_stereo(gc->apple)) {
 	GLenum newbuf[n + 2];
 	GLsizei i, outi = 0;
 	bool have_back = false;
