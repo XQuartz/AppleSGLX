@@ -758,9 +758,8 @@ _X_HIDDEN __GLXdisplayPrivate *__glXInitialize(Display* dpy)
     if (glx_direct)
 	dpyPriv->driswDisplay = driswCreateDisplay(dpy);
 #endif
-    apple_init_glx(dpy);
 
-    if (!AllocAndFetchScreenConfigs(dpy, dpyPriv)) {
+    if (apple_init_glx(dpy) || !AllocAndFetchScreenConfigs(dpy, dpyPriv)) {
 	__glXUnlock();
 	Xfree((char*) dpyPriv);
 	Xfree((char*) private);
