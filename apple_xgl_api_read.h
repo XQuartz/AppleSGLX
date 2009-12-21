@@ -35,12 +35,13 @@
 
 #include "glxclient.h"
 
-extern void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, 
-			 GLenum type, void * pixels);
+extern void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height,
+                         GLenum format, GLenum type, void *pixels);
 
-extern void glCopyPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type);
+extern void glCopyPixels(GLint x, GLint y, GLsizei width, GLsizei height,
+                         GLenum type);
 
-extern void glCopyColorTable(GLenum target, GLenum internalformat, GLint x, GLint y, 
-		      GLsizei width);
+extern void glCopyColorTable(GLenum target, GLenum internalformat, GLint x,
+                             GLint y, GLsizei width);
 
 #endif

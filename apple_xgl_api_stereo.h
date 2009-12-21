@@ -33,7 +33,7 @@
 #define APPLE_XGL_API_STEREO_H
 
 extern void glDrawBuffer(GLenum mode);
-extern void glDrawBuffers(GLsizei n, const GLenum *bufs);
-extern void glDrawBuffersARB(GLsizei n, const GLenum *bufs);
+extern void glDrawBuffers(GLsizei n, const GLenum * bufs);
+extern void glDrawBuffersARB(GLsizei n, const GLenum * bufs);
 
 #endif

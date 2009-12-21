@@ -33,15 +33,16 @@
 #include <stdbool.h>
 #include <OpenGL/CGLTypes.h>
 #include <GL/gl.h>
+#include <GL/glxint.h>
 #include <X11/Xlib.h>
 #define XP_NO_X_HEADERS
 #include <Xplugin.h>
 
 void apple_glx_diagnostic(const char *fmt, ...);
 xp_client_id apple_glx_get_client_id(void);
-bool apple_init_glx(Display *dpy);
+bool apple_init_glx(Display * dpy);
 void apple_glx_swap_buffers(void *ptr);
-void *apple_glx_get_proc_address(const GLubyte *procname);
-void apple_glx_waitx(Display *dpy, void *ptr);
+void *apple_glx_get_proc_address(const GLubyte * procname);
+void apple_glx_waitx(Display * dpy, void *ptr);
 
 #endif

@@ -36,74 +36,84 @@ extern struct apple_xgl_api __gl_api;
 /* 
  * These are special functions for stereoscopic support 
  * differences in MacOS X.
- */ 
-void glDrawBuffer(GLenum mode) {
-    GLXContext gc = glXGetCurrentContext();
+ */
+void
+glDrawBuffer(GLenum mode)
+{
+   GLXContext gc = glXGetCurrentContext();
 
-    if(gc && apple_glx_context_uses_stereo(gc->apple)) {
-	GLenum buf[2];
-	GLsizei n = 0;
-	
-	switch(mode) {
-	case GL_BACK:
-	    buf[0] = GL_BACK_LEFT;
-	    buf[1] = GL_BACK_RIGHT;
-	    n = 2;
-	    break;
-	case GL_FRONT:
-	    buf[0] = GL_FRONT_LEFT;
-	    buf[1] = GL_FRONT_RIGHT;
-	    n = 2;
-	    break;
-	    
-	default:
-	    buf[0] = mode;
-	    n = 1;
-	    break;
-	}
-	
-	__gl_api.DrawBuffers(n, buf);
-    } else {
-	__gl_api.DrawBuffer(mode);
-    }
+   if (gc && apple_glx_context_uses_stereo(gc->apple)) {
+      GLenum buf[2];
+      GLsizei n = 0;
+
+      switch (mode) {
+      case GL_BACK:
+         buf[0] = GL_BACK_LEFT;
+         buf[1] = GL_BACK_RIGHT;
+         n = 2;
+         break;
+      case GL_FRONT:
+         buf[0] = GL_FRONT_LEFT;
+         buf[1] = GL_FRONT_RIGHT;
+         n = 2;
+         break;
+
+      default:
+         buf[0] = mode;
+         n = 1;
+         break;
+      }
+
+      __gl_api.DrawBuffers(n, buf);
+   }
+   else {
+      __gl_api.DrawBuffer(mode);
+   }
 }
 
-	 
-void glDrawBuffers(GLsizei n, const GLenum *bufs) {
-    GLXContext gc = glXGetCurrentContext();
 
-    if(gc && apple_glx_context_uses_stereo(gc->apple)) {
-	GLenum newbuf[n + 2];
-	GLsizei i, outi = 0;
-	bool have_back = false;
-	bool have_front = false;
-        
-	for(i = 0; i < n; ++i) {
-	    if(GL_BACK == bufs[i]) {
-		have_back = true;
-	    } else if(GL_FRONT == bufs[i]) {
-		have_back = true;
-	    } else {
-		newbuf[outi++] = bufs[i];
-	    }
-	}
-	
-	if(have_back) {
-	    newbuf[outi++] = GL_BACK_LEFT;
-	    newbuf[outi++] = GL_BACK_RIGHT;
-	}
+void
+glDrawBuffers(GLsizei n, const GLenum * bufs)
+{
+   GLXContext gc = glXGetCurrentContext();
 
-	if(have_front) {
-	    newbuf[outi++] = GL_FRONT_LEFT;
-	    newbuf[outi++] = GL_FRONT_RIGHT;
-	}
-	
-	__gl_api.DrawBuffers(outi, newbuf);
-    } else {
-	__gl_api.DrawBuffers(n, bufs);
-    }
+   if (gc && apple_glx_context_uses_stereo(gc->apple)) {
+      GLenum newbuf[n + 2];
+      GLsizei i, outi = 0;
+      bool have_back = false;
+      bool have_front = false;
+
+      for (i = 0; i < n; ++i) {
+         if (GL_BACK == bufs[i]) {
+            have_back = true;
+         }
+         else if (GL_FRONT == bufs[i]) {
+            have_back = true;
+         }
+         else {
+            newbuf[outi++] = bufs[i];
+         }
+      }
+
+      if (have_back) {
+         newbuf[outi++] = GL_BACK_LEFT;
+         newbuf[outi++] = GL_BACK_RIGHT;
+      }
+
+      if (have_front) {
+         newbuf[outi++] = GL_FRONT_LEFT;
+         newbuf[outi++] = GL_FRONT_RIGHT;
+      }
+
+      __gl_api.DrawBuffers(outi, newbuf);
+   }
+   else {
+      __gl_api.DrawBuffers(n, bufs);
+   }
 }
 
-void glDrawBuffersARB(GLsizei n, const GLenum *bufs) {
-    glDrawBuffers(n, bufs);
+void
+glDrawBuffersARB(GLsizei n, const GLenum * bufs)
+{
+   glDrawBuffers(n, bufs);
 }

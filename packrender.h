@@ -184,8 +184,8 @@
 #define __GLX_PUT_DOUBLE(offset,a) \
     gl_put_double(pc + offset, a)
 
-extern void gl_put_float(/*GLubyte *, struct cray_single*/);
-extern void gl_put_double(/*GLubyte *, struct cray_double*/);
+extern void gl_put_float( /*GLubyte *, struct cray_single */ );
+extern void gl_put_double( /*GLubyte *, struct cray_double */ );
 #endif
 
 #ifndef _CRAY
@@ -233,10 +233,10 @@ extern void gl_put_double(/*GLubyte *, struct cray_double*/);
 #define __GLX_PUT_DOUBLE_ARRAY(offset,a,alen) \
     gl_put_double_array((GLubyte *)(pc + offset), (double *)a, alen * __GLX_SIZE_FLOAT64)
 
-extern gl_put_short_array (GLubyte *, short *, int);
-extern gl_put_long_array (GLubyte *, long *, int);
-extern gl_put_float_array (GLubyte *, float *, int);
-extern gl_put_double_array (GLubyte *, double *, int);
+extern gl_put_short_array(GLubyte *, short *, int);
+extern gl_put_long_array(GLubyte *, long *, int);
+extern gl_put_float_array(GLubyte *, float *, int);
+extern gl_put_double_array(GLubyte *, double *, int);
 
 #endif /* _CRAY */
 

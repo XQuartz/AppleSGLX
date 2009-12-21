@@ -165,7 +165,7 @@ extern float gl_ntoh_double(GLubyte *);
 #endif
 
 #endif
-	  
+
 /* Get an array of typed data */
 #define __GLX_SINGLE_GET_VOID_ARRAY(a,alen)	\
 {						\
@@ -180,7 +180,7 @@ extern float gl_ntoh_double(GLubyte *);
     _XRead(dpy,(char *)a,alen*__GLX_SIZE_INT8);	\
     if (slop) _XEatData(dpy,4-slop);		\
 }
-					
+
 
 #define __GLX_SINGLE_GET_SHORT_ARRAY(a,alen)	\
 {						\
@@ -190,14 +190,14 @@ extern float gl_ntoh_double(GLubyte *);
 }
 
 #define __GLX_SINGLE_GET_LONG_ARRAY(a,alen) \
-    _XRead(dpy,(char *)a,alen*__GLX_SIZE_INT32);  	
+    _XRead(dpy,(char *)a,alen*__GLX_SIZE_INT32);
 
 #ifndef _CRAY
 #define __GLX_SINGLE_GET_FLOAT_ARRAY(a,alen) \
-    _XRead(dpy,(char *)a,alen*__GLX_SIZE_FLOAT32);  	
+    _XRead(dpy,(char *)a,alen*__GLX_SIZE_FLOAT32);
 
 #define __GLX_SINGLE_GET_DOUBLE_ARRAY(a,alen) \
-    _XRead(dpy,(char *)a,alen*__GLX_SIZE_FLOAT64);  	
+    _XRead(dpy,(char *)a,alen*__GLX_SIZE_FLOAT64);
 
 #else
 #define __GLX_SINGLE_GET_FLOAT_ARRAY(a,alen) \
@@ -206,8 +206,8 @@ extern float gl_ntoh_double(GLubyte *);
 #define __GLX_SINGLE_GET_DOUBLE_ARRAY(a,alen) \
     gl_get_double_array(dpy, a, alen);
 
-extern void gl_get_float_array(Display *dpy, float *a, int alen);
-extern void gl_get_double_array(Display *dpy, double *a, int alen);
+extern void gl_get_float_array(Display * dpy, float *a, int alen);
+extern void gl_get_double_array(Display * dpy, double *a, int alen);
 #endif
 
 #endif /* !__GLX_packsingle_h__ */

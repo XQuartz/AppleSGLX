@@ -139,6 +139,10 @@ typedef struct __GLcontextModesRec {
     GLint bindToMipmapTexture;
     GLint bindToTextureTargets;
     GLint yInverted;
+
+#ifdef __APPLE__
+    void *apple;
+#endif
 } __GLcontextModes;
 
 /* Several fields of __GLcontextModes can take these as values.  Since

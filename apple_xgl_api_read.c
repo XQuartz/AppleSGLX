@@ -41,84 +41,94 @@
 
 extern struct apple_xgl_api __gl_api;
 
-struct apple_xgl_saved_state {
-    bool swapped;
+struct apple_xgl_saved_state
+{
+   bool swapped;
 };
 
-static void SetRead(struct apple_xgl_saved_state *saved) {
-    GLXContext gc = __glXGetCurrentContext();
-   
-    /*
-     * By default indicate that the state was not swapped, so that UnsetRead
-     * functions correctly.
-     */
-    saved->swapped = false;
+static void
+SetRead(struct apple_xgl_saved_state *saved)
+{
+   GLXContext gc = __glXGetCurrentContext();
 
-    /* 
-     * If the readable drawable isn't the same as the drawable then 
-     * the user has requested a readable drawable with glXMakeContextCurrent().
-     * We emulate this behavior by switching the current drawable.
-     */
-    if(None != gc->currentReadable 
+   /*
+    * By default indicate that the state was not swapped, so that UnsetRead
+    * functions correctly.
+    */
+   saved->swapped = false;
+
+   /* 
+    * If the readable drawable isn't the same as the drawable then 
+    * the user has requested a readable drawable with glXMakeContextCurrent().
+    * We emulate this behavior by switching the current drawable.
+    */
+   if (None != gc->currentReadable
        && gc->currentReadable != gc->currentDrawable) {
-	Display *dpy = glXGetCurrentDisplay();
+      Display *dpy = glXGetCurrentDisplay();
 
-	saved->swapped = true;
+      saved->swapped = true;
 
-	if(apple_glx_make_current_context(dpy, gc->apple, gc->apple, 
-					  gc->currentReadable)) {
-	    /* An error occurred, so try to restore the old context state. */
-	    (void)apple_glx_make_current_context(dpy, gc->apple, gc->apple, 
-						 gc->currentDrawable);
-	    saved->swapped = false;
-	}
-    }
+      if (apple_glx_make_current_context(dpy, gc->apple, gc->apple,
+                                         gc->currentReadable)) {
+         /* An error occurred, so try to restore the old context state. */
+         (void) apple_glx_make_current_context(dpy, gc->apple, gc->apple,
+                                               gc->currentDrawable);
+         saved->swapped = false;
+      }
+   }
 }
 
-static void UnsetRead(struct apple_xgl_saved_state *saved) {
-    if(saved->swapped) {
-	GLXContext gc = __glXGetCurrentContext();
-	Display *dpy = glXGetCurrentDisplay();
+static void
+UnsetRead(struct apple_xgl_saved_state *saved)
+{
+   if (saved->swapped) {
+      GLXContext gc = __glXGetCurrentContext();
+      Display *dpy = glXGetCurrentDisplay();
 
-	if(apple_glx_make_current_context(dpy, gc->apple, gc->apple,
-					  gc->currentDrawable)) {
-	    /*
-	     * An error occurred restoring the drawable.
-	     * It's unclear what to do about that. 
-	     */
-	}
-    }
+      if (apple_glx_make_current_context(dpy, gc->apple, gc->apple,
+                                         gc->currentDrawable)) {
+         /*
+          * An error occurred restoring the drawable.
+          * It's unclear what to do about that. 
+          */
+      }
+   }
 }
 
-void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
-		  GLenum format, GLenum type, void * pixels) {
-    struct apple_xgl_saved_state saved;
-    
-    SetRead(&saved);
+void
+glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height,
+             GLenum format, GLenum type, void *pixels)
+{
+   struct apple_xgl_saved_state saved;
 
-    __gl_api.ReadPixels(x, y, width, height, format, type, pixels);
+   SetRead(&saved);
 
-    UnsetRead(&saved);
+   __gl_api.ReadPixels(x, y, width, height, format, type, pixels);
+
+   UnsetRead(&saved);
 }
 
-void glCopyPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
-		  GLenum type) {
-    struct apple_xgl_saved_state saved;
+void
+glCopyPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type)
+{
+   struct apple_xgl_saved_state saved;
 
-    SetRead(&saved);
+   SetRead(&saved);
 
-    __gl_api.CopyPixels(x, y, width, height, type);
+   __gl_api.CopyPixels(x, y, width, height, type);
 
-    UnsetRead(&saved);
+   UnsetRead(&saved);
 }
 
-void glCopyColorTable(GLenum target, GLenum internalformat, GLint x, GLint y,
-		      GLsizei width) {
-    struct apple_xgl_saved_state saved;
+void
+glCopyColorTable(GLenum target, GLenum internalformat, GLint x, GLint y,
+                 GLsizei width)
+{
+   struct apple_xgl_saved_state saved;
 
-    SetRead(&saved);
+   SetRead(&saved);
 
-    __gl_api.CopyColorTable(target, internalformat, x, y, width);
+   __gl_api.CopyColorTable(target, internalformat, x, y, width);
 
-    UnsetRead(&saved);
+   UnsetRead(&saved);
 }

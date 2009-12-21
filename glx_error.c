@@ -33,30 +33,33 @@
 #include "glxclient.h"
 #include "glx_error.h"
 
-extern XExtDisplayInfo *__glXFindDisplay(Display *dpy);
+extern XExtDisplayInfo *__glXFindDisplay(Display * dpy);
 
-void __glXSendError(Display *dpy, int errorCode, unsigned long resourceID,
-		    unsigned long minorCode, bool coreX11error) {
-    XExtDisplayInfo *info = __glXFindDisplay(dpy);
-    GLXContext gc = __glXGetCurrentContext();
-    xError error;
-  
-    LockDisplay(dpy);
+void
+__glXSendError(Display * dpy, int errorCode, unsigned long resourceID,
+               unsigned long minorCode, bool coreX11error)
+{
+   XExtDisplayInfo *info = __glXFindDisplay(dpy);
+   GLXContext gc = __glXGetCurrentContext();
+   xError error;
 
-    error.type = X_Error;
-    
-    if(coreX11error) {
-	error.errorCode = errorCode;
-    } else {
-	error.errorCode = info->codes->first_error + errorCode;
-    }
+   LockDisplay(dpy);
 
-    error.sequenceNumber = dpy->request;
-    error.resourceID = resourceID;
-    error.minorCode = minorCode;
-    error.majorCode = gc ? gc->majorOpcode : 0;
+   error.type = X_Error;
 
-    _XError(dpy, &error);
+   if (coreX11error) {
+      error.errorCode = errorCode;
+   }
+   else {
+      error.errorCode = info->codes->first_error + errorCode;
+   }
 
-    UnlockDisplay(dpy);    
+   error.sequenceNumber = dpy->request;
+   error.resourceID = resourceID;
+   error.minorCode = minorCode;
+   error.majorCode = gc ? gc->majorOpcode : 0;
+
+   _XError(dpy, &error);
+
+   UnlockDisplay(dpy);
 }

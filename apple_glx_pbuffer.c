@@ -37,283 +37,294 @@
 #include "apple_cgl.h"
 
 static bool pbuffer_make_current(struct apple_glx_context *ac,
-			    struct apple_glx_drawable *d);
+                                 struct apple_glx_drawable *d);
 
-static void pbuffer_destroy(Display *dpy, struct apple_glx_drawable *d);
+static void pbuffer_destroy(Display * dpy, struct apple_glx_drawable *d);
 
 static struct apple_glx_drawable_callbacks callbacks = {
-    .type = APPLE_GLX_DRAWABLE_PBUFFER,
-    .make_current = pbuffer_make_current,
-    .destroy = pbuffer_destroy
+   .type = APPLE_GLX_DRAWABLE_PBUFFER,
+   .make_current = pbuffer_make_current,
+   .destroy = pbuffer_destroy
 };
 
 
 /* Return true if an error occurred. */
-bool pbuffer_make_current(struct apple_glx_context *ac,
-			  struct apple_glx_drawable *d) {
-    struct apple_glx_pbuffer *pbuf = &d->types.pbuffer;
-    CGLError cglerr;
+bool
+pbuffer_make_current(struct apple_glx_context *ac,
+                     struct apple_glx_drawable *d)
+{
+   struct apple_glx_pbuffer *pbuf = &d->types.pbuffer;
+   CGLError cglerr;
 
-    assert(APPLE_GLX_DRAWABLE_PBUFFER == d->type);
+   assert(APPLE_GLX_DRAWABLE_PBUFFER == d->type);
 
-    cglerr = apple_cgl.set_pbuffer(ac->context_obj, 
-				   pbuf->buffer_obj,
-				   0, 0, 0);
-    
-    if(kCGLNoError != cglerr) {
-	fprintf(stderr, "set_pbuffer: %s\n", apple_cgl.error_string(cglerr));
-	return true;
-    }
+   cglerr = apple_cgl.set_pbuffer(ac->context_obj, pbuf->buffer_obj, 0, 0, 0);
 
-    if(!ac->made_current) {
-	glViewport(0, 0, pbuf->width, pbuf->height);
-	glScissor(0, 0, pbuf->width, pbuf->height);
-	ac->made_current = true;
-    }
+   if (kCGLNoError != cglerr) {
+      fprintf(stderr, "set_pbuffer: %s\n", apple_cgl.error_string(cglerr));
+      return true;
+   }
 
-    apple_glx_diagnostic("made pbuffer drawable 0x%lx current\n",
-			 d->drawable);
-    
-    return false;
+   if (!ac->made_current) {
+      glViewport(0, 0, pbuf->width, pbuf->height);
+      glScissor(0, 0, pbuf->width, pbuf->height);
+      ac->made_current = true;
+   }
+
+   apple_glx_diagnostic("made pbuffer drawable 0x%lx current\n", d->drawable);
+
+   return false;
 }
 
-void pbuffer_destroy(Display *dpy, struct apple_glx_drawable *d) {
-    struct apple_glx_pbuffer *pbuf = &d->types.pbuffer;
+void
+pbuffer_destroy(Display * dpy, struct apple_glx_drawable *d)
+{
+   struct apple_glx_pbuffer *pbuf = &d->types.pbuffer;
 
-    assert(APPLE_GLX_DRAWABLE_PBUFFER == d->type);
+   assert(APPLE_GLX_DRAWABLE_PBUFFER == d->type);
 
-    apple_glx_diagnostic("destroying pbuffer for drawable 0x%lx\n",
-			 d->drawable);
+   apple_glx_diagnostic("destroying pbuffer for drawable 0x%lx\n",
+                        d->drawable);
 
-    apple_cgl.destroy_pbuffer(pbuf->buffer_obj);
-    XFreePixmap(dpy, pbuf->xid);
-}
-
-/* Return true if an error occurred. */
-bool apple_glx_pbuffer_destroy(Display *dpy, GLXPbuffer pbuf) {
-    return !apple_glx_drawable_destroy_by_type(dpy, pbuf,
-					      APPLE_GLX_DRAWABLE_PBUFFER);
+   apple_cgl.destroy_pbuffer(pbuf->buffer_obj);
+   XFreePixmap(dpy, pbuf->xid);
 }
 
 /* Return true if an error occurred. */
-bool apple_glx_pbuffer_create(Display *dpy, GLXFBConfig config, 
-			      int width, int height, int *errorcode,
-			      GLXPbuffer *result) {
-    struct apple_glx_drawable *d;
-    struct apple_glx_pbuffer *pbuf = NULL;
-    CGLError err;
-    Window root;
-    int screen;
-    Pixmap xid;
-    __GLcontextModes *modes = (__GLcontextModes *)config;
+bool
+apple_glx_pbuffer_destroy(Display * dpy, GLXPbuffer pbuf)
+{
+   return !apple_glx_drawable_destroy_by_type(dpy, pbuf,
+                                              APPLE_GLX_DRAWABLE_PBUFFER);
+}
 
-    root = DefaultRootWindow(dpy);
-    screen = DefaultScreen(dpy);
+/* Return true if an error occurred. */
+bool
+apple_glx_pbuffer_create(Display * dpy, GLXFBConfig config,
+                         int width, int height, int *errorcode,
+                         GLXPbuffer * result)
+{
+   struct apple_glx_drawable *d;
+   struct apple_glx_pbuffer *pbuf = NULL;
+   CGLError err;
+   Window root;
+   int screen;
+   Pixmap xid;
+   __GLcontextModes *modes = (__GLcontextModes *) config;
 
-    /*
-     * This pixmap is only used for a persistent XID.
-     * The XC-MISC extension cleans up XIDs and reuses them transparently,
-     * so we need to retain a server-side reference.
-     */
-    xid = XCreatePixmap(dpy, root, (unsigned int)1,
-			      (unsigned int)1,
-			      DefaultDepth(dpy, screen));
+   root = DefaultRootWindow(dpy);
+   screen = DefaultScreen(dpy);
 
-    if(None == xid) {
-	*errorcode = BadAlloc;
-	return true;
-    } 
+   /*
+    * This pixmap is only used for a persistent XID.
+    * The XC-MISC extension cleans up XIDs and reuses them transparently,
+    * so we need to retain a server-side reference.
+    */
+   xid = XCreatePixmap(dpy, root, (unsigned int) 1,
+                       (unsigned int) 1, DefaultDepth(dpy, screen));
 
-    if(apple_glx_drawable_create(dpy, screen, xid, &d, &callbacks)) {
-	*errorcode = BadAlloc;
-	return true;
-    }
-    
-    /* The lock is held in d from create onward. */
-    pbuf = &d->types.pbuffer;
-    
-    pbuf->xid = xid;    
-    pbuf->width = width;
-    pbuf->height = height;
+   if (None == xid) {
+      *errorcode = BadAlloc;
+      return true;
+   }
 
-    err = apple_cgl.create_pbuffer(width, height, GL_TEXTURE_RECTANGLE_EXT,
-				   (modes->alphaBits > 0) ? GL_RGBA : GL_RGB,
-				   0, &pbuf->buffer_obj);
+   if (apple_glx_drawable_create(dpy, screen, xid, &d, &callbacks)) {
+      *errorcode = BadAlloc;
+      return true;
+   }
 
-    if(kCGLNoError != err) {
-	d->unlock(d);
-	d->destroy(d);
-	*errorcode = BadMatch;
-	return true;
-    }
+   /* The lock is held in d from create onward. */
+   pbuf = &d->types.pbuffer;
 
-    pbuf->fbconfigID = modes->fbconfigID;
+   pbuf->xid = xid;
+   pbuf->width = width;
+   pbuf->height = height;
 
-    pbuf->event_mask = 0;
+   err = apple_cgl.create_pbuffer(width, height, GL_TEXTURE_RECTANGLE_EXT,
+                                  (modes->alphaBits > 0) ? GL_RGBA : GL_RGB,
+                                  0, &pbuf->buffer_obj);
 
-    *result = pbuf->xid;
+   if (kCGLNoError != err) {
+      d->unlock(d);
+      d->destroy(d);
+      *errorcode = BadMatch;
+      return true;
+   }
 
-    d->unlock(d);
-        
-    return false;
+   pbuf->fbconfigID = modes->fbconfigID;
+
+   pbuf->event_mask = 0;
+
+   *result = pbuf->xid;
+
+   d->unlock(d);
+
+   return false;
 }
 
 
 
 /* Return true if an error occurred. */
-static bool get_max_size(int *widthresult, int *heightresult) {
-    CGLContextObj oldcontext;
-    GLint ar[2];
-   
-    oldcontext = apple_cgl.get_current_context();
+static bool
+get_max_size(int *widthresult, int *heightresult)
+{
+   CGLContextObj oldcontext;
+   GLint ar[2];
 
-    if(!oldcontext) {
-	/* 
-	 * There is no current context, so we need to make one in order
-	 * to call glGetInteger.
-	 */
-	CGLPixelFormatObj pfobj;
-	CGLError err;
-	CGLPixelFormatAttribute attr[10];
-	int c = 0;
-	GLint vsref = 0;
-	CGLContextObj newcontext;
-       
-	attr[c++] = kCGLPFAColorSize;
-	attr[c++] = 32;
-	attr[c++] = 0;
+   oldcontext = apple_cgl.get_current_context();
 
-	err = apple_cgl.choose_pixel_format(attr, &pfobj, &vsref);
-	if(kCGLNoError != err) {
-	    if(getenv("LIBGL_DIAGNOSTIC")) {
-		printf("choose_pixel_format error in %s: %s\n", __func__,
-		       apple_cgl.error_string(err));
-	    }
+   if (!oldcontext) {
+      /* 
+       * There is no current context, so we need to make one in order
+       * to call glGetInteger.
+       */
+      CGLPixelFormatObj pfobj;
+      CGLError err;
+      CGLPixelFormatAttribute attr[10];
+      int c = 0;
+      GLint vsref = 0;
+      CGLContextObj newcontext;
 
-	    return true;
-	}
-	    
+      attr[c++] = kCGLPFAColorSize;
+      attr[c++] = 32;
+      attr[c++] = 0;
 
-	err = apple_cgl.create_context(pfobj, NULL, &newcontext);
+      err = apple_cgl.choose_pixel_format(attr, &pfobj, &vsref);
+      if (kCGLNoError != err) {
+         if (getenv("LIBGL_DIAGNOSTIC")) {
+            printf("choose_pixel_format error in %s: %s\n", __func__,
+                   apple_cgl.error_string(err));
+         }
 
-	if(kCGLNoError != err) {
-	    if(getenv("LIBGL_DIAGNOSTIC")) {
-		printf("create_context error in %s: %s\n", __func__,
-		       apple_cgl.error_string(err));
-	    }
+         return true;
+      }
 
-	    apple_cgl.destroy_pixel_format(pfobj);
-	   
-	    return true;
-	}
 
-	err = apple_cgl.set_current_context(newcontext);
+      err = apple_cgl.create_context(pfobj, NULL, &newcontext);
 
-	if (kCGLNoError != err) {
-	    printf("set_current_context error in %s: %s\n", __func__,
-		   apple_cgl.error_string(err));
-	    return true;
-	}
+      if (kCGLNoError != err) {
+         if (getenv("LIBGL_DIAGNOSTIC")) {
+            printf("create_context error in %s: %s\n", __func__,
+                   apple_cgl.error_string(err));
+         }
 
-	
-	glGetIntegerv(GL_MAX_VIEWPORT_DIMS, ar);
+         apple_cgl.destroy_pixel_format(pfobj);
 
-	apple_cgl.set_current_context(oldcontext);
-	apple_cgl.destroy_context(newcontext);
-	apple_cgl.destroy_pixel_format(pfobj);	
-    } else {
-	/* We have a valid context. */
+         return true;
+      }
 
-	glGetIntegerv(GL_MAX_VIEWPORT_DIMS, ar);
-    }
+      err = apple_cgl.set_current_context(newcontext);
 
-    *widthresult = ar[0];
-    *heightresult = ar[1];
-        
-    return false;
+      if (kCGLNoError != err) {
+         printf("set_current_context error in %s: %s\n", __func__,
+                apple_cgl.error_string(err));
+         return true;
+      }
+
+
+      glGetIntegerv(GL_MAX_VIEWPORT_DIMS, ar);
+
+      apple_cgl.set_current_context(oldcontext);
+      apple_cgl.destroy_context(newcontext);
+      apple_cgl.destroy_pixel_format(pfobj);
+   }
+   else {
+      /* We have a valid context. */
+
+      glGetIntegerv(GL_MAX_VIEWPORT_DIMS, ar);
+   }
+
+   *widthresult = ar[0];
+   *heightresult = ar[1];
+
+   return false;
 }
 
-bool apple_glx_pbuffer_query(GLXPbuffer p, int attr, unsigned int *value) {
-    bool result = false;
-    struct apple_glx_drawable *d;
-    struct apple_glx_pbuffer *pbuf;
+bool
+apple_glx_pbuffer_query(GLXPbuffer p, int attr, unsigned int *value)
+{
+   bool result = false;
+   struct apple_glx_drawable *d;
+   struct apple_glx_pbuffer *pbuf;
 
-    d = apple_glx_drawable_find_by_type(p, APPLE_GLX_DRAWABLE_PBUFFER,
-					APPLE_GLX_DRAWABLE_LOCK);
-    
-    if(d) {
-	pbuf = &d->types.pbuffer;
+   d = apple_glx_drawable_find_by_type(p, APPLE_GLX_DRAWABLE_PBUFFER,
+                                       APPLE_GLX_DRAWABLE_LOCK);
 
-	switch(attr) {
-	case GLX_WIDTH:
-	    *value = pbuf->width;
-	    result = true;
-	    break;
-	    
-	case GLX_HEIGHT:
-	    *value = pbuf->height;
-	    result = true;
-	    break;
+   if (d) {
+      pbuf = &d->types.pbuffer;
 
-	case GLX_PRESERVED_CONTENTS:
-	    *value = true;
-	    result = true;
-	    break;
-	    
-	case GLX_LARGEST_PBUFFER: {
-	    int width, height;
-	    if(get_max_size(&width, &height)) {
-		fprintf(stderr, "internal error: "
-			"unable to find the largest pbuffer!\n");
-	    } else {
-		*value = width;
-		result = true;
-	    }
-	}
-	    break;
+      switch (attr) {
+      case GLX_WIDTH:
+         *value = pbuf->width;
+         result = true;
+         break;
 
-	case GLX_FBCONFIG_ID:
-	    *value = pbuf->fbconfigID;
-	    result = true;
-	    break;
-	}
+      case GLX_HEIGHT:
+         *value = pbuf->height;
+         result = true;
+         break;
 
-	d->unlock(d);
-    }
+      case GLX_PRESERVED_CONTENTS:
+         *value = true;
+         result = true;
+         break;
 
-    return result;
+      case GLX_LARGEST_PBUFFER:{
+            int width, height;
+            if (get_max_size(&width, &height)) {
+               fprintf(stderr, "internal error: "
+                       "unable to find the largest pbuffer!\n");
+            }
+            else {
+               *value = width;
+               result = true;
+            }
+         }
+         break;
+
+      case GLX_FBCONFIG_ID:
+         *value = pbuf->fbconfigID;
+         result = true;
+         break;
+      }
+
+      d->unlock(d);
+   }
+
+   return result;
 }
 
-bool apple_glx_pbuffer_set_event_mask(GLXDrawable drawable,
-				      unsigned long mask) {
-    struct apple_glx_drawable *d;
-    bool result = false;
+bool
+apple_glx_pbuffer_set_event_mask(GLXDrawable drawable, unsigned long mask)
+{
+   struct apple_glx_drawable *d;
+   bool result = false;
 
-    d = apple_glx_drawable_find_by_type(drawable, APPLE_GLX_DRAWABLE_PBUFFER,
-					APPLE_GLX_DRAWABLE_LOCK);
+   d = apple_glx_drawable_find_by_type(drawable, APPLE_GLX_DRAWABLE_PBUFFER,
+                                       APPLE_GLX_DRAWABLE_LOCK);
 
-    if(d) {
-	d->types.pbuffer.event_mask = mask;
-	result = true;
-	d->unlock(d);
-    }
+   if (d) {
+      d->types.pbuffer.event_mask = mask;
+      result = true;
+      d->unlock(d);
+   }
 
-    return result;
+   return result;
 }
 
-bool apple_glx_pbuffer_get_event_mask(GLXDrawable drawable,
-				      unsigned long *mask) {
-    struct apple_glx_drawable *d;
-    bool result = false;
-    
-    d = apple_glx_drawable_find_by_type(drawable, APPLE_GLX_DRAWABLE_PBUFFER,
-					APPLE_GLX_DRAWABLE_LOCK);
-    if(d) {
-	*mask = d->types.pbuffer.event_mask;
-	result = true;
-	d->unlock(d);
-    }
+bool
+apple_glx_pbuffer_get_event_mask(GLXDrawable drawable, unsigned long *mask)
+{
+   struct apple_glx_drawable *d;
+   bool result = false;
 
-    return result;
+   d = apple_glx_drawable_find_by_type(drawable, APPLE_GLX_DRAWABLE_PBUFFER,
+                                       APPLE_GLX_DRAWABLE_LOCK);
+   if (d) {
+      *mask = d->types.pbuffer.event_mask;
+      result = true;
+      d->unlock(d);
+   }
+
+   return result;
 }
-

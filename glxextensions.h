@@ -31,7 +31,8 @@
 #ifndef GLX_GLXEXTENSIONS_H
 #define GLX_GLXEXTENSIONS_H
 
-enum {
+enum
+{
    ARB_get_proc_address_bit = 0,
    ARB_multisample_bit,
    ARB_render_texture_bit,
@@ -40,7 +41,7 @@ enum {
    EXT_visual_rating_bit,
    EXT_import_context_bit,
    MESA_agp_offset_bit,
-   MESA_allocate_memory_bit, /* Replaces MESA_agp_offset & NV_vertex_array_range */
+   MESA_allocate_memory_bit,    /* Replaces MESA_agp_offset & NV_vertex_array_range */
    MESA_copy_sub_buffer_bit,
    MESA_depth_float_bit,
    MESA_pixmap_colormap_bit,
@@ -67,11 +68,13 @@ enum {
    EXT_texture_from_pixmap_bit
 };
 
-enum {
+enum
+{
    GL_ARB_depth_texture_bit = 0,
    GL_ARB_draw_buffers_bit,
    GL_ARB_fragment_program_bit,
    GL_ARB_fragment_program_shadow_bit,
+   GL_ARB_framebuffer_object_bit,
    GL_ARB_imaging_bit,
    GL_ARB_multisample_bit,
    GL_ARB_multitexture_bit,
@@ -110,8 +113,11 @@ enum {
    GL_EXT_depth_bounds_test_bit,
    GL_EXT_draw_range_elements_bit,
    GL_EXT_fog_coord_bit,
+   GL_EXT_framebuffer_blit_bit,
+   GL_EXT_framebuffer_multisample_bit,
    GL_EXT_framebuffer_object_bit,
    GL_EXT_multi_draw_arrays_bit,
+   GL_EXT_packed_depth_stencil_bit,
    GL_EXT_packed_pixels_bit,
    GL_EXT_paletted_texture_bit,
    GL_EXT_pixel_buffer_object_bit,
@@ -162,6 +168,7 @@ enum {
    GL_NV_fragment_program2_bit,
    GL_NV_light_max_exponent_bit,
    GL_NV_multisample_filter_hint_bit,
+   GL_NV_packed_depth_stencil_bit,
    GL_NV_point_sprite_bit,
    GL_NV_texgen_reflection_bit,
    GL_NV_texture_compression_vtc_bit,
@@ -230,28 +237,34 @@ enum {
 struct __GLXscreenConfigsRec;
 struct __GLXcontextRec;
 
-extern GLboolean __glXExtensionBitIsEnabled( struct __GLXscreenConfigsRec *psc, unsigned bit );
-extern const char * __glXGetClientExtensions( void );
-extern void __glXCalculateUsableExtensions( struct __GLXscreenConfigsRec *psc,
-    GLboolean display_is_direct_capable, int server_minor_version );
+extern GLboolean __glXExtensionBitIsEnabled(struct __GLXscreenConfigsRec *psc,
+                                            unsigned bit);
+extern const char *__glXGetClientExtensions(void);
+extern void __glXCalculateUsableExtensions(struct __GLXscreenConfigsRec *psc,
+                                           GLboolean
+                                           display_is_direct_capable,
+                                           int server_minor_version);
 
-extern void __glXCalculateUsableGLExtensions( struct __GLXcontextRec * gc,
-    const char * server_string, int major_version, int minor_version );
-extern void __glXGetGLVersion( int * major_version, int * minor_version );
-extern char * __glXGetClientGLExtensionString( void );
+extern void __glXCalculateUsableGLExtensions(struct __GLXcontextRec *gc,
+                                             const char *server_string,
+                                             int major_version,
+                                             int minor_version);
+extern void __glXGetGLVersion(int *major_version, int *minor_version);
+extern char *__glXGetClientGLExtensionString(void);
 
-extern GLboolean __glExtensionBitIsEnabled( const struct __GLXcontextRec * gc, 
-    unsigned bit );
+extern GLboolean __glExtensionBitIsEnabled(const struct __GLXcontextRec *gc,
+                                           unsigned bit);
 
 extern void
-__glXEnableDirectExtension(struct __GLXscreenConfigsRec *psc, const char *name);
+__glXEnableDirectExtension(struct __GLXscreenConfigsRec *psc,
+                           const char *name);
 
 /* Source-level backwards compatibility with old drivers. They won't
  * find the respective functions, though. 
  */
-typedef void (* PFNGLXENABLEEXTENSIONPROC) ( const char * name,
-    GLboolean force_client );
-typedef void (* PFNGLXDISABLEEXTENSIONPROC) ( const char * name );
+typedef void (*PFNGLXENABLEEXTENSIONPROC) (const char *name,
+                                           GLboolean force_client);
+typedef void (*PFNGLXDISABLEEXTENSIONPROC) (const char *name);
 
 /* GLX_ALIAS should be used for functions with a non-void return type.
    GLX_ALIAS_VOID is for functions with a void return type. */
@@ -261,17 +274,17 @@ typedef void (* PFNGLXDISABLEEXTENSIONPROC) ( const char * name );
 #else
 # if defined(__GNUC__) && !defined(GLX_ALIAS_UNSUPPORTED)
 #  define GLX_ALIAS(return_type, real_func, proto_args, args, aliased_func) \
-	return_type  real_func  proto_args \
-	__attribute__ ((alias( # aliased_func ) ));
+   return_type  real_func  proto_args                                   \
+   __attribute__ ((alias( # aliased_func ) ));
 #  define GLX_ALIAS_VOID(real_func, proto_args, args, aliased_func) \
-	GLX_ALIAS(void, real_func, proto_args, args, aliased_func)
+   GLX_ALIAS(void, real_func, proto_args, args, aliased_func)
 # else
 #  define GLX_ALIAS(return_type, real_func, proto_args, args, aliased_func) \
-	return_type  real_func  proto_args \
-	{ return aliased_func args ; }
+   return_type  real_func  proto_args                                   \
+   { return aliased_func args ; }
 #  define GLX_ALIAS_VOID(real_func, proto_args, args, aliased_func) \
-	void  real_func  proto_args \
-	{ aliased_func args ; }
+   void  real_func  proto_args                                      \
+   { aliased_func args ; }
 # endif /* __GNUC__ */
 #endif /* GLX_NO_STATIC_EXTENSION_FUNCTIONS */
 

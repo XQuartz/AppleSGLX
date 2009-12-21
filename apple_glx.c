@@ -52,146 +52,163 @@ static void *libgl_handle = NULL;
 
 static bool diagnostic = false;
 
-void apple_glx_diagnostic(const char *fmt, ...) {
-    va_list vl;
+void
+apple_glx_diagnostic(const char *fmt, ...)
+{
+   va_list vl;
 
-    if(diagnostic) {
-	fprintf(stderr, "DIAG: ");
+   if (diagnostic) {
+      fprintf(stderr, "DIAG: ");
 
-	va_start(vl, fmt);
-	vfprintf(stderr, fmt, vl);
-	va_end(vl);
-    }
+      va_start(vl, fmt);
+      vfprintf(stderr, fmt, vl);
+      va_end(vl);
+   }
 }
 
-int apple_get_dri_event_base(void) {
-    if(!initialized) {
-	fprintf(stderr, "error: dri_event_base called before apple_init_glx!\n");
-	abort();
-    }
-    return dri_event_base;
+int
+apple_get_dri_event_base(void)
+{
+   if (!initialized) {
+      fprintf(stderr,
+              "error: dri_event_base called before apple_init_glx!\n");
+      abort();
+   }
+   return dri_event_base;
 }
 
-static void surface_notify_handler(Display *dpy, unsigned int uid, int kind) {
-    
-    switch(kind) {
-    case AppleDRISurfaceNotifyDestroyed:
-	apple_glx_diagnostic("%s: surface destroyed %u\n", __func__, uid);
-	apple_glx_surface_destroy(uid);
-	break;
-	
-    case AppleDRISurfaceNotifyChanged: {
-	int updated;
-	
-	updated = apple_glx_context_surface_changed(uid, pthread_self());
+static void
+surface_notify_handler(Display * dpy, unsigned int uid, int kind)
+{
 
-	apple_glx_diagnostic("surface notify updated %d\n", updated);
-    }
-	break;
-	
-    default:
-	fprintf(stderr, "unhandled kind of event: %d in %s\n", kind, __func__);
-    }
+   switch (kind) {
+   case AppleDRISurfaceNotifyDestroyed:
+      apple_glx_diagnostic("%s: surface destroyed %u\n", __func__, uid);
+      apple_glx_surface_destroy(uid);
+      break;
+
+   case AppleDRISurfaceNotifyChanged:{
+         int updated;
+
+         updated = apple_glx_context_surface_changed(uid, pthread_self());
+
+         apple_glx_diagnostic("surface notify updated %d\n", updated);
+      }
+      break;
+
+   default:
+      fprintf(stderr, "unhandled kind of event: %d in %s\n", kind, __func__);
+   }
 }
 
-xp_client_id apple_glx_get_client_id(void) {
-    static xp_client_id id;
+xp_client_id
+apple_glx_get_client_id(void)
+{
+   static xp_client_id id;
 
-    if(0 == id) {
-	if((XP_Success != xp_init(XP_IN_BACKGROUND)) ||
-	   (Success != xp_get_client_id(&id))) {
-	    return 0;
-	}
-    }
+   if (0 == id) {
+      if ((XP_Success != xp_init(XP_IN_BACKGROUND)) ||
+          (Success != xp_get_client_id(&id))) {
+         return 0;
+      }
+   }
 
-    return id;
+   return id;
 }
 
 /* Return true if an error occured. */
-bool apple_init_glx(Display *dpy) {
-    int eventBase, errorBase;
-    int major, minor, patch;
+bool
+apple_init_glx(Display * dpy)
+{
+   int eventBase, errorBase;
+   int major, minor, patch;
 
-    if(!XAppleDRIQueryExtension(dpy, &eventBase, &errorBase))
-	return true;
-    
-    if(!XAppleDRIQueryVersion(dpy, &major, &minor, &patch))
-        return true;
-    
-    if(initialized)
-	return false;
+   if (!XAppleDRIQueryExtension(dpy, &eventBase, &errorBase))
+      return true;
 
-    if(getenv("LIBGL_DIAGNOSTIC")) {
-	printf("initializing libGL in %s\n", __func__);
-	diagnostic = true;
-    }
+   if (!XAppleDRIQueryVersion(dpy, &major, &minor, &patch))
+      return true;
 
-    apple_cgl_init();
-    apple_xgl_init_direct();
-    libgl_handle = dlopen(OPENGL_LIB_PATH, RTLD_LAZY);
-    (void)apple_glx_get_client_id();
+   if (initialized)
+      return false;
 
-    XAppleDRISetSurfaceNotifyHandler(surface_notify_handler);
+   if (getenv("LIBGL_DIAGNOSTIC")) {
+      printf("initializing libGL in %s\n", __func__);
+      diagnostic = true;
+   }
 
-    /* This should really be per display. */
-    dri_event_base = eventBase;
-    initialized = true;
+   apple_cgl_init();
+   apple_xgl_init_direct();
+   libgl_handle = dlopen(OPENGL_LIB_PATH, RTLD_LAZY);
+   (void) apple_glx_get_client_id();
 
-    return false;
+   XAppleDRISetSurfaceNotifyHandler(surface_notify_handler);
+
+   /* This should really be per display. */
+   dri_event_base = eventBase;
+   initialized = true;
+
+   return false;
 }
 
-void apple_glx_swap_buffers(void *ptr) {
-    struct apple_glx_context *ac = ptr;
+void
+apple_glx_swap_buffers(void *ptr)
+{
+   struct apple_glx_context *ac = ptr;
 
-    /* This may not be needed with CGLFlushDrawable: */
-    glFlush();
-    apple_cgl.flush_drawable(ac->context_obj);
+   /* This may not be needed with CGLFlushDrawable: */
+   glFlush();
+   apple_cgl.flush_drawable(ac->context_obj);
 }
 
-void *apple_glx_get_proc_address(const GLubyte *procname) {
-    size_t len;
-    void *h, *s;
-    char *pname = (char *)procname;
+void *
+apple_glx_get_proc_address(const GLubyte * procname)
+{
+   size_t len;
+   void *h, *s;
+   char *pname = (char *) procname;
 
-    assert(NULL != procname);
-    len = strlen(pname);
-   
-    if(len < 3) {
-	return NULL;
-    }
+   assert(NULL != procname);
+   len = strlen(pname);
 
-    if((pname != strstr(pname, "glX")) && 
-       (pname != strstr(pname, "gl"))) {
-	fprintf(stderr, "warning: get proc address request is not for a gl or glX function");
-	return NULL;
-    }
+   if (len < 3) {
+      return NULL;
+   }
 
-    /* Search using the default symbols first. */
-    (void)dlerror(); /*drain dlerror*/
-    h = dlopen(NULL, RTLD_NOW);
-    if(NULL == h) {
-	fprintf(stderr, "warning: get proc address: %s\n", dlerror());
-	return NULL;
-    }
-    
-    s = dlsym(h, pname);
+   if ((pname != strstr(pname, "glX")) && (pname != strstr(pname, "gl"))) {
+      fprintf(stderr,
+              "warning: get proc address request is not for a gl or glX function");
+      return NULL;
+   }
 
-    if(NULL == s) {
-	/* Try the libGL.dylib from the OpenGL.framework. */
-	s = dlsym(libgl_handle, pname);
-    }
-    
-    dlclose(h);
+   /* Search using the default symbols first. */
+   (void) dlerror();            /*drain dlerror */
+   h = dlopen(NULL, RTLD_NOW);
+   if (NULL == h) {
+      fprintf(stderr, "warning: get proc address: %s\n", dlerror());
+      return NULL;
+   }
 
-    return s;
+   s = dlsym(h, pname);
+
+   if (NULL == s) {
+      /* Try the libGL.dylib from the OpenGL.framework. */
+      s = dlsym(libgl_handle, pname);
+   }
+
+   dlclose(h);
+
+   return s;
 }
 
-void apple_glx_waitx(Display *dpy, void *ptr) {
-    struct apple_private_context *ac = ptr;
+void
+apple_glx_waitx(Display * dpy, void *ptr)
+{
+   struct apple_private_context *ac = ptr;
 
-    (void)ac;
+   (void) ac;
 
-    glFlush();
-    glFinish();
-    XSync(dpy, False);
+   glFlush();
+   glFinish();
+   XSync(dpy, False);
 }

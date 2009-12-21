@@ -29,5 +29,5 @@
 #include <stdbool.h>
 #include <X11/Xlib.h>
 
-void __glXSendError(Display *dpy, int errorCode, unsigned long resourceID,
-		    unsigned long minorCode, bool coreX11error);
+void __glXSendError(Display * dpy, int errorCode, unsigned long resourceID,
+                    unsigned long minorCode, bool coreX11error);

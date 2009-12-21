@@ -38,45 +38,43 @@
 /* For GLint and GLsizei on Tiger */
 #include <OpenGL/gl.h>
 
-struct apple_cgl_api {
-    void (*get_version)(GLint *majorvers, GLint *minorvers);
-    
-    CGLError (*choose_pixel_format)(const CGLPixelFormatAttribute *attribs, 
-				    CGLPixelFormatObj *pix, GLint *npix);
-    CGLError (*destroy_pixel_format)(CGLPixelFormatObj pix);
+struct apple_cgl_api
+{
+   void (*get_version) (GLint * majorvers, GLint * minorvers);
 
-    CGLError (*clear_drawable)(CGLContextObj ctx);
-    CGLError (*flush_drawable)(CGLContextObj ctx);
+     CGLError(*choose_pixel_format) (const CGLPixelFormatAttribute * attribs,
+                                     CGLPixelFormatObj * pix, GLint * npix);
+     CGLError(*destroy_pixel_format) (CGLPixelFormatObj pix);
 
-    CGLError (*create_context)(CGLPixelFormatObj pix, CGLContextObj share, 
-			       CGLContextObj *ctx);
-    CGLError (*destroy_context)(CGLContextObj pix);
+     CGLError(*clear_drawable) (CGLContextObj ctx);
+     CGLError(*flush_drawable) (CGLContextObj ctx);
 
-    CGLError (*set_current_context)(CGLContextObj ctx);
-    CGLContextObj (*get_current_context)(void);
-    const char *(*error_string)(CGLError error);
-    
-    CGLError (*set_off_screen)(CGLContextObj ctx, 
-			       GLsizei width, GLsizei height, GLint rowbytes,
-			       void *baseaddr);
+     CGLError(*create_context) (CGLPixelFormatObj pix, CGLContextObj share,
+                                CGLContextObj * ctx);
+     CGLError(*destroy_context) (CGLContextObj pix);
 
-    CGLError (*copy_context)(CGLContextObj src, CGLContextObj dst,
-			     GLbitfield mask);
+     CGLError(*set_current_context) (CGLContextObj ctx);
+     CGLContextObj(*get_current_context) (void);
+   const char *(*error_string) (CGLError error);
 
-    CGLError (*create_pbuffer)(GLsizei width,
-			       GLsizei height,
-			       GLenum target,
-			       GLenum internalFormat,
-			       GLint max_level,
-			       CGLPBufferObj *pbuffer);
+     CGLError(*set_off_screen) (CGLContextObj ctx,
+                                GLsizei width, GLsizei height, GLint rowbytes,
+                                void *baseaddr);
 
-    CGLError (*destroy_pbuffer)(CGLPBufferObj pbuffer);
+     CGLError(*copy_context) (CGLContextObj src, CGLContextObj dst,
+                              GLbitfield mask);
 
-    CGLError (*set_pbuffer)(CGLContextObj ctx,
-			    CGLPBufferObj pbuffer,
-			    GLenum face,
-			    GLint level,
-			    GLint screen);
+     CGLError(*create_pbuffer) (GLsizei width,
+                                GLsizei height,
+                                GLenum target,
+                                GLenum internalFormat,
+                                GLint max_level, CGLPBufferObj * pbuffer);
+
+     CGLError(*destroy_pbuffer) (CGLPBufferObj pbuffer);
+
+     CGLError(*set_pbuffer) (CGLContextObj ctx,
+                             CGLPBufferObj pbuffer,
+                             GLenum face, GLint level, GLint screen);
 };
 
 extern struct apple_cgl_api apple_cgl;
@@ -86,4 +84,3 @@ extern void apple_cgl_init(void);
 extern void *apple_cgl_get_dl_handle(void);
 
 #endif
-

@@ -28,98 +28,107 @@
 #include "glxclient.h"
 #include <GL/glxproto.h>
 
-CARD32 __glXReadReply(Display * dpy, size_t size, void *dest,
-		      GLboolean reply_is_always_array) {
-    xGLXSingleReply reply;
-    
-    (void) _XReply(dpy, (xReply *) & reply, 0, False);
-    if (size != 0) {
-        if ((reply.length > 0) || reply_is_always_array) {
-            const GLint bytes = (reply_is_always_array)
-                ? (4 * reply.length) : (reply.size * size);
-            const GLint extra = 4 - (bytes & 3);
+CARD32
+__glXReadReply(Display * dpy, size_t size, void *dest,
+               GLboolean reply_is_always_array)
+{
+   xGLXSingleReply reply;
 
-            _XRead(dpy, dest, bytes);
-            if (extra < 4) {
-                _XEatData(dpy, extra);
-            }
-        } else {
-            (void) memcpy(dest, &(reply.pad3), size);
-        }
-    }
+   (void) _XReply(dpy, (xReply *) & reply, 0, False);
+   if (size != 0) {
+      if ((reply.length > 0) || reply_is_always_array) {
+         const GLint bytes = (reply_is_always_array)
+            ? (4 * reply.length) : (reply.size * size);
+         const GLint extra = 4 - (bytes & 3);
 
-    return reply.retval;
+         _XRead(dpy, dest, bytes);
+         if (extra < 4) {
+            _XEatData(dpy, extra);
+         }
+      }
+      else {
+         (void) memcpy(dest, &(reply.pad3), size);
+      }
+   }
+
+   return reply.retval;
 }
 
-void __glXReadPixelReply(Display * dpy, __GLXcontext * gc, unsigned max_dim,
+void
+__glXReadPixelReply(Display * dpy, __GLXcontext * gc, unsigned max_dim,
                     GLint width, GLint height, GLint depth, GLenum format,
-                    GLenum type, void *dest, GLboolean dimensions_in_reply) {
-    xGLXSingleReply reply;
-    GLint size;
+                    GLenum type, void *dest, GLboolean dimensions_in_reply)
+{
+   xGLXSingleReply reply;
+   GLint size;
 
-    (void) _XReply(dpy, (xReply *) & reply, 0, False);
+   (void) _XReply(dpy, (xReply *) & reply, 0, False);
 
-    if (dimensions_in_reply) {
-        width = reply.pad3;
-        height = reply.pad4;
-        depth = reply.pad5;
+   if (dimensions_in_reply) {
+      width = reply.pad3;
+      height = reply.pad4;
+      depth = reply.pad5;
 
-        if ((height == 0) || (max_dim < 2)) {
-            height = 1;
-        }
-        if ((depth == 0) || (max_dim < 3)) {
-            depth = 1;
-        }
-    }
+      if ((height == 0) || (max_dim < 2)) {
+         height = 1;
+      }
+      if ((depth == 0) || (max_dim < 3)) {
+         depth = 1;
+      }
+   }
 
-    size = reply.length * 4;
-    if (size != 0) {
-        void *buf = Xmalloc(size);
+   size = reply.length * 4;
+   if (size != 0) {
+      void *buf = Xmalloc(size);
 
-        if (buf == NULL) {
-            _XEatData(dpy, size);
-            __glXSetError(gc, GL_OUT_OF_MEMORY);
-        } else {
-            const GLint extra = 4 - (size & 3);
+      if (buf == NULL) {
+         _XEatData(dpy, size);
+         __glXSetError(gc, GL_OUT_OF_MEMORY);
+      }
+      else {
+         const GLint extra = 4 - (size & 3);
 
-            _XRead(dpy, buf, size);
-            if (extra < 4) {
-                _XEatData(dpy, extra);
-            }
+         _XRead(dpy, buf, size);
+         if (extra < 4) {
+            _XEatData(dpy, extra);
+         }
 
-            __glEmptyImage(gc, 3, width, height, depth, format, type,
-                           buf, dest);
-            Xfree(buf);
-        }
-    }
+         __glEmptyImage(gc, 3, width, height, depth, format, type, buf, dest);
+         Xfree(buf);
+      }
+   }
 }
 
 #if 0
-GLubyte * __glXSetupSingleRequest(__GLXcontext * gc, GLint sop, GLint cmdlen) {
-    xGLXSingleReq *req;
-    Display *const dpy = gc->currentDpy;
+GLubyte *
+__glXSetupSingleRequest(__GLXcontext * gc, GLint sop, GLint cmdlen)
+{
+   xGLXSingleReq *req;
+   Display *const dpy = gc->currentDpy;
 
-    (void) __glXFlushRenderBuffer(gc, gc->pc);
-    LockDisplay(dpy);
-    GetReqExtra(GLXSingle, cmdlen, req);
-    req->reqType = gc->majorOpcode;
-    req->contextTag = gc->currentContextTag;
-    req->glxCode = sop;
-    return (GLubyte *) (req) + sz_xGLXSingleReq;
+   (void) __glXFlushRenderBuffer(gc, gc->pc);
+   LockDisplay(dpy);
+   GetReqExtra(GLXSingle, cmdlen, req);
+   req->reqType = gc->majorOpcode;
+   req->contextTag = gc->currentContextTag;
+   req->glxCode = sop;
+   return (GLubyte *) (req) + sz_xGLXSingleReq;
 }
 #endif
 
-GLubyte *__glXSetupVendorRequest(__GLXcontext * gc, GLint code, GLint vop,
-                        GLint cmdlen) {
-    xGLXVendorPrivateReq *req;
-    Display *const dpy = gc->currentDpy;
+GLubyte *
+__glXSetupVendorRequest(__GLXcontext * gc, GLint code, GLint vop,
+                        GLint cmdlen)
+{
+   xGLXVendorPrivateReq *req;
+   Display *const dpy = gc->currentDpy;
 
-    (void) __glXFlushRenderBuffer(gc, gc->pc);
-    LockDisplay(dpy);
-    GetReqExtra(GLXVendorPrivate, cmdlen, req);
-    req->reqType = gc->majorOpcode;
-    req->glxCode = code;
-    req->vendorCode = vop;
-    req->contextTag = gc->currentContextTag;
-    return (GLubyte *) (req) + sz_xGLXVendorPrivateReq;
+   (void) __glXFlushRenderBuffer(gc, gc->pc);
+   LockDisplay(dpy);
+   GetReqExtra(GLXVendorPrivate, cmdlen, req);
+   req->reqType = gc->majorOpcode;
+   req->glxCode = code;
+   req->vendorCode = vop;
+   req->contextTag = gc->currentContextTag;
+   return (GLubyte *) (req) + sz_xGLXVendorPrivateReq;
 }

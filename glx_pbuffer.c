@@ -57,15 +57,15 @@
  * Emit a warning when clients use GLX 1.3 functions on pre-1.3 systems.
  */
 static void
-warn_GLX_1_3(Display *dpy, const char *function_name)
+warn_GLX_1_3(Display * dpy, const char *function_name)
 {
    __GLXdisplayPrivate *priv = __glXInitialize(dpy);
 
    if (priv->minorVersion < 3) {
-      fprintf(stderr, 
-	      "WARNING: Application calling GLX 1.3 function \"%s\" "
-	      "when GLX 1.3 is not supported!  This is an application bug!\n",
-	      function_name);
+      fprintf(stderr,
+              "WARNING: Application calling GLX 1.3 function \"%s\" "
+              "when GLX 1.3 is not supported!  This is an application bug!\n",
+              function_name);
    }
 }
 
@@ -596,44 +596,44 @@ glXCreatePbuffer(Display * dpy, GLXFBConfig config, const int *attrib_list)
    WARN_ONCE_GLX_1_3(dpy, __func__);
 
 #ifdef __APPLE__
-    for(i = 0; attrib_list[i]; ++i) {
-       switch(attrib_list[i]) {
-       case GLX_PBUFFER_WIDTH:
-           width = attrib_list[i + 1];
-           ++i;
-           break;
-           
-       case GLX_PBUFFER_HEIGHT:
-           height = attrib_list[i + 1];
-           ++i;
-           break;
-           
-       case GLX_LARGEST_PBUFFER:
-           /* This is a hint we should probably handle, but how? */
-           ++i;
-           break;
+   for (i = 0; attrib_list[i]; ++i) {
+      switch (attrib_list[i]) {
+      case GLX_PBUFFER_WIDTH:
+         width = attrib_list[i + 1];
+         ++i;
+         break;
 
-       case GLX_PRESERVED_CONTENTS:
-           /* The contents are always preserved with AppleSGLX with CGL. */
-           ++i;
-           break;
-           
-       default:
-           return None;
-       }
-    }
+      case GLX_PBUFFER_HEIGHT:
+         height = attrib_list[i + 1];
+         ++i;
+         break;
 
-    if(apple_glx_pbuffer_create(dpy, config, width, height, &errorcode, 
-                               &result)) {
-       /* 
-        * apple_glx_pbuffer_create only sets the errorcode to core X11
-        * errors. 
-        */
-       __glXSendError(dpy, errorcode, 0, X_GLXCreatePbuffer, true);
-       
-       return None;
-    }
-    
+      case GLX_LARGEST_PBUFFER:
+         /* This is a hint we should probably handle, but how? */
+         ++i;
+         break;
+
+      case GLX_PRESERVED_CONTENTS:
+         /* The contents are always preserved with AppleSGLX with CGL. */
+         ++i;
+         break;
+
+      default:
+         return None;
+      }
+   }
+
+   if (apple_glx_pbuffer_create(dpy, config, width, height, &errorcode,
+                                &result)) {
+      /* 
+       * apple_glx_pbuffer_create only sets the errorcode to core X11
+       * errors. 
+       */
+      __glXSendError(dpy, errorcode, 0, X_GLXCreatePbuffer, true);
+
+      return None;
+   }
+
    return result;
 #else
    for (i = 0; attrib_list[i * 2]; i++) {
@@ -660,9 +660,9 @@ PUBLIC void
 glXDestroyPbuffer(Display * dpy, GLXPbuffer pbuf)
 {
 #ifdef __APPLE__
-    if(apple_glx_pbuffer_destroy(dpy, pbuf)) {
-       __glXSendError(dpy, GLXBadPbuffer, pbuf, X_GLXDestroyPbuffer, false);
-    }
+   if (apple_glx_pbuffer_destroy(dpy, pbuf)) {
+      __glXSendError(dpy, GLXBadPbuffer, pbuf, X_GLXDestroyPbuffer, false);
+   }
 #else
    DestroyPbuffer(dpy, pbuf);
 #endif
@@ -678,38 +678,39 @@ glXQueryDrawable(Display * dpy, GLXDrawable drawable,
 {
    WARN_ONCE_GLX_1_3(dpy, __func__);
 #ifdef __APPLE__
-    Window root;
-    int x, y;
-    unsigned int width, height, bd, depth;
+   Window root;
+   int x, y;
+   unsigned int width, height, bd, depth;
 
-    if(apple_glx_pixmap_query(drawable, attribute, value))
-       return; /*done*/
+   if (apple_glx_pixmap_query(drawable, attribute, value))
+      return;                   /*done */
 
-    if(apple_glx_pbuffer_query(drawable, attribute, value))
-       return; /*done*/
+   if (apple_glx_pbuffer_query(drawable, attribute, value))
+      return;                   /*done */
 
-    /*
-     * The OpenGL spec states that we should report GLXBadDrawable if
-     * the drawable is invalid, however doing so would require that we
-     * use XSetErrorHandler(), which is known to not be thread safe.
-     * If we use a round-trip call to validate the drawable, there could
-     * be a race, so instead we just opt in favor of letting the
-     * XGetGeometry request fail with a GetGeometry request X error 
-     * rather than GLXBadDrawable, in what is hoped to be a rare
-     * case of an invalid drawable.  In practice most and possibly all
-     * X11 apps using GLX shouldn't notice a difference.
-     */
-    if(XGetGeometry(dpy, drawable, &root, &x, &y, &width, &height, &bd, &depth)) {
-       switch(attribute) {
-       case GLX_WIDTH:
-           *value = width;
-           break;
+   /*
+    * The OpenGL spec states that we should report GLXBadDrawable if
+    * the drawable is invalid, however doing so would require that we
+    * use XSetErrorHandler(), which is known to not be thread safe.
+    * If we use a round-trip call to validate the drawable, there could
+    * be a race, so instead we just opt in favor of letting the
+    * XGetGeometry request fail with a GetGeometry request X error 
+    * rather than GLXBadDrawable, in what is hoped to be a rare
+    * case of an invalid drawable.  In practice most and possibly all
+    * X11 apps using GLX shouldn't notice a difference.
+    */
+   if (XGetGeometry
+       (dpy, drawable, &root, &x, &y, &width, &height, &bd, &depth)) {
+      switch (attribute) {
+      case GLX_WIDTH:
+         *value = width;
+         break;
 
-       case GLX_HEIGHT:
-           *value = height;
-           break;
-       }
-    }
+      case GLX_HEIGHT:
+         *value = height;
+         break;
+      }
+   }
 #else
    GetDrawableAttribute(dpy, drawable, attribute, value);
 #endif
@@ -735,20 +736,20 @@ PUBLIC void
 glXSelectEvent(Display * dpy, GLXDrawable drawable, unsigned long mask)
 {
 #ifdef __APPLE__
-    XWindowAttributes xwattr;
-    
-    if(apple_glx_pbuffer_set_event_mask(drawable, mask))
-       return; /*done*/
+   XWindowAttributes xwattr;
 
-    /* 
-     * The spec allows a window, but currently there are no valid
-     * events for a window, so do nothing.
-     */
-    if(XGetWindowAttributes(dpy, drawable, &xwattr))
-       return; /*done*/
-    /* The drawable seems to be invalid.  Report an error. */
- 
-    __glXSendError(dpy, GLXBadDrawable, drawable, 
+   if (apple_glx_pbuffer_set_event_mask(drawable, mask))
+      return;                   /*done */
+
+   /* 
+    * The spec allows a window, but currently there are no valid
+    * events for a window, so do nothing.
+    */
+   if (XGetWindowAttributes(dpy, drawable, &xwattr))
+      return;                   /*done */
+   /* The drawable seems to be invalid.  Report an error. */
+
+   __glXSendError(dpy, GLXBadDrawable, drawable,
                   X_GLXChangeDrawableAttributes, false);
 #else
    CARD32 attribs[2];
@@ -768,23 +769,23 @@ PUBLIC void
 glXGetSelectedEvent(Display * dpy, GLXDrawable drawable, unsigned long *mask)
 {
 #ifdef __APPLE__
-    XWindowAttributes xwattr;
-    
-    if(apple_glx_pbuffer_get_event_mask(drawable, mask))
-       return; /*done*/
+   XWindowAttributes xwattr;
 
-    /* 
-     * The spec allows a window, but currently there are no valid
-     * events for a window, so do nothing, but set the mask to 0.
-     */
-    if(XGetWindowAttributes(dpy, drawable, &xwattr)) {
-       /* The window is valid, so set the mask to 0.*/
-       *mask = 0;
-       return; /*done*/
-    }
-    /* The drawable seems to be invalid.  Report an error. */
- 
-    __glXSendError(dpy, GLXBadDrawable, drawable, X_GLXGetDrawableAttributes,
+   if (apple_glx_pbuffer_get_event_mask(drawable, mask))
+      return;                   /*done */
+
+   /* 
+    * The spec allows a window, but currently there are no valid
+    * events for a window, so do nothing, but set the mask to 0.
+    */
+   if (XGetWindowAttributes(dpy, drawable, &xwattr)) {
+      /* The window is valid, so set the mask to 0. */
+      *mask = 0;
+      return;                   /*done */
+   }
+   /* The drawable seems to be invalid.  Report an error. */
+
+   __glXSendError(dpy, GLXBadDrawable, drawable, X_GLXGetDrawableAttributes,
                   true);
 #else
    unsigned int value;
@@ -808,12 +809,12 @@ glXCreatePixmap(Display * dpy, GLXFBConfig config, Pixmap pixmap,
    WARN_ONCE_GLX_1_3(dpy, __func__);
 
 #ifdef __APPLE__
-    const __GLcontextModes *modes = (const __GLcontextModes *)config;
+   const __GLcontextModes *modes = (const __GLcontextModes *) config;
 
-    if(apple_glx_pixmap_create(dpy, modes->screen, pixmap, modes))
-       return None;
+   if (apple_glx_pixmap_create(dpy, modes->screen, pixmap, modes))
+      return None;
 
-    return pixmap;
+   return pixmap;
 #else
    return CreateDrawable(dpy, (__GLcontextModes *) config,
                          (Drawable) pixmap, attrib_list, X_GLXCreatePixmap);
@@ -827,28 +828,28 @@ glXCreateWindow(Display * dpy, GLXFBConfig config, Window win,
 {
    WARN_ONCE_GLX_1_3(dpy, __func__);
 #ifdef __APPLE__
-    XWindowAttributes xwattr;
-    XVisualInfo *visinfo;
+   XWindowAttributes xwattr;
+   XVisualInfo *visinfo;
 
-    (void)attrib_list; /*unused according to GLX 1.4*/
-    
-    XGetWindowAttributes(dpy, win, &xwattr);
-    
-    visinfo = glXGetVisualFromFBConfig(dpy, config);
+   (void) attrib_list;          /*unused according to GLX 1.4 */
 
-    if(NULL == visinfo) {
-       __glXSendError(dpy, GLXBadFBConfig, 0, X_GLXCreateWindow, false);
-       return None;
-    }
+   XGetWindowAttributes(dpy, win, &xwattr);
 
-    if(visinfo->visualid != XVisualIDFromVisual(xwattr.visual)) {
-       __glXSendError(dpy, BadMatch, 0, X_GLXCreateWindow, true);
-       return None;
-    }
+   visinfo = glXGetVisualFromFBConfig(dpy, config);
 
-    XFree(visinfo);
+   if (NULL == visinfo) {
+      __glXSendError(dpy, GLXBadFBConfig, 0, X_GLXCreateWindow, false);
+      return None;
+   }
 
-    return win;
+   if (visinfo->visualid != XVisualIDFromVisual(xwattr.visual)) {
+      __glXSendError(dpy, BadMatch, 0, X_GLXCreateWindow, true);
+      return None;
+   }
+
+   XFree(visinfo);
+
+   return win;
 #else
    return CreateDrawable(dpy, (__GLcontextModes *) config,
                          (Drawable) win, attrib_list, X_GLXCreateWindow);
@@ -861,8 +862,8 @@ glXDestroyPixmap(Display * dpy, GLXPixmap pixmap)
 {
    WARN_ONCE_GLX_1_3(dpy, __func__);
 #ifdef __APPLE__
-    if(apple_glx_pixmap_destroy(dpy, pixmap))
-       __glXSendError(dpy, GLXBadPixmap, pixmap, X_GLXDestroyPixmap, false);
+   if (apple_glx_pixmap_destroy(dpy, pixmap))
+      __glXSendError(dpy, GLXBadPixmap, pixmap, X_GLXDestroyPixmap, false);
 #else
    DestroyDrawable(dpy, (GLXDrawable) pixmap, X_GLXDestroyPixmap);
 #endif
@@ -894,5 +895,4 @@ GLX_ALIAS_VOID(glXGetSelectedEventSGIX,
                (Display * dpy, GLXDrawable drawable,
                 unsigned long *mask), (dpy, drawable, mask),
                glXGetSelectedEvent)
-
 #endif

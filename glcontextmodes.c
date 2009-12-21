@@ -266,7 +266,7 @@ _gl_get_context_mode_data(const __GLcontextModes * mode, int attribute,
    case GLX_LEVEL:
       *value_return = mode->level;
       return 0;
-#ifndef __APPLE__ /* This isn't supported by CGL. */
+#ifndef __APPLE__               /* This isn't supported by CGL. */
    case GLX_TRANSPARENT_TYPE_EXT:
       *value_return = mode->transparentPixel;
       return 0;
@@ -316,7 +316,7 @@ _gl_get_context_mode_data(const __GLcontextModes * mode, int attribute,
    case GLX_MAX_PBUFFER_PIXELS:
       *value_return = mode->maxPbufferPixels;
       return 0;
-#ifndef __APPLE__ /* These aren't supported by CGL. */
+#ifndef __APPLE__               /* These aren't supported by CGL. */
    case GLX_OPTIMAL_PBUFFER_WIDTH_SGIX:
       *value_return = mode->optimalPbufferWidth;
       return 0;

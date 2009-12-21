@@ -5,26 +5,29 @@
 /*
 ** GLX_SGI_swap_control
 */
-int glXSwapIntervalSGI(int interval)
+int
+glXSwapIntervalSGI(int interval)
 {
-    (void)interval;
-    return 0;
+   (void) interval;
+   return 0;
 }
 
 
 /*
 ** GLX_MESA_swap_control
 */
-int glXSwapIntervalMESA(unsigned int interval)
+int
+glXSwapIntervalMESA(unsigned int interval)
 {
    (void) interval;
    return GLX_BAD_CONTEXT;
 }
- 
 
-int glXGetSwapIntervalMESA(void)
+
+int
+glXGetSwapIntervalMESA(void)
 {
-    return 0;
+   return 0;
 }
 
 
@@ -32,16 +35,8 @@ int glXGetSwapIntervalMESA(void)
 ** GLX_MESA_swap_frame_usage
 */
 
-GLint glXBeginFrameTrackingMESA(Display *dpy, GLXDrawable drawable)
-{
-    int   status = GLX_BAD_CONTEXT;
-    (void) dpy;
-    (void) drawable;
-    return status;
-}
-
-    
-GLint glXEndFrameTrackingMESA(Display *dpy, GLXDrawable drawable)
+GLint
+glXBeginFrameTrackingMESA(Display * dpy, GLXDrawable drawable)
 {
    int status = GLX_BAD_CONTEXT;
    (void) dpy;
@@ -50,8 +45,18 @@ GLint glXEndFrameTrackingMESA(Display *dpy, GLXDrawable drawable)
 }
 
 
-GLint glXGetFrameUsageMESA(Display *dpy, GLXDrawable drawable,
-				    GLfloat *usage)
+GLint
+glXEndFrameTrackingMESA(Display * dpy, GLXDrawable drawable)
+{
+   int status = GLX_BAD_CONTEXT;
+   (void) dpy;
+   (void) drawable;
+   return status;
+}
+
+
+GLint
+glXGetFrameUsageMESA(Display * dpy, GLXDrawable drawable, GLfloat * usage)
 {
    int status = GLX_BAD_CONTEXT;
    (void) dpy;
@@ -60,9 +65,10 @@ GLint glXGetFrameUsageMESA(Display *dpy, GLXDrawable drawable,
    return status;
 }
 
-GLint glXQueryFrameTrackingMESA(Display *dpy, GLXDrawable drawable,
-					 int64_t *sbc, int64_t *missedFrames,
-					 GLfloat *lastMissedUsage)
+GLint
+glXQueryFrameTrackingMESA(Display * dpy, GLXDrawable drawable,
+                          int64_t * sbc, int64_t * missedFrames,
+                          GLfloat * lastMissedUsage)
 {
    int status = GLX_BAD_CONTEXT;
    (void) dpy;
@@ -76,24 +82,26 @@ GLint glXQueryFrameTrackingMESA(Display *dpy, GLXDrawable drawable,
 /*
 ** GLX_SGI_video_sync
 */
-int glXGetVideoSyncSGI(unsigned int *count)
+int
+glXGetVideoSyncSGI(unsigned int *count)
 {
-    (void) count;
-    return GLX_BAD_CONTEXT;
+   (void) count;
+   return GLX_BAD_CONTEXT;
 }
 
-int glXWaitVideoSyncSGI(int divisor, int remainder, unsigned int *count)
+int
+glXWaitVideoSyncSGI(int divisor, int remainder, unsigned int *count)
 {
-    (void) count;
-    return GLX_BAD_CONTEXT;
+   (void) count;
+   return GLX_BAD_CONTEXT;
 }
 
 
 /*
 ** GLX_SGIX_swap_group
 */
-void glXJoinSwapGroupSGIX(Display *dpy, GLXDrawable drawable,
-				   GLXDrawable member)
+void
+glXJoinSwapGroupSGIX(Display * dpy, GLXDrawable drawable, GLXDrawable member)
 {
    (void) dpy;
    (void) drawable;
@@ -104,15 +112,16 @@ void glXJoinSwapGroupSGIX(Display *dpy, GLXDrawable drawable,
 /*
 ** GLX_SGIX_swap_barrier
 */
-void glXBindSwapBarrierSGIX(Display *dpy, GLXDrawable drawable,
-				     int barrier)
+void
+glXBindSwapBarrierSGIX(Display * dpy, GLXDrawable drawable, int barrier)
 {
    (void) dpy;
    (void) drawable;
    (void) barrier;
 }
 
-Bool glXQueryMaxSwapBarriersSGIX(Display *dpy, int screen, int *max)
+Bool
+glXQueryMaxSwapBarriersSGIX(Display * dpy, int screen, int *max)
 {
    (void) dpy;
    (void) screen;
@@ -124,8 +133,9 @@ Bool glXQueryMaxSwapBarriersSGIX(Display *dpy, int screen, int *max)
 /*
 ** GLX_OML_sync_control
 */
-Bool glXGetSyncValuesOML(Display *dpy, GLXDrawable drawable,
-				  int64_t *ust, int64_t *msc, int64_t *sbc)
+Bool
+glXGetSyncValuesOML(Display * dpy, GLXDrawable drawable,
+                    int64_t * ust, int64_t * msc, int64_t * sbc)
 {
    (void) dpy;
    (void) drawable;
@@ -135,9 +145,9 @@ Bool glXGetSyncValuesOML(Display *dpy, GLXDrawable drawable,
    return False;
 }
 
-int64_t glXSwapBuffersMscOML(Display *dpy, GLXDrawable drawable,
-				      int64_t target_msc, int64_t divisor,
-				      int64_t remainder)
+int64_t
+glXSwapBuffersMscOML(Display * dpy, GLXDrawable drawable,
+                     int64_t target_msc, int64_t divisor, int64_t remainder)
 {
    (void) dpy;
    (void) drawable;
@@ -148,10 +158,11 @@ int64_t glXSwapBuffersMscOML(Display *dpy, GLXDrawable drawable,
 }
 
 
-Bool glXWaitForMscOML(Display * dpy, GLXDrawable drawable,
-			       int64_t target_msc, int64_t divisor,
-			       int64_t remainder, int64_t *ust,
-			       int64_t *msc, int64_t *sbc)
+Bool
+glXWaitForMscOML(Display * dpy, GLXDrawable drawable,
+                 int64_t target_msc, int64_t divisor,
+                 int64_t remainder, int64_t * ust,
+                 int64_t * msc, int64_t * sbc)
 {
    (void) dpy;
    (void) drawable;
@@ -165,17 +176,18 @@ Bool glXWaitForMscOML(Display * dpy, GLXDrawable drawable,
 }
 
 
-Bool glXWaitForSbcOML(Display * dpy, GLXDrawable drawable,
-			       int64_t target_sbc, int64_t *ust,
-			       int64_t *msc, int64_t *sbc )
+Bool
+glXWaitForSbcOML(Display * dpy, GLXDrawable drawable,
+                 int64_t target_sbc, int64_t * ust,
+                 int64_t * msc, int64_t * sbc)
 {
-    (void) dpy;
-    (void) drawable;
-    (void) target_sbc;
-    (void) ust;
-    (void) msc;
-    (void) sbc;
-    return False;
+   (void) dpy;
+   (void) drawable;
+   (void) target_sbc;
+   (void) ust;
+   (void) msc;
+   (void) sbc;
+   return False;
 }
 
 
@@ -184,9 +196,10 @@ Bool glXWaitForSbcOML(Display * dpy, GLXDrawable drawable,
  */
 /*@{*/
 
-PUBLIC void *glXAllocateMemoryMESA(Display *dpy, int scrn,
-				   size_t size, float readFreq,
-				   float writeFreq, float priority)
+PUBLIC void *
+glXAllocateMemoryMESA(Display * dpy, int scrn,
+                      size_t size, float readFreq,
+                      float writeFreq, float priority)
 {
    (void) dpy;
    (void) scrn;
@@ -198,13 +211,14 @@ PUBLIC void *glXAllocateMemoryMESA(Display *dpy, int scrn,
 }
 
 
-PUBLIC void glXFreeMemoryMESA(Display *dpy, int scrn, void *pointer)
+PUBLIC void
+glXFreeMemoryMESA(Display * dpy, int scrn, void *pointer)
 {
 #ifdef __DRI_ALLOCATE
-   __GLXscreenConfigs * const psc = GetGLXScreenConfigs( dpy, scrn );
+   __GLXscreenConfigs *const psc = GetGLXScreenConfigs(dpy, scrn);
 
    if (psc && psc->allocate)
-	 (*psc->allocate->freeMemory)(psc->__driScreen, pointer);
+      (*psc->allocate->freeMemory) (psc->__driScreen, pointer);
 
 #else
    (void) dpy;
@@ -214,8 +228,8 @@ PUBLIC void glXFreeMemoryMESA(Display *dpy, int scrn, void *pointer)
 }
 
 
-PUBLIC GLuint glXGetMemoryOffsetMESA( Display *dpy, int scrn,
-				      const void *pointer )
+PUBLIC GLuint
+glXGetMemoryOffsetMESA(Display * dpy, int scrn, const void *pointer)
 {
    (void) dpy;
    (void) scrn;
@@ -223,7 +237,8 @@ PUBLIC GLuint glXGetMemoryOffsetMESA( Display *dpy, int scrn,
    return ~0L;
 }
 
-Bool glXReleaseBuffersMESA( Display *dpy, GLXDrawable d )
+Bool
+glXReleaseBuffersMESA(Display * dpy, GLXDrawable d)
 {
    (void) dpy;
    (void) d;
@@ -231,8 +246,9 @@ Bool glXReleaseBuffersMESA( Display *dpy, GLXDrawable d )
 }
 
 
-PUBLIC GLXPixmap glXCreateGLXPixmapMESA( Display *dpy, XVisualInfo *visual,
-					 Pixmap pixmap, Colormap cmap )
+PUBLIC GLXPixmap
+glXCreateGLXPixmapMESA(Display * dpy, XVisualInfo * visual,
+                       Pixmap pixmap, Colormap cmap)
 {
    (void) dpy;
    (void) visual;
@@ -245,99 +261,115 @@ PUBLIC GLXPixmap glXCreateGLXPixmapMESA( Display *dpy, XVisualInfo *visual,
 /**
  * GLX_MESA_copy_sub_buffer
  */
-void glXCopySubBufferMESA(Display *dpy, GLXDrawable drawable,
-				   int x, int y, int width, int height)
+void
+glXCopySubBufferMESA(Display * dpy, GLXDrawable drawable,
+                     int x, int y, int width, int height)
 {
-    (void) dpy;
-    (void) drawable;
-    (void) x;
-    (void) y;
-    (void) width;
-    (void) height;
+   (void) dpy;
+   (void) drawable;
+   (void) x;
+   (void) y;
+   (void) width;
+   (void) height;
 }
 
 
-PUBLIC int glXQueryGLXPbufferSGIX(Display *dpy, GLXDrawable drawable,
-		       int attribute, unsigned int *value)
+PUBLIC int
+glXQueryGLXPbufferSGIX(Display * dpy, GLXDrawable drawable,
+                       int attribute, unsigned int *value)
 {
-    (void) dpy;
-    (void) drawable;
-    (void) attribute;
-    (void) value;
-    return 0;
+   (void) dpy;
+   (void) drawable;
+   (void) attribute;
+   (void) value;
+   return 0;
 }
 
-PUBLIC GLXDrawable glXCreateGLXPbufferSGIX(Display *dpy, GLXFBConfig config,
-			unsigned int width, unsigned int height,
-			int *attrib_list) {
-    (void) dpy;
-    (void) config;
-    (void) width;
-    (void) height;
-    (void) attrib_list;
-    return None;
+PUBLIC GLXDrawable
+glXCreateGLXPbufferSGIX(Display * dpy, GLXFBConfig config,
+                        unsigned int width, unsigned int height,
+                        int *attrib_list)
+{
+   (void) dpy;
+   (void) config;
+   (void) width;
+   (void) height;
+   (void) attrib_list;
+   return None;
 }
 
 #if 0
 /* GLX_SGIX_fbconfig */
-PUBLIC int glXGetFBConfigAttribSGIX (Display *dpy, void *config, int a, int *b) {
-     (void)dpy;
-     (void)config;
-     (void)a;
-     (void)b;
-     return 0;
+PUBLIC int
+glXGetFBConfigAttribSGIX(Display * dpy, void *config, int a, int *b)
+{
+   (void) dpy;
+   (void) config;
+   (void) a;
+   (void) b;
+   return 0;
 }
 
-PUBLIC void *glXChooseFBConfigSGIX(Display *dpy, int a, int *b, int *c) {
-    (void)dpy;
-    (void)a;
-    (void)b;
-    (void)c;
-    return NULL;
+PUBLIC void *
+glXChooseFBConfigSGIX(Display * dpy, int a, int *b, int *c)
+{
+   (void) dpy;
+   (void) a;
+   (void) b;
+   (void) c;
+   return NULL;
 }
 
-PUBLIC GLXPixmap glXCreateGLXPixmapWithConfigSGIX (Display *dpy, void *config, Pixmap p) {
-    (void)dpy;
-    (void)config;
-    (void)p;
-    return None;
+PUBLIC GLXPixmap
+glXCreateGLXPixmapWithConfigSGIX(Display * dpy, void *config, Pixmap p)
+{
+   (void) dpy;
+   (void) config;
+   (void) p;
+   return None;
 }
 
-PUBLIC GLXContext glXCreateContextWithConfigSGIX (Display *dpy, void *config, int a, 
-						  GLXContext b, Bool c) {
-    (void)dpy;
-    (void)config;
-    (void)a;
-    (void)b;
-    (void)c;
-    return NULL;
+PUBLIC GLXContext
+glXCreateContextWithConfigSGIX(Display * dpy, void *config, int a,
+                               GLXContext b, Bool c)
+{
+   (void) dpy;
+   (void) config;
+   (void) a;
+   (void) b;
+   (void) c;
+   return NULL;
 }
 
-PUBLIC XVisualInfo * glXGetVisualFromFBConfigSGIX (Display *dpy, void *config) {
-    (void)dpy;
-    (void)config;
-    return NULL;
+PUBLIC XVisualInfo *
+glXGetVisualFromFBConfigSGIX(Display * dpy, void *config)
+{
+   (void) dpy;
+   (void) config;
+   return NULL;
 }
 
-PUBLIC void *glXGetFBConfigFromVisualSGIX (Display *dpy, XVisualInfo *visinfo) {
-    (void)dpy;
-    (void)visinfo;
-    return NULL;
+PUBLIC void *
+glXGetFBConfigFromVisualSGIX(Display * dpy, XVisualInfo * visinfo)
+{
+   (void) dpy;
+   (void) visinfo;
+   return NULL;
 }
 #endif
 
 
-PUBLIC GLX_ALIAS_VOID(glXDestroyGLXPbufferSGIX,
-		      (Display *dpy, GLXDrawable pbuf),
-		      (dpy, pbuf),
-		      glXDestroyPbuffer)
-    
-PUBLIC GLX_ALIAS_VOID(glXSelectEventSGIX,
-		      (Display *dpy, GLXDrawable drawable, unsigned long mask),
-		      (dpy, drawable, mask),
-		      glXSelectEvent)
+PUBLIC
+GLX_ALIAS_VOID(glXDestroyGLXPbufferSGIX,
+               (Display * dpy, GLXDrawable pbuf),
+               (dpy, pbuf), glXDestroyPbuffer)
 
-PUBLIC GLX_ALIAS_VOID(glXGetSelectedEventSGIX,
-		      (Display *dpy, GLXDrawable drawable, unsigned long *mask),
-		      (dpy, drawable, mask),
-		      glXGetSelectedEvent)
+     PUBLIC GLX_ALIAS_VOID(glXSelectEventSGIX,
+                           (Display * dpy, GLXDrawable drawable,
+                            unsigned long mask), (dpy, drawable, mask),
+                           glXSelectEvent)
+
+     PUBLIC GLX_ALIAS_VOID(glXGetSelectedEventSGIX,
+                           (Display * dpy, GLXDrawable drawable,
+                            unsigned long *mask), (dpy, drawable, mask),
+                           glXGetSelectedEvent)

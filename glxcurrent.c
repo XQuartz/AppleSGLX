@@ -53,11 +53,11 @@ static GLubyte dummyBuffer[__GLX_BUFFER_LIMIT_SIZE];
 ** the dummy context structure.
 */
 static __GLXcontext dummyContext = {
-    &dummyBuffer[0],
-    &dummyBuffer[0],
-    &dummyBuffer[0],
-    &dummyBuffer[__GLX_BUFFER_LIMIT_SIZE],
-    sizeof(dummyBuffer),
+   &dummyBuffer[0],
+   &dummyBuffer[0],
+   &dummyBuffer[0],
+   &dummyBuffer[__GLX_BUFFER_LIMIT_SIZE],
+   sizeof(dummyBuffer),
 };
 
 /*
@@ -83,130 +83,143 @@ static pthread_key_t ContextTSD;
  * initialize the per-thread data key.  This is ideally done using the
  * \c pthread_once mechanism.
  */
-static void init_thread_data( void )
+static void
+init_thread_data(void)
 {
-    if (pthread_key_create(&ContextTSD, NULL) != 0) {
-	perror("pthread_key_create");
-	exit(EXIT_FAILURE);
-    }
+   if (pthread_key_create(&ContextTSD, NULL) != 0) {
+      perror("pthread_key_create");
+      exit(EXIT_FAILURE);
+   }
 }
 
-_X_HIDDEN void __glXSetCurrentContext( __GLXcontext * c ) {
-    pthread_once(&once_control, init_thread_data);
-    pthread_setspecific(ContextTSD, c);
-}
-
-_X_HIDDEN __GLXcontext * __glXGetCurrentContext( void )
+_X_HIDDEN void
+__glXSetCurrentContext(__GLXcontext * c)
 {
-    void * v;
+   pthread_once(&once_control, init_thread_data);
+   pthread_setspecific(ContextTSD, c);
+}
 
-    pthread_once(& once_control, init_thread_data);
+_X_HIDDEN __GLXcontext *
+__glXGetCurrentContext(void)
+{
+   void *v;
 
-    v = pthread_getspecific( ContextTSD );
-    return (v == NULL) ? & dummyContext : (__GLXcontext *) v;
+   pthread_once(&once_control, init_thread_data);
+
+   v = pthread_getspecific(ContextTSD);
+   return (v == NULL) ? &dummyContext : (__GLXcontext *) v;
 }
 
 
-_X_HIDDEN void __glXSetCurrentContextNull(void) {
-    __glXSetCurrentContext(&dummyContext);
+_X_HIDDEN void
+__glXSetCurrentContextNull(void)
+{
+   __glXSetCurrentContext(&dummyContext);
 }
 
 
 /************************************************************************/
 
-PUBLIC GLXContext glXGetCurrentContext(void)
+PUBLIC GLXContext
+glXGetCurrentContext(void)
 {
-    GLXContext cx = __glXGetCurrentContext();
-    
-    if (cx == &dummyContext) {
-	return NULL;
-    } else {
-	return cx;
-    }
+   GLXContext cx = __glXGetCurrentContext();
+
+   if (cx == &dummyContext) {
+      return NULL;
+   }
+   else {
+      return cx;
+   }
 }
 
-PUBLIC GLXDrawable glXGetCurrentDrawable(void)
+PUBLIC GLXDrawable
+glXGetCurrentDrawable(void)
 {
-    GLXContext gc = __glXGetCurrentContext();
-    return gc->currentDrawable;
+   GLXContext gc = __glXGetCurrentContext();
+   return gc->currentDrawable;
 }
 
-static Bool MakeContextCurrent(Display *dpy, GLXDrawable draw,
-			       GLXDrawable read, GLXContext gc,
-			       Bool pre13)
+static Bool
+MakeContextCurrent(Display * dpy, GLXDrawable draw,
+                   GLXDrawable read, GLXContext gc, Bool pre13)
 {
-    const GLXContext oldGC = __glXGetCurrentContext();
-    bool error;
-    
-    error = apple_glx_make_current_context(dpy, 
-					   (oldGC && oldGC != &dummyContext) ?
-					   oldGC->apple : NULL, 
-					   gc ? gc->apple : NULL,
-					   draw);
+   const GLXContext oldGC = __glXGetCurrentContext();
+   bool error;
 
-    apple_glx_diagnostic("%s: error %s\n", __func__, error ? "YES" : "NO");
+   error = apple_glx_make_current_context(dpy,
+                                          (oldGC && oldGC != &dummyContext) ?
+                                          oldGC->apple : NULL,
+                                          gc ? gc->apple : NULL, draw);
 
-    if(error)
-	return GL_FALSE;
-    
-    __glXLock();
-   
-    if (gc == oldGC) {
-	/* Even though the contexts are the same the drawable might have
-	 * changed.  Note that gc cannot be the dummy, and that oldGC
-	 * cannot be NULL, therefore if they are the same, gc is not
-	 * NULL and not the dummy.
-	 */
-	if(gc) {
-	    gc->currentDrawable = draw;
-	    gc->currentReadable = read;
-	}
-    } else {
-	
-	if (oldGC != &dummyContext) {
-	    /* Old current context is no longer current to anybody */
-	    oldGC->currentDpy = 0;
-	    oldGC->currentDrawable = None;
-	    oldGC->currentReadable = None;
-	    oldGC->currentContextTag = 0;
-	    
-	    /*
-	     * At this point we should check if the context has been
-	     * through glXDestroyContext, and redestroy it if so.
-	     */
-	    if(oldGC->do_destroy) {
-		__glXUnlock();
-		/* glXDestroyContext uses the same global lock. */
-		glXDestroyContext(dpy, oldGC);
-		__glXLock();
-	    }
-	}
-	
-	if (gc) {
-	    __glXSetCurrentContext(gc);
+   apple_glx_diagnostic("%s: error %s\n", __func__, error ? "YES" : "NO");
 
-	    gc->currentDpy = dpy;
-	    gc->currentDrawable = draw;
-	    gc->currentReadable = read;
-	} else {
-	    __glXSetCurrentContextNull();
-	}
-    }
-    __glXUnlock();
+   if (error)
+      return GL_FALSE;
 
-    return GL_TRUE;
+   __glXLock();
+
+   if (gc == oldGC) {
+      /* Even though the contexts are the same the drawable might have
+       * changed.  Note that gc cannot be the dummy, and that oldGC
+       * cannot be NULL, therefore if they are the same, gc is not
+       * NULL and not the dummy.
+       */
+      if (gc) {
+         gc->currentDrawable = draw;
+         gc->currentReadable = read;
+      }
+   }
+   else {
+
+      if (oldGC != &dummyContext) {
+         /* Old current context is no longer current to anybody */
+         oldGC->currentDpy = 0;
+         oldGC->currentDrawable = None;
+         oldGC->currentReadable = None;
+         oldGC->currentContextTag = 0;
+
+         /*
+          * At this point we should check if the context has been
+          * through glXDestroyContext, and redestroy it if so.
+          */
+         if (oldGC->do_destroy) {
+            __glXUnlock();
+            /* glXDestroyContext uses the same global lock. */
+            glXDestroyContext(dpy, oldGC);
+            __glXLock();
+         }
+      }
+
+      if (gc) {
+         __glXSetCurrentContext(gc);
+
+         gc->currentDpy = dpy;
+         gc->currentDrawable = draw;
+         gc->currentReadable = read;
+      }
+      else {
+         __glXSetCurrentContextNull();
+      }
+   }
+   __glXUnlock();
+
+   return GL_TRUE;
 }
 
 
-PUBLIC Bool glXMakeCurrent(Display *dpy, GLXDrawable draw, GLXContext gc)
+PUBLIC Bool
+glXMakeCurrent(Display * dpy, GLXDrawable draw, GLXContext gc)
 {
-    return MakeContextCurrent(dpy, draw, draw, gc, True);
+   return MakeContextCurrent(dpy, draw, draw, gc, True);
 }
 
-PUBLIC GLX_ALIAS(Bool, glXMakeCurrentReadSGI,
-	  (Display *dpy, GLXDrawable d, GLXDrawable r, GLXContext ctx),
-	  (dpy, d, r, ctx, False), MakeContextCurrent)
+PUBLIC
+GLX_ALIAS(Bool, glXMakeCurrentReadSGI,
+          (Display * dpy, GLXDrawable d, GLXDrawable r, GLXContext ctx),
+          (dpy, d, r, ctx, False), MakeContextCurrent)
 
-PUBLIC GLX_ALIAS(Bool, glXMakeContextCurrent,
-	  (Display *dpy, GLXDrawable d, GLXDrawable r, GLXContext ctx),
-	  (dpy, d, r, ctx, False), MakeContextCurrent)
+     PUBLIC GLX_ALIAS(Bool, glXMakeContextCurrent,
+                      (Display * dpy, GLXDrawable d, GLXDrawable r,
+                       GLXContext ctx), (dpy, d, r, ctx, False),
+                      MakeContextCurrent)

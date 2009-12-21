@@ -34,8 +34,8 @@
 #include <OpenGL/CGLTypes.h>
 
 /* mode is expected to be of type __GLcontextModes. */
-void apple_visual_create_pfobj(CGLPixelFormatObj *pfobj, const void *mode,
-			       bool *double_buffered, bool *uses_stereo,
-			       bool offscreen);
+void apple_visual_create_pfobj(CGLPixelFormatObj * pfobj, const void *mode,
+                               bool * double_buffered, bool * uses_stereo,
+                               bool offscreen);
 
 #endif

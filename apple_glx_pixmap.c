@@ -43,178 +43,188 @@
 #include "glcontextmodes.h"
 
 static bool pixmap_make_current(struct apple_glx_context *ac,
-				struct apple_glx_drawable *d);
+                                struct apple_glx_drawable *d);
 
-static void pixmap_destroy(Display *dpy, struct apple_glx_drawable *d);
+static void pixmap_destroy(Display * dpy, struct apple_glx_drawable *d);
 
 static struct apple_glx_drawable_callbacks callbacks = {
-    .type = APPLE_GLX_DRAWABLE_PIXMAP,
-    .make_current = pixmap_make_current,
-    .destroy = pixmap_destroy
+   .type = APPLE_GLX_DRAWABLE_PIXMAP,
+   .make_current = pixmap_make_current,
+   .destroy = pixmap_destroy
 };
 
-static bool pixmap_make_current(struct apple_glx_context *ac,
-				struct apple_glx_drawable *d) {
-    CGLError cglerr;
-    struct apple_glx_pixmap *p = &d->types.pixmap;
-    
-    assert(APPLE_GLX_DRAWABLE_PIXMAP == d->type);
+static bool
+pixmap_make_current(struct apple_glx_context *ac,
+                    struct apple_glx_drawable *d)
+{
+   CGLError cglerr;
+   struct apple_glx_pixmap *p = &d->types.pixmap;
 
-    cglerr = apple_cgl.set_current_context(p->context_obj);
-    
-    if(kCGLNoError != cglerr) {
-	fprintf(stderr, "set current context: %s\n",
-		apple_cgl.error_string(cglerr));
-	return true;
-    }
+   assert(APPLE_GLX_DRAWABLE_PIXMAP == d->type);
 
-    cglerr = apple_cgl.set_off_screen(p->context_obj, p->width, p->height,
-				      p->pitch, p->buffer);
-    
-    if(kCGLNoError != cglerr) {
-	fprintf(stderr, "set off screen: %s\n", apple_cgl.error_string(cglerr));
-	
-	return true;
-    }
-    
-    if(!ac->made_current) {
-	glViewport(0, 0, p->width, p->height);
-	glScissor(0, 0, p->width, p->height);
-	ac->made_current = true;
-    }
+   cglerr = apple_cgl.set_current_context(p->context_obj);
 
-    return false;
+   if (kCGLNoError != cglerr) {
+      fprintf(stderr, "set current context: %s\n",
+              apple_cgl.error_string(cglerr));
+      return true;
+   }
+
+   cglerr = apple_cgl.set_off_screen(p->context_obj, p->width, p->height,
+                                     p->pitch, p->buffer);
+
+   if (kCGLNoError != cglerr) {
+      fprintf(stderr, "set off screen: %s\n", apple_cgl.error_string(cglerr));
+
+      return true;
+   }
+
+   if (!ac->made_current) {
+      glViewport(0, 0, p->width, p->height);
+      glScissor(0, 0, p->width, p->height);
+      ac->made_current = true;
+   }
+
+   return false;
 }
 
-static void pixmap_destroy(Display *dpy, struct apple_glx_drawable *d) {
-    struct apple_glx_pixmap *p = &d->types.pixmap;
+static void
+pixmap_destroy(Display * dpy, struct apple_glx_drawable *d)
+{
+   struct apple_glx_pixmap *p = &d->types.pixmap;
 
-    if(p->pixel_format_obj)
-	(void)apple_cgl.destroy_pixel_format(p->pixel_format_obj);
+   if (p->pixel_format_obj)
+      (void) apple_cgl.destroy_pixel_format(p->pixel_format_obj);
 
-    if(p->context_obj)
-	(void)apple_cgl.destroy_context(p->context_obj);
-    
-    XAppleDRIDestroyPixmap(dpy, p->xpixmap);
-    
-    if(p->buffer) {
-	if(munmap(p->buffer, p->size))
-	    perror("munmap");
-	
-	if(-1 == close(p->fd))
-	    perror("close");
-	
-	if(shm_unlink(p->path))
-	    perror("shm_unlink");
-    }
+   if (p->context_obj)
+      (void) apple_cgl.destroy_context(p->context_obj);
 
-    apple_glx_diagnostic("destroyed pixmap buffer for: 0x%lx\n", d->drawable);
+   XAppleDRIDestroyPixmap(dpy, p->xpixmap);
+
+   if (p->buffer) {
+      if (munmap(p->buffer, p->size))
+         perror("munmap");
+
+      if (-1 == close(p->fd))
+         perror("close");
+
+      if (shm_unlink(p->path))
+         perror("shm_unlink");
+   }
+
+   apple_glx_diagnostic("destroyed pixmap buffer for: 0x%lx\n", d->drawable);
 }
 
 /* Return true if an error occurred. */
-bool apple_glx_pixmap_create(Display *dpy, int screen, Pixmap pixmap, 
-			     const void *mode) {
-    struct apple_glx_drawable *d;
-    struct apple_glx_pixmap *p;
-    bool double_buffered;
-    bool uses_stereo;
-    CGLError error;
-    const __GLcontextModes *cmodes = mode;
+bool
+apple_glx_pixmap_create(Display * dpy, int screen, Pixmap pixmap,
+                        const void *mode)
+{
+   struct apple_glx_drawable *d;
+   struct apple_glx_pixmap *p;
+   bool double_buffered;
+   bool uses_stereo;
+   CGLError error;
+   const __GLcontextModes *cmodes = mode;
 
-    if(apple_glx_drawable_create(dpy, screen, pixmap, &d, &callbacks))
-	return true;
-    
-    /* d is locked and referenced at this point. */
+   if (apple_glx_drawable_create(dpy, screen, pixmap, &d, &callbacks))
+      return true;
 
-    p = &d->types.pixmap;
+   /* d is locked and referenced at this point. */
 
-    p->xpixmap = pixmap;
-    p->buffer = NULL;
+   p = &d->types.pixmap;
 
-    if(!XAppleDRICreatePixmap(dpy, screen, pixmap,
-			      &p->width, &p->height, &p->pitch, &p->bpp,
-			      &p->size, p->path, PATH_MAX)) {
-	d->unlock(d);
-	d->destroy(d);
-	return true;
-    }
-      
-    p->fd = shm_open(p->path, O_RDWR, 0);
-    
-    if(p->fd < 0) {
-	perror("shm_open");
-	d->unlock(d);
-	d->destroy(d);
-	return true;
-    }
+   p->xpixmap = pixmap;
+   p->buffer = NULL;
 
-    p->buffer = mmap(NULL, p->size, PROT_READ | PROT_WRITE,
-		     MAP_FILE | MAP_SHARED, p->fd, 0);
+   if (!XAppleDRICreatePixmap(dpy, screen, pixmap,
+                              &p->width, &p->height, &p->pitch, &p->bpp,
+                              &p->size, p->path, PATH_MAX)) {
+      d->unlock(d);
+      d->destroy(d);
+      return true;
+   }
 
-    if(MAP_FAILED == p->buffer) {
-	perror("mmap");
-	d->unlock(d);
-	d->destroy(d);
-	return true;
-    }
+   p->fd = shm_open(p->path, O_RDWR, 0);
 
-    apple_visual_create_pfobj(&p->pixel_format_obj, mode, &double_buffered,
-			      &uses_stereo, /*offscreen*/ true);
+   if (p->fd < 0) {
+      perror("shm_open");
+      d->unlock(d);
+      d->destroy(d);
+      return true;
+   }
 
-    error = apple_cgl.create_context(p->pixel_format_obj, NULL,
-				     &p->context_obj);
+   p->buffer = mmap(NULL, p->size, PROT_READ | PROT_WRITE,
+                    MAP_FILE | MAP_SHARED, p->fd, 0);
 
-    if(kCGLNoError != error) {
-	d->unlock(d);
-	d->destroy(d);
-	return true;
-    }
-    
-    p->fbconfigID = cmodes->fbconfigID;
+   if (MAP_FAILED == p->buffer) {
+      perror("mmap");
+      d->unlock(d);
+      d->destroy(d);
+      return true;
+   }
 
-    d->unlock(d);
+   apple_visual_create_pfobj(&p->pixel_format_obj, mode, &double_buffered,
+                             &uses_stereo, /*offscreen */ true);
 
-    apple_glx_diagnostic("created: pixmap buffer for 0x%lx\n", d->drawable);
+   error = apple_cgl.create_context(p->pixel_format_obj, NULL,
+                                    &p->context_obj);
 
-    return false;
+   if (kCGLNoError != error) {
+      d->unlock(d);
+      d->destroy(d);
+      return true;
+   }
+
+   p->fbconfigID = cmodes->fbconfigID;
+
+   d->unlock(d);
+
+   apple_glx_diagnostic("created: pixmap buffer for 0x%lx\n", d->drawable);
+
+   return false;
 }
 
-bool apple_glx_pixmap_query(GLXPixmap pixmap, int attr, unsigned int *value) {
-    struct apple_glx_drawable *d;
-    struct apple_glx_pixmap *p;
-    bool result = false;
- 
-    d = apple_glx_drawable_find_by_type(pixmap, APPLE_GLX_DRAWABLE_PIXMAP,
-					APPLE_GLX_DRAWABLE_LOCK);
+bool
+apple_glx_pixmap_query(GLXPixmap pixmap, int attr, unsigned int *value)
+{
+   struct apple_glx_drawable *d;
+   struct apple_glx_pixmap *p;
+   bool result = false;
 
-    if(d) {
-	p = &d->types.pixmap;
+   d = apple_glx_drawable_find_by_type(pixmap, APPLE_GLX_DRAWABLE_PIXMAP,
+                                       APPLE_GLX_DRAWABLE_LOCK);
 
-	switch(attr) {
-	case GLX_WIDTH:
-	    *value = p->width;
-	    result = true;
-	    break;
+   if (d) {
+      p = &d->types.pixmap;
 
-	case GLX_HEIGHT:
-	    *value = p->height;
-	    result = true;
-	    break;
-	    
-	case GLX_FBCONFIG_ID:
-	    *value = p->fbconfigID;
-	    result = true;
-	    break;
-	}
+      switch (attr) {
+      case GLX_WIDTH:
+         *value = p->width;
+         result = true;
+         break;
 
-	d->unlock(d);
-    }
+      case GLX_HEIGHT:
+         *value = p->height;
+         result = true;
+         break;
 
-    return result;
+      case GLX_FBCONFIG_ID:
+         *value = p->fbconfigID;
+         result = true;
+         break;
+      }
+
+      d->unlock(d);
+   }
+
+   return result;
 }
 
 /* Return true if the type is valid for pixmap. */
-bool apple_glx_pixmap_destroy(Display *dpy, GLXPixmap pixmap) {
-    return !apple_glx_drawable_destroy_by_type(dpy, pixmap,
-					       APPLE_GLX_DRAWABLE_PIXMAP);
+bool
+apple_glx_pixmap_destroy(Display * dpy, GLXPixmap pixmap)
+{
+   return !apple_glx_drawable_destroy_by_type(dpy, pixmap,
+                                              APPLE_GLX_DRAWABLE_PIXMAP);
 }
