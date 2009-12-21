@@ -1,7 +1,6 @@
 /*
  * SGI FREE SOFTWARE LICENSE B (Version 2.0, Sept. 18, 2008)
  * Copyright (C) 1991-2000 Silicon Graphics, Inc. All Rights Reserved.
- * Copyright (C) 2009 Apple Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -42,13 +41,14 @@
 #include "glxclient.h"
 #include <X11/extensions/Xext.h>
 #include <X11/extensions/extutil.h>
-//#include "glapi.h"
-#include "glxextensions.h"
-#include "glcontextmodes.h"
-//#include "glheader.h"
-
+#ifdef __APPLE__
 #include "apple_glx.h"
 #include "apple_visual.h"
+#else
+#include "glapi.h"
+#endif
+#include "glxextensions.h"
+#include "glcontextmodes.h"
 
 #ifdef USE_XCB
 #include <X11/Xlib-xcb.h>
@@ -56,27 +56,9 @@
 #include <xcb/glx.h>
 #endif
 
-// Nuke when rebase is done
-char *
-__glXGetStringFromServer(Display * dpy, int opcode, CARD32 glxCode,
-                         CARD32 for_whom, CARD32 name);
-
 
 #ifdef DEBUG
 void __glXDumpDrawBuffer(__GLXcontext * ctx);
-#endif
-
-#ifdef USE_SPARC_ASM
-static void _glx_mesa_init_sparc_glapi_relocs(void);
-static int _mesa_sparc_needs_init = 1;
-#define INIT_MESA_SPARC { \
-    if(_mesa_sparc_needs_init) { \
-      _glx_mesa_init_sparc_glapi_relocs(); \
-      _mesa_sparc_needs_init = 0; \
-  } \
-}
-#else
-#define INIT_MESA_SPARC
 #endif
 
 /*
@@ -88,9 +70,12 @@ _X_HIDDEN int __glXDebug = 0;
 /* Extension required boiler plate */
 
 static char *__glXExtensionName = GLX_EXTENSION_NAME;
-
-static XExtensionInfo glxext_info_data;
-static XExtensionInfo *glXExtensionInfo = &glxext_info_data;
+#ifdef __APPLE__
+static XExtensionInfo __glXExtensionInfo_data;
+XExtensionInfo *__glXExtensionInfo = &__glXExtensionInfo_data;
+#else
+XExtensionInfo *__glXExtensionInfo = NULL;
+#endif
 
 static /* const */ char *error_list[] = {
    "GLXBadContext",
@@ -119,43 +104,47 @@ __glXCloseDisplay(Display * dpy, XExtCodes * codes)
       __glXFreeContext(gc);
    }
 
-   return XextRemoveDisplay(glXExtensionInfo, dpy);
+   return XextRemoveDisplay(__glXExtensionInfo, dpy);
 }
 
-static char *__glXErrorString(Display * dpy, int code, XExtCodes * codes,
+
+#ifdef __APPLE__
+static char *__glXErrorString(Display *dpy, int code, XExtCodes *codes, 
                               char *buf, int n);
+#endif
+
+static
+XEXT_GENERATE_ERROR_STRING(__glXErrorString, __glXExtensionName,
+                           __GLX_NUMBER_ERRORS, error_list)
 
 static /* const */ XExtensionHooks __glXExtensionHooks = {
-   NULL,                        /* create_gc */
-   NULL,                        /* copy_gc */
-   NULL,                        /* flush_gc */
-   NULL,                        /* free_gc */
-   NULL,                        /* create_font */
-   NULL,                        /* free_font */
-   __glXCloseDisplay,           /* close_display */
-   NULL,                        /* wire_to_event */
-   NULL,                        /* event_to_wire */
-   NULL,                        /* error */
-   __glXErrorString,            /* error_string */
+  NULL,                   /* create_gc */
+  NULL,                   /* copy_gc */
+  NULL,                   /* flush_gc */
+  NULL,                   /* free_gc */
+  NULL,                   /* create_font */
+  NULL,                   /* free_font */
+  __glXCloseDisplay,      /* close_display */
+  NULL,                   /* wire_to_event */
+  NULL,                   /* event_to_wire */
+  NULL,                   /* error */
+  __glXErrorString,       /* error_string */
 };
 
-
-XEXT_GENERATE_FIND_DISPLAY(__glXFindDisplay, glXExtensionInfo,
+#ifndef __APPLE__
+static
+#endif
+XEXT_GENERATE_FIND_DISPLAY(__glXFindDisplay, __glXExtensionInfo,
                            __glXExtensionName, &__glXExtensionHooks,
                            __GLX_NUMBER_EVENTS, NULL)
-
-     static XEXT_GENERATE_ERROR_STRING(__glXErrorString, __glXExtensionName,
-                                       __GLX_NUMBER_ERRORS, error_list)
-
-
-
 
 /************************************************************************/
 /*
 ** Free the per screen configs data as well as the array of
 ** __glXScreenConfigs.
 */
-     static void FreeScreenConfigs(__GLXdisplayPrivate * priv)
+static void
+FreeScreenConfigs(__GLXdisplayPrivate * priv)
 {
    __GLXscreenConfigs *psc;
    GLint i, screens;
@@ -177,6 +166,12 @@ XEXT_GENERATE_FIND_DISPLAY(__glXFindDisplay, glXExtensionInfo,
       Xfree((char *) psc->serverGLXexts);
 
 #ifdef GLX_DIRECT_RENDERING
+      if (psc->driver_configs) {
+         for (unsigned int i = 0; psc->driver_configs[i]; i++)
+            free((__DRIconfig *) psc->driver_configs[i]);
+         free(psc->driver_configs);
+         psc->driver_configs = NULL;
+      }
       if (psc->driScreen) {
          psc->driScreen->destroyScreen(psc);
          __glxHashDestroy(psc->drawHash);
@@ -218,6 +213,10 @@ __glXFreeDisplayPrivate(XExtData * extension)
    if (priv->driDisplay)
       (*priv->driDisplay->destroyDisplay) (priv->driDisplay);
    priv->driDisplay = NULL;
+
+   if (priv->dri2Display)
+      (*priv->dri2Display->destroyDisplay) (priv->dri2Display);
+   priv->dri2Display = NULL;
 #endif
 
    Xfree((char *) priv);
@@ -233,6 +232,24 @@ __glXFreeDisplayPrivate(XExtData * extension)
 static Bool
 QueryVersion(Display * dpy, int opcode, int *major, int *minor)
 {
+#ifdef USE_XCB
+   xcb_connection_t *c = XGetXCBConnection(dpy);
+   xcb_glx_query_version_reply_t *reply = xcb_glx_query_version_reply(c,
+                                                                      xcb_glx_query_version
+                                                                      (c,
+                                                                       GLX_MAJOR_VERSION,
+                                                                       GLX_MINOR_VERSION),
+                                                                      NULL);
+
+   if (reply->major_version != GLX_MAJOR_VERSION) {
+      free(reply);
+      return GL_FALSE;
+   }
+   *major = reply->major_version;
+   *minor = min(reply->minor_version, GLX_MINOR_VERSION);
+   free(reply);
+   return GL_TRUE;
+#else
    xGLXQueryVersionReq *req;
    xGLXQueryVersionReply reply;
 
@@ -255,20 +272,18 @@ QueryVersion(Display * dpy, int opcode, int *major, int *minor)
       return GL_FALSE;
    }
    *major = reply.majorVersion;
-   *minor = GLX_MINOR_VERSION;
-   // *minor = min(reply.minorVersion, GLX_MINOR_VERSION);
+   *minor = min(reply.minorVersion, GLX_MINOR_VERSION);
    return GL_TRUE;
+#endif /* USE_XCB */
 }
-
 
 /* 
  * We don't want to enable this GLX_OML_swap_method in glxext.h, 
  * because we can't support it.  The X server writes it out though,
  * so we should handle it somehow, to avoid false warnings.
  */
-enum
-{
-   IGNORE_GLX_SWAP_METHOD_OML = 0x8060
+enum {
+    IGNORE_GLX_SWAP_METHOD_OML = 0x8060
 };
 
 
@@ -282,13 +297,9 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
                                     Bool fbconfig_style_tags)
 {
    int i;
-   long int tag, tagvalue;
 
    if (!tagged_only) {
-      /*
-       * Copy in the first set of properties.
-       * There should only be 18 initial properties.
-       */
+      /* Copy in the first set of properties */
       config->visualID = *bp++;
 
       config->visualType = _gl_convert_from_x_visual_type(*bp++);
@@ -313,11 +324,14 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
       config->numAuxBuffers = *bp++;
       config->level = *bp++;
 
-      /* AppleSGLX supports pixmap and pbuffers with all config. */
-      config->drawableType =
-         GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;
-      /* Unfortunately this can create an ABI compatibility problem. */
-      count -= 18;
+#ifdef __APPLE__
+       /* AppleSGLX supports pixmap and pbuffers with all config. */
+       config->drawableType = GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;
+       /* Unfortunately this can create an ABI compatibility problem. */
+       count -= 18;
+#else
+      count -= __GLX_MIN_CONFIG_PROPS;
+#endif
    }
 
    /*
@@ -330,8 +344,8 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
     config-> tag = ( fbconfig_style_tags ) ? *bp++ : 1
 
    for (i = 0; i < count; i += 2) {
-      tag = *bp++;
-
+      long int tag = *bp++;
+      
       switch (tag) {
       case GLX_RGBA:
          FETCH_OR_SET(rgbMode);
@@ -410,10 +424,10 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
          break;
       case GLX_DRAWABLE_TYPE:
          config->drawableType = *bp++;
-
+#ifdef __APPLE__
          /* AppleSGLX supports pixmap and pbuffers with all config. */
-         config->drawableType |= GLX_WINDOW_BIT | GLX_PIXMAP_BIT
-            | GLX_PBUFFER_BIT;
+         config->drawableType |= GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;              
+#endif
          break;
       case GLX_RENDER_TYPE:
          config->renderType = *bp++;
@@ -433,36 +447,32 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
       case GLX_MAX_PBUFFER_PIXELS:
          config->maxPbufferPixels = *bp++;
          break;
-#if 0
-         /* We can't currently support these with CGL. */
+#ifndef __APPLE__
       case GLX_OPTIMAL_PBUFFER_WIDTH_SGIX:
          config->optimalPbufferWidth = *bp++;
          break;
       case GLX_OPTIMAL_PBUFFER_HEIGHT_SGIX:
          config->optimalPbufferHeight = *bp++;
          break;
-#endif
-#if 0
-         /* Not supported. */
       case GLX_VISUAL_SELECT_GROUP_SGIX:
          config->visualSelectGroup = *bp++;
          break;
-#endif
-#if 0
-         /* Changing the swap method is not supported by Xplugin. */
       case GLX_SWAP_METHOD_OML:
          config->swapMethod = *bp++;
          break;
 #endif
-         /* These 2 have the same values as the SGIS versions, and ARB. */
-      case GLX_SAMPLE_BUFFERS:
+      case GLX_SAMPLE_BUFFERS_SGIS:
          config->sampleBuffers = *bp++;
          break;
-      case GLX_SAMPLES:
+      case GLX_SAMPLES_SGIS:
          config->samples = *bp++;
          break;
-#if 0
-         /*These are part of GLX_EXT_texture_from_pixmap */
+#ifdef __APPLE__
+      case IGNORE_GLX_SWAP_METHOD_OML:
+         /* We ignore this tag.  See the comment above this function. */
+         ++bp;
+         break;
+#else
       case GLX_BIND_TO_TEXTURE_RGB_EXT:
          config->bindToTextureRgb = *bp++;
          break;
@@ -479,21 +489,16 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
          config->yInverted = *bp++;
          break;
 #endif
-      case IGNORE_GLX_SWAP_METHOD_OML:
-         /* We ignore this tag.  See the comment above this function. */
-         ++bp;
-         break;
-
       case None:
          i = count;
          break;
       default:
-         if (getenv("LIBGL_DIAGNOSTIC")) {
-            tagvalue = *bp++;
-            fprintf(stderr, "WARNING: unknown GLX tag from server: "
-                    "tag 0x%lx value 0x%lx\n", tag, tagvalue);
+         if(getenv("LIBGL_DIAGNOSTIC")) {
+             long int tagvalue = *bp++;
+             fprintf(stderr, "WARNING: unknown GLX tag from server: "
+                     "tag 0x%lx value 0x%lx\n", tag, tagvalue);
          }
-         break;
+              break;
       }
    }
 
@@ -520,6 +525,8 @@ createConfigsFromProperties(Display * dpy, int nvisuals, int nprops,
    if (nprops == 0)
       return NULL;
 
+   /* FIXME: Is the __GLX_MIN_CONFIG_PROPS test correct for FBconfigs? */
+
    /* Check number of properties */
    if (nprops < __GLX_MIN_CONFIG_PROPS || nprops > __GLX_MAX_CONFIG_PROPS)
       return NULL;
@@ -539,15 +546,18 @@ createConfigsFromProperties(Display * dpy, int nvisuals, int nprops,
    m = modes;
    for (i = 0; i < nvisuals; i++) {
       _XRead(dpy, (char *) props, prop_size);
-
+#ifdef __APPLE__
+       /* Older X servers don't send this so we default it here. */
+      m->drawableType = GLX_WINDOW_BIT;
+#else
       /* 
        * The XQuartz 2.3.2.1 X server doesn't set this properly, so
        * set the proper bits here.
        * AppleSGLX supports windows, pixmaps, and pbuffers with all config.
        */
       m->drawableType = GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;
-
-      __glXInitializeVisualConfigFromTags(m, nprops, props,
+#endif
+       __glXInitializeVisualConfigFromTags(m, nprops, props,
                                           tagged_only, GL_TRUE);
       m->screen = screen;
       m = m->next;
@@ -598,9 +608,8 @@ getFBConfigs(Display * dpy, __GLXdisplayPrivate * priv, int screen)
    __GLXscreenConfigs *psc;
 
    psc = priv->screenConfigs + screen;
-   psc->serverGLXexts = __glXGetStringFromServer(dpy, priv->majorOpcode,
-                                                 X_GLXQueryServerString,
-                                                 screen, GLX_EXTENSIONS);
+   psc->serverGLXexts =
+      __glXQueryServerString(dpy, priv->majorOpcode, screen, GLX_EXTENSIONS);
 
    LockDisplay(dpy);
 
@@ -658,9 +667,8 @@ AllocAndFetchScreenConfigs(Display * dpy, __GLXdisplayPrivate * priv)
    memset(psc, 0, screens * sizeof(__GLXscreenConfigs));
    priv->screenConfigs = psc;
 
-   priv->serverGLXversion = __glXGetStringFromServer(dpy, priv->majorOpcode,
-                                                     X_GLXQueryServerString,
-                                                     0, GLX_VERSION);
+   priv->serverGLXversion =
+      __glXQueryServerString(dpy, priv->majorOpcode, 0, GLX_VERSION);
    if (priv->serverGLXversion == NULL) {
       FreeScreenConfigs(priv);
       return GL_FALSE;
@@ -669,8 +677,29 @@ AllocAndFetchScreenConfigs(Display * dpy, __GLXdisplayPrivate * priv)
    for (i = 0; i < screens; i++, psc++) {
       getVisualConfigs(dpy, priv, i);
       getFBConfigs(dpy, priv, i);
-   }
 
+#ifdef GLX_DIRECT_RENDERING
+      psc->scr = i;
+      psc->dpy = dpy;
+      psc->drawHash = __glxHashCreate();
+      if (psc->drawHash == NULL)
+         continue;
+
+      if (priv->dri2Display)
+         psc->driScreen = (*priv->dri2Display->createScreen) (psc, i, priv);
+
+      if (psc->driScreen == NULL && priv->driDisplay)
+         psc->driScreen = (*priv->driDisplay->createScreen) (psc, i, priv);
+
+      if (psc->driScreen == NULL && priv->driswDisplay)
+         psc->driScreen = (*priv->driswDisplay->createScreen) (psc, i, priv);
+
+      if (psc->driScreen == NULL) {
+         __glxHashDestroy(psc->drawHash);
+         psc->drawHash = NULL;
+      }
+#endif
+   }
    SyncHandle();
    return GL_TRUE;
 }
@@ -690,21 +719,8 @@ __glXInitialize(Display * dpy)
    Bool glx_direct, glx_accel;
 #endif
 
-
-#if defined(USE_XTHREADS)
-   {
-      static int firstCall = 1;
-      if (firstCall) {
-         /* initialize the GLX mutexes */
-         xmutex_init(&__glXmutex);
-         firstCall = 0;
-      }
-   }
-#endif
-
-   INIT_MESA_SPARC
-      /* The one and only long long lock */
-      __glXLock();
+   /* The one and only long long lock */
+   __glXLock();
 
    if (!XextHasExtension(info)) {
       /* No GLX extension supported by this server. Oh well. */
@@ -766,13 +782,17 @@ __glXInitialize(Display * dpy)
     ** (e.g., those called in AllocAndFetchScreenConfigs).
     */
    if (glx_direct && glx_accel) {
+      dpyPriv->dri2Display = dri2CreateDisplay(dpy);
       dpyPriv->driDisplay = driCreateDisplay(dpy);
    }
    if (glx_direct)
       dpyPriv->driswDisplay = driswCreateDisplay(dpy);
 #endif
-
+#ifdef __APPLE__
    if (apple_init_glx(dpy) || !AllocAndFetchScreenConfigs(dpy, dpyPriv)) {
+#else
+   if (!AllocAndFetchScreenConfigs(dpy, dpyPriv)) {
+#endif
       __glXUnlock();
       Xfree((char *) dpyPriv);
       Xfree((char *) private);
@@ -816,7 +836,7 @@ __glXSetupForCommand(Display * dpy)
 
       if (gc->currentDpy == dpy) {
          /* Use opcode from gc because its right */
-         INIT_MESA_SPARC return gc->majorOpcode;
+         return gc->majorOpcode;
       }
       else {
          /*
@@ -836,10 +856,10 @@ __glXSetupForCommand(Display * dpy)
 
 /**
  * Flush the drawing command transport buffer.
- * 
+ *
  * \param ctx  Context whose transport buffer is to be flushed.
  * \param pc   Pointer to first unused buffer location.
- * 
+ *
  * \todo
  * Modify this function to use \c ctx->pc instead of the explicit
  * \c pc parameter.
@@ -931,11 +951,11 @@ __glXSendLargeChunk(__GLXcontext * gc, GLint requestNumber,
 
 /**
  * Send a command that is too large for the GLXRender protocol request.
- * 
+ *
  * Send a large command, one that is too large for some reason to
  * send using the GLXRender protocol request.  One reason to send
  * a large command is to avoid copying the data.
- * 
+ *
  * \param ctx        GLX context
  * \param header     Header data.
  * \param headerLen  Size, in bytes, of the header data.  It is assumed that
@@ -1009,74 +1029,3 @@ __glXDumpDrawBuffer(__GLXcontext * ctx)
    }
 }
 #endif
-
-#ifdef  USE_SPARC_ASM
-/*
- * This is where our dispatch table's bounds are.
- * And the static mesa_init is taken directly from
- * Mesa's 'sparc.c' initializer.
- *
- * We need something like this here, because this version
- * of openGL/glx never initializes a Mesa context, and so
- * the address of the dispatch table pointer never gets stuffed
- * into the dispatch jump table otherwise.
- *
- * It matters only on SPARC, and only if you are using assembler
- * code instead of C-code indirect dispatch.
- *
- * -- FEM, 04.xii.03
- */
-extern unsigned int _mesa_sparc_glapi_begin;
-extern unsigned int _mesa_sparc_glapi_end;
-extern void __glapi_sparc_icache_flush(unsigned int *);
-
-static void
-_glx_mesa_init_sparc_glapi_relocs(void)
-{
-   unsigned int *insn_ptr, *end_ptr;
-   unsigned long disp_addr;
-
-   insn_ptr = &_mesa_sparc_glapi_begin;
-   end_ptr = &_mesa_sparc_glapi_end;
-   disp_addr = (unsigned long) &_glapi_Dispatch;
-
-   /*
-    * Verbatim from Mesa sparc.c.  It's needed because there doesn't
-    * seem to be a better way to do this:
-    *
-    * UNCONDITIONAL_JUMP ( (*_glapi_Dispatch) + entry_offset )
-    *
-    * This code is patching in the ADDRESS of the pointer to the
-    * dispatch table.  Hence, it must be called exactly once, because
-    * that address is not going to change.
-    *
-    * What it points to can change, but Mesa (and hence, we) assume
-    * that there is only one pointer.
-    *
-    */
-   while (insn_ptr < end_ptr) {
-#if ( defined(__sparc_v9__) && ( !defined(__linux__) || defined(__linux_64__) ) )
-/*
-	This code patches for 64-bit addresses.  This had better
-	not happen for Sparc/Linux, no matter what architecture we
-	are building for.  So, don't do this.
-
-        The 'defined(__linux_64__)' is used here as a placeholder for
-        when we do do 64-bit usermode on sparc linux.
-	*/
-      insn_ptr[0] |= (disp_addr >> (32 + 10));
-      insn_ptr[1] |= ((disp_addr & 0xffffffff) >> 10);
-      __glapi_sparc_icache_flush(&insn_ptr[0]);
-      insn_ptr[2] |= ((disp_addr >> 32) & ((1 << 10) - 1));
-      insn_ptr[3] |= (disp_addr & ((1 << 10) - 1));
-      __glapi_sparc_icache_flush(&insn_ptr[2]);
-      insn_ptr += 11;
-#else
-      insn_ptr[0] |= (disp_addr >> 10);
-      insn_ptr[1] |= (disp_addr & ((1 << 10) - 1));
-      __glapi_sparc_icache_flush(&insn_ptr[0]);
-      insn_ptr += 5;
-#endif
-   }
-}
-#endif /* sparc ASM in use */
