@@ -1,4 +1,3 @@
-/* $XFree86: xc/lib/GL/glx/xfont.c,v 1.6 2001/05/02 15:06:02 dawes Exp $ */
 /*
  * Mesa 3-D graphics library
  * Version:  3.1
@@ -33,6 +32,8 @@
   It provides a fully client side implementation of glXUseXFont and is
   called by that routine when direct rendering is enabled.
 */
+
+#if defined(GLX_DIRECT_RENDERING) || defined(__APPLE__)
 
 #include "glxclient.h"
 
@@ -372,3 +373,5 @@ DRI_glXUseXFont(Font font, int first, int count, int listbase)
    glPixelStorei(GL_UNPACK_SKIP_PIXELS, skippixels);
    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
 }
+
+#endif
