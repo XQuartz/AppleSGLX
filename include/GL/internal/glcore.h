@@ -31,9 +31,9 @@
  * Silicon Graphics, Inc.
  */
 
+#if !defined(_WIN32_WCE)
 #include <sys/types.h>
-#include <GL/gl.h>
-#include <GL/glxint.h>
+#endif
 
 #define GL_CORE_SGI  1
 #define GL_CORE_MESA 2
@@ -139,8 +139,6 @@ typedef struct __GLcontextModesRec {
     GLint bindToMipmapTexture;
     GLint bindToTextureTargets;
     GLint yInverted;
-
-    void *apple;
 } __GLcontextModes;
 
 /* Several fields of __GLcontextModes can take these as values.  Since
@@ -179,5 +177,9 @@ typedef struct __GLcontextModesRec {
 #define GLX_TEXTURE_1D_BIT_EXT             0x00000001
 #define GLX_TEXTURE_2D_BIT_EXT             0x00000002
 #define GLX_TEXTURE_RECTANGLE_BIT_EXT      0x00000004
+
+#define GLX_TEXTURE_FORMAT_NONE_EXT        0x20D8
+#define GLX_TEXTURE_FORMAT_RGB_EXT         0x20D9
+#define GLX_TEXTURE_FORMAT_RGBA_EXT        0x20DA
 
 #endif /* __gl_core_h_ */
