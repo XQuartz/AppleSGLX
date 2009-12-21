@@ -13,7 +13,7 @@ generate_function_pointers() {
       echo "#define GL_GLEXT_LEGACY 1"
       generate_macros
       echo '#include "/System/Library/Frameworks/OpenGL.framework/Headers/gl.h"'
-    } | gcc -E - | grep typedef.*PFN
+    } | ${CC:-gcc} -E - | grep typedef.*PFN
 }
 
 cat ${INFILE} | while IFS= read LINE ; do
