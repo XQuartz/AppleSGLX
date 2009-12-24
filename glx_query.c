@@ -115,10 +115,7 @@ typedef struct GLXGenericGetString
  * Query the Server GLX string.
  * This routine will allocate the necessay space for the string.
  */
-#ifndef __APPLE__
-static 
-#endif
-char *
+static char *
 __glXGetStringFromServer(Display * dpy, int opcode, CARD32 glxCode,
                          CARD32 for_whom, CARD32 name)
 {
