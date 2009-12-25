@@ -53,7 +53,7 @@
 #include "GL/glxint.h"
 #include "GL/glxproto.h"
 #include "GL/internal/glcore.h"
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 #include "glapi/glapitable.h"
 #endif
 #include "glxhash.h"
@@ -187,7 +187,7 @@ extern const char *glXGetDriverConfig(const char *driverName);
 
 #endif
 
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
 extern void DRI_glXUseXFont( Font font, int first, int count, int listbase );
 #endif
 
@@ -444,7 +444,7 @@ struct __GLXcontextRec
 
    char gl_extension_bits[__GL_EXT_BYTES];
 
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    void *apple;
    Bool do_destroy;
 #endif
@@ -626,7 +626,7 @@ struct __GLXdisplayPrivateRec
 
 extern GLubyte *__glXFlushRenderBuffer(__GLXcontext *, GLubyte *);
 
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 extern void __glXSendLargeChunk(__GLXcontext * gc, GLint requestNumber,
                                 GLint totalRequests,
                                 const GLvoid * data, GLint dataLen);

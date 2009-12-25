@@ -41,7 +41,7 @@
 #include "glxclient.h"
 #include <X11/extensions/Xext.h>
 #include <X11/extensions/extutil.h>
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
 #include "apple_glx.h"
 #include "apple_visual.h"
 #else
@@ -70,7 +70,7 @@ _X_HIDDEN int __glXDebug = 0;
 /* Extension required boiler plate */
 
 static char *__glXExtensionName = GLX_EXTENSION_NAME;
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
 static XExtensionInfo __glXExtensionInfo_data;
 XExtensionInfo *__glXExtensionInfo = &__glXExtensionInfo_data;
 #else
@@ -108,7 +108,7 @@ __glXCloseDisplay(Display * dpy, XExtCodes * codes)
 }
 
 
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
 static char *__glXErrorString(Display *dpy, int code, XExtCodes *codes, 
                               char *buf, int n);
 #endif
@@ -131,7 +131,7 @@ static /* const */ XExtensionHooks __glXExtensionHooks = {
   __glXErrorString,       /* error_string */
 };
 
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 static
 #endif
 XEXT_GENERATE_FIND_DISPLAY(__glXFindDisplay, __glXExtensionInfo,
@@ -324,7 +324,7 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
       config->numAuxBuffers = *bp++;
       config->level = *bp++;
 
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
        /* AppleSGLX supports pixmap and pbuffers with all config. */
        config->drawableType = GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;
        /* Unfortunately this can create an ABI compatibility problem. */
@@ -424,7 +424,7 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
          break;
       case GLX_DRAWABLE_TYPE:
          config->drawableType = *bp++;
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
          /* AppleSGLX supports pixmap and pbuffers with all config. */
          config->drawableType |= GLX_WINDOW_BIT | GLX_PIXMAP_BIT | GLX_PBUFFER_BIT;              
 #endif
@@ -447,7 +447,7 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
       case GLX_MAX_PBUFFER_PIXELS:
          config->maxPbufferPixels = *bp++;
          break;
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
       case GLX_OPTIMAL_PBUFFER_WIDTH_SGIX:
          config->optimalPbufferWidth = *bp++;
          break;
@@ -467,7 +467,7 @@ __glXInitializeVisualConfigFromTags(__GLcontextModes * config, int count,
       case GLX_SAMPLES_SGIS:
          config->samples = *bp++;
          break;
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
       case IGNORE_GLX_SWAP_METHOD_OML:
          /* We ignore this tag.  See the comment above this function. */
          ++bp;
@@ -546,7 +546,7 @@ createConfigsFromProperties(Display * dpy, int nvisuals, int nprops,
    m = modes;
    for (i = 0; i < nvisuals; i++) {
       _XRead(dpy, (char *) props, prop_size);
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
        /* Older X servers don't send this so we default it here. */
       m->drawableType = GLX_WINDOW_BIT;
 #else
@@ -788,7 +788,7 @@ __glXInitialize(Display * dpy)
    if (glx_direct)
       dpyPriv->driswDisplay = driswCreateDisplay(dpy);
 #endif
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    if (apple_init_glx(dpy) || !AllocAndFetchScreenConfigs(dpy, dpyPriv)) {
 #else
    if (!AllocAndFetchScreenConfigs(dpy, dpyPriv)) {

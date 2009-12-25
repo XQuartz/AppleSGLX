@@ -29,7 +29,7 @@
  */
 
 #include <GL/gl.h>
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 #include "indirect_size.h"
 #endif
 #include "glxclient.h"

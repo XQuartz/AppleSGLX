@@ -35,7 +35,7 @@
 #include <X11/extensions/Xext.h>
 #include <assert.h>
 #include <string.h>
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
 #include <pthread.h>
 #include "apple_glx_drawable.h"
 #include "glx_error.h"
@@ -69,7 +69,7 @@ warn_GLX_1_3(Display * dpy, const char *function_name)
    }
 }
 
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 /**
  * Change a drawable's attribute.
  *
@@ -576,7 +576,7 @@ glXCreateGLXPbufferSGIX(Display * dpy, GLXFBConfigSGIX config,
                                          attrib_list, GL_FALSE);
 }
 
-#endif /* __APPLE__ */
+#endif /* GLX_USE_APPLEGL */
 
 /**
  * Create a new pbuffer.
@@ -585,7 +585,7 @@ PUBLIC GLXPbuffer
 glXCreatePbuffer(Display * dpy, GLXFBConfig config, const int *attrib_list)
 {
    int i, width, height;
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    GLXPbuffer result;
    int errorcode;
 #endif
@@ -595,7 +595,7 @@ glXCreatePbuffer(Display * dpy, GLXFBConfig config, const int *attrib_list)
 
    WARN_ONCE_GLX_1_3(dpy, __func__);
 
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    for (i = 0; attrib_list[i]; ++i) {
       switch (attrib_list[i]) {
       case GLX_PBUFFER_WIDTH:
@@ -659,7 +659,7 @@ glXCreatePbuffer(Display * dpy, GLXFBConfig config, const int *attrib_list)
 PUBLIC void
 glXDestroyPbuffer(Display * dpy, GLXPbuffer pbuf)
 {
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    if (apple_glx_pbuffer_destroy(dpy, pbuf)) {
       __glXSendError(dpy, GLXBadPbuffer, pbuf, X_GLXDestroyPbuffer, false);
    }
@@ -677,7 +677,7 @@ glXQueryDrawable(Display * dpy, GLXDrawable drawable,
                  int attribute, unsigned int *value)
 {
    WARN_ONCE_GLX_1_3(dpy, __func__);
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    Window root;
    int x, y;
    unsigned int width, height, bd, depth;
@@ -717,7 +717,7 @@ glXQueryDrawable(Display * dpy, GLXDrawable drawable,
 }
 
 
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 /**
  * Query an attribute of a pbuffer.
  */
@@ -735,7 +735,7 @@ glXQueryGLXPbufferSGIX(Display * dpy, GLXPbufferSGIX drawable,
 PUBLIC void
 glXSelectEvent(Display * dpy, GLXDrawable drawable, unsigned long mask)
 {
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    XWindowAttributes xwattr;
 
    if (apple_glx_pbuffer_set_event_mask(drawable, mask))
@@ -768,7 +768,7 @@ glXSelectEvent(Display * dpy, GLXDrawable drawable, unsigned long mask)
 PUBLIC void
 glXGetSelectedEvent(Display * dpy, GLXDrawable drawable, unsigned long *mask)
 {
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    XWindowAttributes xwattr;
 
    if (apple_glx_pbuffer_get_event_mask(drawable, mask))
@@ -808,7 +808,7 @@ glXCreatePixmap(Display * dpy, GLXFBConfig config, Pixmap pixmap,
 {
    WARN_ONCE_GLX_1_3(dpy, __func__);
 
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    const __GLcontextModes *modes = (const __GLcontextModes *) config;
 
    if (apple_glx_pixmap_create(dpy, modes->screen, pixmap, modes))
@@ -827,7 +827,7 @@ glXCreateWindow(Display * dpy, GLXFBConfig config, Window win,
                 const int *attrib_list)
 {
    WARN_ONCE_GLX_1_3(dpy, __func__);
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    XWindowAttributes xwattr;
    XVisualInfo *visinfo;
 
@@ -861,7 +861,7 @@ PUBLIC void
 glXDestroyPixmap(Display * dpy, GLXPixmap pixmap)
 {
    WARN_ONCE_GLX_1_3(dpy, __func__);
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    if (apple_glx_pixmap_destroy(dpy, pixmap))
       __glXSendError(dpy, GLXBadPixmap, pixmap, X_GLXDestroyPixmap, false);
 #else
@@ -874,12 +874,12 @@ PUBLIC void
 glXDestroyWindow(Display * dpy, GLXWindow win)
 {
    WARN_ONCE_GLX_1_3(dpy, __func__);
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
    DestroyDrawable(dpy, (GLXDrawable) win, X_GLXDestroyWindow);
 #endif
 }
 
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 PUBLIC
 GLX_ALIAS_VOID(glXDestroyGLXPbufferSGIX,
                (Display * dpy, GLXPbufferSGIX pbuf),

@@ -38,7 +38,7 @@
 #endif
 
 #include "glxclient.h"
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
 #include <stdlib.h>
 
 #include "apple_glx.h"
@@ -74,7 +74,7 @@ static __GLXcontext dummyContext = {
 };
 
 
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 /*
 ** All indirect rendering contexts will share the same indirect dispatch table.
 */
@@ -172,7 +172,7 @@ _X_HIDDEN void
 __glXSetCurrentContextNull(void)
 {
    __glXSetCurrentContext(&dummyContext);
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 #ifdef GLX_DIRECT_RENDERING
    _glapi_set_dispatch(NULL);   /* no-op functions */
 #endif
@@ -203,7 +203,7 @@ glXGetCurrentDrawable(void)
 }
 
 
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
 /************************************************************************/
 
 /**
@@ -331,7 +331,7 @@ __glXGenerateError(Display * dpy, GLXContext gc, XID resource,
    _XError(dpy, &error);
 }
 
-#endif /* __APPLE__ */
+#endif /* GLX_USE_APPLEGL */
 
 /**
  * Make a particular context current.
@@ -343,7 +343,7 @@ MakeContextCurrent(Display * dpy, GLXDrawable draw,
                    GLXDrawable read, GLXContext gc)
 {
    const GLXContext oldGC = __glXGetCurrentContext();
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
    bool error = apple_glx_make_current_context(dpy, 
                    (oldGC && oldGC != &dummyContext) ? oldGC->apple : NULL, 
                    gc ? gc->apple : NULL, draw);
@@ -448,7 +448,7 @@ MakeContextCurrent(Display * dpy, GLXDrawable draw,
    }
 #endif
 
-#endif /* __APPLE__ */
+#endif /* GLX_USE_APPLEGL */
 
    /* Update our notion of what is current */
    __glXLock();
@@ -471,7 +471,7 @@ MakeContextCurrent(Display * dpy, GLXDrawable draw,
          oldGC->currentReadable = None;
          oldGC->currentContextTag = 0;
          oldGC->thread_id = 0;
-#ifdef __APPLE__
+#ifdef GLX_USE_APPLEGL
          
          /*
           * At this point we should check if the context has been
@@ -498,7 +498,7 @@ MakeContextCurrent(Display * dpy, GLXDrawable draw,
             }
 #endif
             __glXFreeContext(oldGC);
-#endif /* __APPLE__ */
+#endif /* GLX_USE_APPLEGL */
          }
       }
       if (gc) {
@@ -507,7 +507,7 @@ MakeContextCurrent(Display * dpy, GLXDrawable draw,
          gc->currentDpy = dpy;
          gc->currentDrawable = draw;
          gc->currentReadable = read;
-#ifndef __APPLE__
+#ifndef GLX_USE_APPLEGL
          gc->thread_id = _glthread_GetID();
 
 #ifdef GLX_DIRECT_RENDERING
@@ -538,7 +538,7 @@ MakeContextCurrent(Display * dpy, GLXDrawable draw,
             gc->currentContextTag = -1;
          }
 #endif
-#endif /* __APPLE__ */
+#endif /* GLX_USE_APPLEGL */
       }
       else {
          __glXSetCurrentContextNull();
