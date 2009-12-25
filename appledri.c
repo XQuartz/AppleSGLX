@@ -60,7 +60,7 @@ static char *appledri_extension_name = APPLEDRINAME;
  *****************************************************************************/
 
 static int close_display(Display * dpy, XExtCodes * extCodes);
-static Bool wire_to_event();
+static Bool wire_to_event(Display * dpy, XEvent * re, xEvent * event);
 
 static /* const */ XExtensionHooks appledri_extension_hooks = {
    NULL,                        /* create_gc */
@@ -94,10 +94,7 @@ XEXT_GENERATE_FIND_DISPLAY(find_display, appledri_info,
 }
 
 static Bool
-wire_to_event(dpy, re, event)
-     Display *dpy;
-     XEvent *re;
-     xEvent *event;
+wire_to_event(Display *dpy, XEvent *re, xEvent *event)
 {
    XExtDisplayInfo *info = find_display(dpy);
    xAppleDRINotifyEvent *sevent;
