@@ -2740,7 +2740,7 @@ glXAllocateMemoryMESA(Display * dpy, int scrn,
    (void) readFreq;
    (void) writeFreq;
    (void) priority;
-#endif /* GLX_DIRECT_RENDERING */
+#endif /* __DRI_ALLOCATE */
 
    return NULL;
 }
@@ -2759,7 +2759,7 @@ glXFreeMemoryMESA(Display * dpy, int scrn, void *pointer)
    (void) dpy;
    (void) scrn;
    (void) pointer;
-#endif /* GLX_DIRECT_RENDERING */
+#endif /* __DRI_ALLOCATE */
 }
 
 
