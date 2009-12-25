@@ -199,7 +199,6 @@ array set typemap {
     MinmaxTarget GLenum
     GetMinmaxParameterPName GLenum
     TextureTarget GLenum
-    TextureComponentCount GLenum
     TextureUnit GLenum
     CompressedTextureARB "void"
     BlendFuncSeparateParameterEXT GLenum
@@ -226,6 +225,7 @@ array set typemap {
     ClampColorTargetARB unknown3.0
     ClampColorModeARB unknown3.0
     VertexAttribEnum GLenum
+    VertexAttribEnumNV GLenum
     DrawBufferName unknown3.0
     WeightPointerTypeARB GLenum
     ProgramTargetARB GLenum
@@ -245,8 +245,39 @@ array set typemap {
     ProgramPropertyARB GLenum
     ElementPointerTypeATI GLenum
     FenceNV GLuint
+    FenceConditionNV GLenum
     ObjectTypeAPPLE GLenum
     VertexArrayPNameAPPLE GLenum
+    SeparableTargetEXT GLenum
+    ColorTableTargetSGI GLenum
+    ColorTableParameterPNameSGI GLenum
+    CombinerOutputNV GLenum
+    CombinerStageNV GLenum
+    CombinerPortionNV GLenum
+    CombinerRegisterNV GLenum
+    CombinerScaleNV GLenum
+    CombinerBiasNV GLenum
+    CombinerComponentUsageNV GLenum
+    CombinerMappingNV GLenum
+    CombinerParameterNV GLenum
+    CombinerVariableNV GLenum
+    ConvolutionParameterEXT GLenum
+    ConvolutionTargetEXT GLenum
+    CullParameterEXT GLenum
+    FenceParameterNameNV GLenum
+    FragmentLightModelParameterSGIX GLenum
+    FragmentLightNameSGIX GLenum
+    FragmentLightParameterSGIX GLenum
+    GetColorTableParameterPNameSGI GLenum
+    GetHistogramParameterPNameEXT GLenum
+    GetMinmaxParameterPNameEXT GLenum
+    HistogramTargetEXT GLenum
+    LightEnvParameterSGIX GLenum
+    MinmaxTargetEXT GLenum
+    PNTrianglesPNameATI GLenum
+    ProgramCharacterNV GLubyte
+    SamplePatternEXT GLenum
+    SamplePatternSGIS GLenum
 }
 
 proc psplit s {
@@ -375,7 +406,7 @@ proc translate-parameters {func parameters} {
 	set ptype [lindex $p 1]
 	
 	if {![info exists typemap($ptype)]} {
-	    set missingTypes($ptype) $func
+	    set ::missingTypes($ptype) $func
 	    continue
 	}
 	
@@ -384,11 +415,9 @@ proc translate-parameters {func parameters} {
 	#In the gl.spec file is MultiDrawArrays first and count
 	#are really 'in' so we make them const.
 	#The gl.spec notes this problem.
-	if {("MultiDrawArrays" eq $func || "MultiDrawArraysEXT" eq $func) 
-	    && ("first" eq $var)} {
+	if {("MultiDrawArrays" eq $func) && ("first" eq $var)} {
 	    set final_type "const $type *"
-	} elseif {("MultiDrawArrays" eq $func 
-		   || "MultiDrawArraysEXT" eq $func) && "count" eq $var} {
+	} elseif {("MultiDrawArrays" eq $func) && ("count" eq $var)} {
 	    set final_type "const $type *"
 	} elseif {"array" eq [lindex $p 3]} {
 	    if {"in" eq [lindex $p 2]} {

@@ -113,6 +113,8 @@ proc main {argc argv} {
     puts $fd $::license
 
     puts $fd {
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
 #include <dlfcn.h>
 #include "glxclient.h"
 #include "apple_xgl_api.h"
@@ -177,7 +179,7 @@ proc main {argc argv} {
 	    set body "[set return]__gl_api.[set f]([set callvars]);"
 	}
 
-        puts $fd "[dict get $attr return] gl[set f]([set pstr]) \{\n\t$body\n\}"
+        puts $fd "GLAPI [dict get $attr return] APIENTRY gl[set f]([set pstr]) \{\n\t$body\n\}"
     }
 
     puts $fd $::init_code
