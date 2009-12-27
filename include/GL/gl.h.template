@@ -53,6 +53,11 @@
 
 #include "/System/Library/Frameworks/OpenGL.framework/Headers/gl.h"
 
+/* These are not set by the system gl.h */
+#define GL_VERSION_1_2_DEPRECATED 1
+#define GL_VERSION_1_3_DEPRECATED 1
+#define GL_VERSION_1_4_DEPRECATED 1
+
 /* Restore our GLEXT-fu */
 #ifdef _GL_GLEXT_FUNCTION_POINTERS
 #define GL_GLEXT_FUNCTION_POINTERS _GL_GLEXT_FUNCTION_POINTERS
