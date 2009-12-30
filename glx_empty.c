@@ -35,7 +35,7 @@ glXGetSwapIntervalMESA(void)
 ** GLX_MESA_swap_frame_usage
 */
 
-GLint
+int
 glXBeginFrameTrackingMESA(Display * dpy, GLXDrawable drawable)
 {
    int status = GLX_BAD_CONTEXT;
@@ -45,7 +45,7 @@ glXBeginFrameTrackingMESA(Display * dpy, GLXDrawable drawable)
 }
 
 
-GLint
+int
 glXEndFrameTrackingMESA(Display * dpy, GLXDrawable drawable)
 {
    int status = GLX_BAD_CONTEXT;
@@ -55,7 +55,7 @@ glXEndFrameTrackingMESA(Display * dpy, GLXDrawable drawable)
 }
 
 
-GLint
+int
 glXGetFrameUsageMESA(Display * dpy, GLXDrawable drawable, GLfloat * usage)
 {
    int status = GLX_BAD_CONTEXT;
@@ -65,7 +65,7 @@ glXGetFrameUsageMESA(Display * dpy, GLXDrawable drawable, GLfloat * usage)
    return status;
 }
 
-GLint
+int
 glXQueryFrameTrackingMESA(Display * dpy, GLXDrawable drawable,
                           int64_t * sbc, int64_t * missedFrames,
                           GLfloat * lastMissedUsage)
