@@ -38,6 +38,10 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
+// Get the newer glext.h first
+#include <GL/gl.h>
+#include <GL/glext.h>
+
 #include <OpenGL/CGLTypes.h>
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/OpenGL.h>
