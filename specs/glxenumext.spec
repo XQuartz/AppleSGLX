@@ -22,9 +22,9 @@
 
 passthru:
 passthru: /* Header file version number, required by OpenGL ABI for Linux */
-passthru: /* glxext.h last updated 2008/10/22 */
+passthru: /* glxext.h last updated 2009/10/08 */
 passthru: /* Current version at http://www.opengl.org/registry/ */
-passthru: #define GLX_GLXEXT_VERSION 21
+passthru: #define GLX_GLXEXT_VERSION 25
 
 ###############################################################################
 #
@@ -135,6 +135,15 @@ ARB_create_context enum:
 	CONTEXT_MAJOR_VERSION_ARB			= 0x2091
 	CONTEXT_MINOR_VERSION_ARB			= 0x2092
 	CONTEXT_FLAGS_ARB				= 0x2094
+
+###############################################################################
+
+# ARB Extension #75
+ARB_create_context_profile enum:
+	CONTEXT_CORE_PROFILE_BIT_ARB			= 0x00000001
+	CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB		= 0x00000002
+	CONTEXT_PROFILE_MASK_ARB			= 0x9126
+
 
 ###############################################################################
 #
@@ -473,3 +482,22 @@ NV_video_out enum:
 NV_swap_group enum:
 
 ###############################################################################
+
+# Extension #374
+NV_video_capture enum:
+	DEVICE_ID_NV					= 0x20CD
+	UNIQUE_ID_NV					= 0x20CE
+	NUM_VIDEO_CAPTURE_SLOTS_NV			= 0x20CF
+
+###############################################################################
+
+# Extension #375
+EXT_swap_control enum:
+	SWAP_INTERVAL_EXT				= 0x20F1
+	MAX_SWAP_INTERVAL_EXT				= 0x20F2
+
+###############################################################################
+
+# No new tokens
+# Extension #376
+NV_copy_image enum:

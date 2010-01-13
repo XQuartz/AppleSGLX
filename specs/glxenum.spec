@@ -84,6 +84,7 @@ GLXSyncType enum:
 GLXEventMask enum:
 	PBUFFER_CLOBBER_MASK				= 0x08000000	# SelectEvent mask
 	BUFFER_CLOBBER_MASK_SGIX			= 0x08000000	# SelectEventSGIX mask
+#	INTEL_future_use				= 0x04000000	# SelectEvent mask (for GLX_INTEL_swap_event)
 
 GLXPbufferClobberMask enum:
 	FRONT_LEFT_BUFFER_BIT				= 0x00000001	# PbufferClobberEvent mask
@@ -121,6 +122,16 @@ GLXBindToTextureTargetMask enum:
 	TEXTURE_1D_BIT_EXT				= 0x00000001	# EXT_texture_from_pixmap
 	TEXTURE_2D_BIT_EXT				= 0x00000002
 	TEXTURE_RECTANGLE_BIT_EXT			= 0x00000004
+
+# CONTEXT_FLAGS_ARB bits
+GLXContextFlags enum:
+	CONTEXT_DEBUG_BIT_ARB				= 0x00000001	# ARB_create_context
+	CONTEXT_FORWARD_COMPATIBLE_BIT_ARB		= 0x00000002	# ARB_create_context
+
+# CONTEXT_PROFILE_MASK_ARB bits
+GLXContextProfileMask enum:
+	CONTEXT_CORE_PROFILE_BIT_ARB			= 0x00000001	# ARB_create_context_profile
+	CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB		= 0x00000002	# ARB_create_context_profile
 
 GLXAttribute enum:
 	USE_GL						= 1		# Visual attributes
@@ -241,13 +252,11 @@ GLXAttribute enum:
 
 # ARB: 0x2070-0x209F (shared with WGL)
 
-# Also includes a bitmask
+# Also includes a bitmask - see ContextFlags above
 # ARB_create_context enum:
-	GLX_CONTEXT_DEBUG_BIT_ARB			= 0x00000001
-	GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB		= 0x00000002
-	GLX_CONTEXT_MAJOR_VERSION_ARB			= 0x2091
-	GLX_CONTEXT_MINOR_VERSION_ARB			= 0x2092
-	GLX_CONTEXT_FLAGS_ARB				= 0x2094
+	CONTEXT_MAJOR_VERSION_ARB			= 0x2091
+	CONTEXT_MINOR_VERSION_ARB			= 0x2092
+	CONTEXT_FLAGS_ARB				= 0x2094
 
 ###############################################################################
 
@@ -268,18 +277,21 @@ GLXAttribute enum:
 # NV_future_use: 0x20BA-0x20C2
 
 # NV_video_out enum:
-	GLX_VIDEO_OUT_COLOR_NV				= 0x20C3
-	GLX_VIDEO_OUT_ALPHA_NV				= 0x20C4
-	GLX_VIDEO_OUT_DEPTH_NV				= 0x20C5
-	GLX_VIDEO_OUT_COLOR_AND_ALPHA_NV		= 0x20C6
-	GLX_VIDEO_OUT_COLOR_AND_DEPTH_NV		= 0x20C7
-	GLX_VIDEO_OUT_FRAME_NV				= 0x20C8
-	GLX_VIDEO_OUT_FIELD_1_NV			= 0x20C9
-	GLX_VIDEO_OUT_FIELD_2_NV			= 0x20CA
-	GLX_VIDEO_OUT_STACKED_FIELDS_1_2_NV		= 0x20CB
-	GLX_VIDEO_OUT_STACKED_FIELDS_2_1_NV		= 0x20CC
+	VIDEO_OUT_COLOR_NV				= 0x20C3
+	VIDEO_OUT_ALPHA_NV				= 0x20C4
+	VIDEO_OUT_DEPTH_NV				= 0x20C5
+	VIDEO_OUT_COLOR_AND_ALPHA_NV			= 0x20C6
+	VIDEO_OUT_COLOR_AND_DEPTH_NV			= 0x20C7
+	VIDEO_OUT_FRAME_NV				= 0x20C8
+	VIDEO_OUT_FIELD_1_NV				= 0x20C9
+	VIDEO_OUT_FIELD_2_NV				= 0x20CA
+	VIDEO_OUT_STACKED_FIELDS_1_2_NV			= 0x20CB
+	VIDEO_OUT_STACKED_FIELDS_2_1_NV			= 0x20CC
 
-# NV_future_use: 0x20CD-0x20CF
+# NV_video_capture enum:
+	DEVICE_ID_NV					= 0x20CD
+	UNIQUE_ID_NV					= 0x20CE
+	NUM_VIDEO_CAPTURE_SLOTS_NV			= 0x20CF
 
 # EXT_texture_from_pixmap enum:
 	BIND_TO_TEXTURE_RGB_EXT				= 0x20D0
@@ -315,10 +327,14 @@ GLXAttribute enum:
 
 # NV_future_use: 0x20EC-0x20EF
 
-# NV_present_video enum:
-	GLX_NUM_VIDEO_SLOTS_NV				= 0x20F0
+NV_present_video enum:
+	NUM_VIDEO_SLOTS_NV				= 0x20F0
 
-# NV_future_use: 0x20F1-0x219F
+EXT_swap_control enum:
+	SWAP_INTERVAL_EXT				= 0x20F1
+	MAX_SWAP_INTERVAL_EXT				= 0x20F2
+
+# NV_future_use: 0x20F3-0x219F
 
 ###############################################################################
 
@@ -362,9 +378,21 @@ GLXAttribute enum:
 
 # NVIDIA: 0x8070 - 0x816F
 
+NVIDIA_future_use: 0x8070-0x816F
+
 ###############################################################################
 
 # SUN: 0x8170 - 0x817F
+
+SUN_future_use: 0x8170-0x817F
+
+###############################################################################
+
+# INTEL: 0x8180 - 0x818F
+
+# INTEL_swap_event: 0x8180-??? (in process, see Khronos bug 5752)
+
+INTEL_future_use: 0x8180-0x818F
 
 ###############################################################################
 ### Please remember that new GLX enum allocations must be obtained by request
@@ -372,7 +400,13 @@ GLXAttribute enum:
 ### File requests in the Khronos Bugzilla, OpenGL project, Registry component.
 ###############################################################################
 
-# Any_vendor_future_use: 0x8180-0xFFFF
+# Any_vendor_future_use: 0x8180-0x9125
+
+# Also includes a bitmask - see ContextProfileMask above
+# ARB_create_context_profile enum: (equivalent to corresponding GL token)
+	CONTEXT_PROFILE_MASK_ARB			= 0x9126
+
+# Any_vendor_future_use: 0x9127-0xFFFF
 #
 #   This range must be the last range in the file.  To generate a new
 #   range, allocate multiples of 16 from the beginning of the

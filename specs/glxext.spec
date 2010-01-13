@@ -11,7 +11,7 @@ param:		retval retained
 glxflags:	client-handcode client-intercept server-handcode
 glxvendorglx:	*
 vectorequiv:	*
-category:	VERSION_1_3 VERSION_1_4 ARB_get_proc_address ARB_multisample ARB_fbconfig_float EXT_import_context SGIX_dmbuffer SGIX_fbconfig SGIX_pbuffer SGIX_swap_barrier SGIX_swap_group SGIX_video_resize SGIX_video_source SGI_cushion SGI_make_current_read SGI_swap_control SGI_video_sync SUN_get_transparent_index MESA_agp_offset MESA_copy_sub_buffer MESA_pixmap_colormap MESA_release_buffers MESA_set_3dfx_mode SGIX_visual_select_group OML_sync_control SGIX_hyperpipe EXT_texture_from_pixmap NV_swap_group NV_video_out NV_present_video ARB_create_context
+category:	VERSION_1_3 VERSION_1_4 ARB_get_proc_address ARB_multisample ARB_fbconfig_float EXT_import_context SGIX_dmbuffer SGIX_fbconfig SGIX_pbuffer SGIX_swap_barrier SGIX_swap_group SGIX_video_resize SGIX_video_source SGI_cushion SGI_make_current_read SGI_swap_control SGI_video_sync SUN_get_transparent_index MESA_agp_offset MESA_copy_sub_buffer MESA_pixmap_colormap MESA_release_buffers MESA_set_3dfx_mode SGIX_visual_select_group OML_sync_control SGIX_hyperpipe EXT_texture_from_pixmap NV_swap_group NV_video_output NV_present_video ARB_create_context NV_video_capture NV_copy_image EXT_swap_control
 glxopcode:	*
 
 #
@@ -49,6 +49,14 @@ passthru:     int x, y;
 passthru:     int width, height;
 passthru:     int count;		  /* if nonzero, at least this many more */
 passthru: } GLXBufferClobberEventSGIX;
+passthru: #endif
+passthru:
+passthru: #ifndef GLX_NV_video_output
+passthru: typedef unsigned int GLXVideoDeviceNV;
+passthru: #endif
+passthru:
+passthru: #ifndef GLX_NV_video_capture
+passthru: typedef XID GLXVideoCaptureDeviceNV;
 passthru: #endif
 passthru:
 passthru: #ifndef GLEXT_64_TYPES_DEFINED
@@ -191,7 +199,7 @@ QueryDrawable(dpy, draw, attribute, value)
 	param		dpy		Display out reference
 	param		draw		GLXDrawable in value
 	param		attribute	int in value
-	param		value		Uint out reference
+	param		value		uint out reference
 	category	VERSION_1_3
 	glxflags	client-handcode client-intercept server-handcode
 
@@ -319,6 +327,16 @@ CreateContextAttribsARB(dpy, config, share_context, direct, attrib_list)
 	glxflags	client-handcode client-intercept server-handcode
 	glxopcode	34
 
+###############################################################################
+#
+# ARB Extension #75
+# ARB_create_context_profile commands
+#
+###############################################################################
+
+# (none)
+newcategory: ARB_create_context_profile
+
 
 ###############################################################################
 #
@@ -363,7 +381,7 @@ SwapIntervalSGI(interval)
 
 GetVideoSyncSGI(count)
 	return		int
-	param		count		Uint out reference
+	param		count		uint out reference
 	category	SGI_video_sync
 	glxflags	client-handcode client-intercept server-handcode
 
@@ -371,7 +389,7 @@ WaitVideoSyncSGI(divisor, remainder, count)
 	return		int
 	param		divisor		int in value
 	param		remainder	int in value
-	param		count		Uint out reference
+	param		count		uint out reference
 	category	SGI_video_sync
 	glxflags	client-handcode client-intercept server-handcode
 
@@ -559,8 +577,8 @@ CreateGLXPbufferSGIX(dpy, config, width,  height, attrib_list)
 	return		GLXPbufferSGIX
 	param		dpy		Display out reference
 	param		config		GLXFBConfigSGIX in value
-	param		width		Uint in value
-	param		height		Uint in value
+	param		width		uint in value
+	param		height		uint in value
 	param		attrib_list	int out reference
 	category	SGIX_pbuffer
 	glxflags	client-handcode server-handcode
@@ -579,7 +597,7 @@ QueryGLXPbufferSGIX(dpy, pbuf, attribute, value)
 	param		dpy		Display out reference
 	param		pbuf		GLXPbufferSGIX in value
 	param		attribute	int in value
-	param		value		Uint out reference
+	param		value		uint out reference
 	category	SGIX_pbuffer
 
 SelectEventSGIX(dpy, drawable, mask)
@@ -1074,43 +1092,82 @@ ReleaseTexImageEXT(dpy, drawable, buffer)
 #
 ###############################################################################
 
-# TBD
-newcategory: NV_present_video
-#   unsigned int *glXEnumerateVideoDevicesNV(Display *dpy, int screen,
-#					     int *nelements);
-#   int glXBindVideoDeviceNV(Display *dpy, unsigned int video_slot,
-#			     unsigned int video_device,
-#			     const int *attrib_list);
+EnumerateVideoDevicesNV(dpy, screen, nelements)
+	return		uintPointer
+	param		dpy		Display out reference
+	param		screen		int in value
+	param		nelements	int out reference
+	category	NV_present_video
+	glxflags	client-handcode server-handcode
+
+BindVideoDeviceNV(dpy, video_slot, video_device, attrib_list)
+	return		int
+	param		dpy		Display out reference
+	param		video_slot	uint in value
+	param		video_device	uint in value
+	param		attrib_list	int in reference
+	category	NV_present_video
+	glxflags	client-handcode server-handcode
 
 ###############################################################################
 #
 # Extension #348
-# NV_video_out commands
+# NV_video_output commands
 #
 ###############################################################################
 
-# TBD
-newcategory: NV_video_out
-#   int glXGetVideoDeviceNV(Display *dpy, int screen, int numVideoDevices,
-#			    GLXVideoDeviceNV *pVideoDevice);
-#
-#   int glXReleaseVideoDeviceNV(Display *dpy, int screen,
-#				GLXVideoDeviceNV VideoDevice);
-#
-#   int glXBindVideoImageNV(Display *dpy, GLXVideoDeviceNV VideoDevice,
-#			    GLXPbuffer pbuf, int iVideoBuffer);
-#
-#   int glXReleaseVideoImageNV(Display *dpy, GLXPbuffer pbuf);
-#
-#   int glXSendPbufferToVideoNV(Display *dpy, GLXPbuffer pbuf,
-#				int iBufferType,
-#				unsigned long *pulCounterPbuffer,
-#				GLboolean bBlock);
-#
-#   int glXGetVideoInfoNV(Display *dpy, int screen,
-#			  GLXVideoDeviceNV VideoDevice,
-#			  unsigned long *pulCounterOutputPbuffer,
-#			  unsigned long *pulCounterOutputVideo);
+GetVideoDeviceNV(dpy, screen, numVideoDevices, pVideoDevice)
+	return		int
+	param		dpy		Display out reference
+	param		screen		int in value
+	param		numVideoDevices int in value
+	param		pVideoDevice	GLXVideoDeviceNV out array [COMPSIZE(numVideoDevices)]
+	category	NV_video_output
+	glxflags	client-handcode server-handcode
+
+ReleaseVideoDeviceNV(dpy, screen, VideoDevice)
+	return		int
+	param		dpy		Display out reference
+	param		screen		int in value
+	param		VideoDevice	GLXVideoDeviceNV in value
+	category	NV_video_output
+	glxflags	client-handcode server-handcode
+
+BindVideoImageNV(dpy, VideoDevice, pbuf, iVideoBuffer)
+	return		int
+	param		dpy		Display out reference
+	param		VideoDevice	GLXVideoDeviceNV in value
+	param		pbuf		GLXPbuffer in value
+	param		iVideoBuffer	int in value
+	category	NV_video_output
+	glxflags	client-handcode server-handcode
+
+ReleaseVideoImageNV(dpy, pbuf)
+	return		int
+	param		dpy		Display out reference
+	param		pbuf		GLXPbuffer in value
+	category	NV_video_output
+	glxflags	client-handcode server-handcode
+
+SendPbufferToVideoNV(dpy, pbuf, iBufferType, pulCounterPbuffer, bBlock)
+	return		int
+	param		dpy		Display out reference
+	param		pbuf		GLXPbuffer in value
+	param		iBufferType	int in value
+	param		pulCounterPbuffer ulong out reference
+	param		bBlock		GLboolean in value
+	category	NV_video_output
+	glxflags	client-handcode server-handcode
+
+GetVideoInfoNV(dpy, screen, VideoDevice, pulCounterOutputPbuffer, pulCounterOutputVideo)
+	return		int
+	param		dpy		Display out reference
+	param		screen		int in value
+	param		VideoDevice	GLXVideoDeviceNV in value
+	param		pulCounterOutputPbuffer ulong out reference
+	param		pulCounterOutputVideo	ulong out reference
+	category	NV_video_output
+	glxflags	client-handcode server-handcode
 
 ###############################################################################
 #
@@ -1119,11 +1176,143 @@ newcategory: NV_video_out
 #
 ###############################################################################
 
-# TBD
-newcategory: NV_swap_group
-#   Bool glXJoinSwapGroupNV(Display *dpy, GLXDrawable drawable, GLuint group);
-#   Bool glXBindSwapBarrierNV(Display *dpy, GLuint group, GLuint barrier);
-#   Bool glXQuerySwapGroupNV(Display *dpy, GLXDrawable drawable, GLuint *group, GLuint *barrier);
-#   Bool glXQueryMaxSwapGroupsNV(Display *dpy, int screen, GLuint *maxGroups, GLuint *maxBarriers);
-#   Bool glXQueryFrameCountNV(Display *dpy, int screen, GLuint *count);
-#   Bool glXResetFrameCountNV(Display *dpy, int screen);
+JoinSwapGroupNV(dpy, drawable, group)
+	return		Bool
+	param		dpy		Display out reference
+	param		drawable	GLXDrawable in value
+	param		group		GLuint in value
+	category	NV_swap_group
+	glxflags	client-handcode server-handcode
+
+BindSwapBarrierNV(dpy, group, barrier)
+	return		Bool
+	param		dpy		Display out reference
+	param		group		GLuint in value
+	param		barrier		GLuint in value
+	category	NV_swap_group
+	glxflags	client-handcode server-handcode
+
+QuerySwapGroupNV(dpy, drawable, group, barrier)
+	return		Bool
+	param		dpy		Display out reference
+	param		drawable	GLXDrawable in value
+	param		group		GLuint out reference
+	param		barrier		GLuint out reference
+	category	NV_swap_group
+	glxflags	client-handcode server-handcode
+
+QueryMaxSwapGroupsNV(dpy, screen, maxGroups, maxBarriers)
+	return		Bool
+	param		dpy		Display out reference
+	param		screen		int in value
+	param		maxGroups	GLuint out reference
+	param		maxBarriers	GLuint out reference
+	category	NV_swap_group
+	glxflags	client-handcode server-handcode
+
+QueryFrameCountNV(dpy, screen, count)
+	return		Bool
+	param		dpy		Display out reference
+	param		screen		int in value
+	param		count		GLuint out reference
+	category	NV_swap_group
+	glxflags	client-handcode server-handcode
+
+ResetFrameCountNV(dpy, screen)
+	return		Bool
+	param		dpy		Display out reference
+	param		screen		int in value
+	category	NV_swap_group
+	glxflags	client-handcode server-handcode
+
+###############################################################################
+#
+# Extension #374
+# NV_video_capture commands
+#
+###############################################################################
+
+BindVideoCaptureDeviceNV(dpy, video_capture_slot, device)
+	return		int
+	param		dpy		Display out reference
+	param		video_capture_slot uint in value
+	param		device		GLXVideoCaptureDeviceNV in value
+	category	NV_video_capture
+	glxflags	client-handcode server-handcode
+
+EnumerateVideoCaptureDevicesNV(dpy, screen, nelements)
+	return		GLXVideoCaptureDeviceNVPointer
+	param		dpy		Display out reference
+	param		screen		int in value
+	param		nelements	int out reference
+	category	NV_video_capture
+	glxflags	client-handcode server-handcode
+
+LockVideoCaptureDeviceNV(dpy, device)
+	return		void
+	param		dpy		Display out reference
+	param		device		GLXVideoCaptureDeviceNV in value
+	category	NV_video_capture
+	glxflags	client-handcode server-handcode
+
+QueryVideoCaptureDeviceNV(dpy, device, attribute, value)
+	return		int
+	param		dpy		Display out reference
+	param		device		GLXVideoCaptureDeviceNV in value
+	param		attribute	int in value
+	param		value		int out array [COMPSIZE(attribute)]
+	category	NV_video_capture
+	glxflags	client-handcode server-handcode
+
+ReleaseVideoCaptureDeviceNV(dpy, device)
+	return		void
+	param		dpy		Display out reference
+	param		device		GLXVideoCaptureDeviceNV in value
+	category	NV_video_capture
+	glxflags	client-handcode server-handcode
+
+###############################################################################
+#
+# Extension #375
+# EXT_swap_control commands
+#
+###############################################################################
+
+SwapIntervalEXT(dpy, drawable, interval)
+	return		int
+	param		dpy		Display out reference
+	param		drawable	GLXDrawable in value
+	param		interval	int in value
+	category	EXT_swap_control
+	glxflags	client-handcode server-handcode
+
+###############################################################################
+#
+# Extension #376
+# GLX_NV_copy_image commands
+#
+###############################################################################
+
+CopyImageSubDataNV(dpy, srcCtx, srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstCtx, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, width, height, depth)
+	return		void
+	param		dpy		Display out reference
+	param		srcCtx		GLXContext in value
+	param		srcName		GLuint in value
+	param		srcTarget	GLenum in value
+	param		srcLevel	GLint in value
+	param		srcX		GLint in value
+	param		srcY		GLint in value
+	param		srcZ		GLint in value
+	param		dstCtx		GLXContext in value
+	param		dstName		GLuint in value
+	param		dstTarget	GLenum in value
+	param		dstLevel	GLint in value
+	param		dstX		GLint in value
+	param		dstY		GLint in value
+	param		dstZ		GLint in value
+	param		width		GLsizei in value
+	param		height		GLsizei in value
+	param		depth		GLsizei in value
+	category	NV_copy_image
+	glxflags	client-handcode server-handcode
+

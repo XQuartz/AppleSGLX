@@ -80,6 +80,8 @@ array set typemap {
     CheckedInt32 GLint
     Float32 GLfloat
     Int32 GLint
+    Int64 GLint64EXT
+    UInt64 GLuint64EXT
     Float64 GLdouble
     ListMode GLuint
     SizeI GLsizei
@@ -278,6 +280,7 @@ array set typemap {
     ProgramCharacterNV GLubyte
     SamplePatternEXT GLenum
     SamplePatternSGIS GLenum
+    TypeEnum GLenum
 }
 
 proc psplit s {
@@ -323,7 +326,7 @@ proc parse {data arvar} {
     foreach line [split $data \n] {
 	if {"attr" eq $state} {
 	    if {[string match "\t*" $line]} {
-		set plist [psplit $line]
+		set plist [psplit [lindex [split $line "#"] 0]]
 		#puts PLIST:$plist
 		set master $ar($name)
 		set param [dict get $master parameters]
@@ -380,10 +383,7 @@ proc parse {data arvar} {
 
 #This returns true if the category is valid for an extension.
 proc is-valid-category? c {
-    set clist [list display-list drawing drawing-control feedback \
-		   framebuf misc modeling pixel-op pixel-rw state-req \
-		   xform 1_1 VERSION_1_2 VERSION_1_3 VERSION_1_4 \
-		   VERSION_1_5 VERSION_2_0 VERSION_2_1]
+    set clist [list display-list drawing drawing-control feedback framebuf misc modeling pixel-op pixel-rw state-req xform VERSION_1_0 VERSION_1_0_DEPRECATED VERSION_1_1 VERSION_1_1_DEPRECATED VERSION_1_2 VERSION_1_2_DEPRECATED VERSION_1_3 VERSION_1_3_DEPRECATED VERSION_1_4 VERSION_1_4_DEPRECATED VERSION_1_5 VERSION_2_0 VERSION_2_1 VERSION_3_0 VERSION_3_0_DEPRECATED VERSION_3_1 VERSION_3_2]
 
     set result [expr {$c in $clist}]
 
